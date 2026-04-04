@@ -115,6 +115,7 @@ git push origin ko
 
 1. **working tree 확인**: 커밋되지 않은 변경이 있으면 동기화를 시작하지 마세요
 2. **fast-forward only**: origin/main은 반드시 `--ff-only`로만 병합하세요
-3. **충돌 시 upstream 우선**: 충돌 발생 시 upstream(영어) 내용을 수용하고, 재번역 목록에 추가하세요
-4. **사용자 확인**: 동기화 전 반드시 확인을 받으세요
-5. **push 확인**: 모든 변경이 origin에 push되었는지 확인하세요
+3. **origin/main 즉시 push**: main을 fast-forward한 후 반드시 `origin/main`에 push하세요. 로컬 기준점으로만 두지 않고, fork의 원문 기준 브랜치를 항상 최신 상태로 유지해야 다음 유지보수 루프에서 변경 감지 기준이 흔들리지 않습니다.
+4. **충돌 시 upstream 우선**: 충돌 발생 시 upstream(영어) 내용을 수용하고, 재번역 목록에 추가하세요
+5. **사용자 확인**: 동기화 전 반드시 확인을 받으세요
+6. **push 확인**: 모든 변경(main + ko)이 origin에 push되었는지 확인하세요
