@@ -1,381 +1,381 @@
 ---
-description: Research and analyze feature viability - GO/NO-GO decision gate
+description: 피처 타당성 조사 및 분석 - GO/NO-GO 결정 게이트
 argument-hint: "<feature-slug>"
 ---
 
-## User Input
+## 사용자 입력
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** parse the user input to extract the feature slug (the folder name in `rpi/`).
+사용자 입력을 파싱하여 피처 슬러그 (`rpi/`의 폴더 이름)를 추출해야 **합니다**.
 
-**Expected Input Format**: `rpi/{feature-slug}/REQUEST.md`
+**예상 입력 형식**: `rpi/{feature-slug}/REQUEST.md`
 
-## Purpose
+## 목적
 
-This command performs comprehensive research and analysis of feature requests **before** the planning phase begins. It acts as a critical GO/NO-GO gate to determine whether a feature idea should proceed to detailed planning.
+이 커맨드는 계획 단계가 시작되기 **전에** 피처 요청에 대한 포괄적인 연구 및 분석을 수행합니다. 피처 아이디어가 상세 계획으로 진행해야 할지를 결정하는 중요한 GO/NO-GO 게이트 역할을 합니다.
 
-**Key Objectives**:
-- Assess product-market fit and user value
-- Evaluate technical feasibility and complexity
-- Identify risks and potential blockers
-- Determine the right approach (build, buy, partner, or decline)
-- Make go/no-go recommendation with clear rationale
+**핵심 목표**:
+- 제품-시장 적합성 및 사용자 가치 평가
+- 기술 타당성 및 복잡성 평가
+- 리스크 및 잠재적 차단 요소 파악
+- 적절한 접근방식 결정 (구축, 구매, 파트너, 또는 거절)
+- 명확한 근거와 함께 GO/NO-GO 추천 제공
 
-**Prerequisites**:
-- Feature folder exists at `rpi/{feature-slug}/`
-- Feature request file exists at `rpi/{feature-slug}/REQUEST.md`
+**사전 요구사항**:
+- `rpi/{feature-slug}/`에 피처 폴더가 존재
+- `rpi/{feature-slug}/REQUEST.md`에 피처 요청 파일이 존재
 
-**Output Location**: `rpi/{feature-slug}/research/RESEARCH.md`
+**출력 위치**: `rpi/{feature-slug}/research/RESEARCH.md`
 
-**This is Step 2 of the RPI Workflow** (after initial feature description in Step 1).
+**이것은 RPI 워크플로우의 2단계**입니다 (1단계 초기 피처 설명 후).
 
-## Outline
+## 개요
 
-1. **Load Context**: Read feature description from `rpi/{feature-slug}/` and project constitution (if exists)
-2. **Parse Feature Request**: Use requirement-parser agent to extract structured requirements
-3. **Execute Multi-Phase Research**:
-   - Phase 1: Parse Feature Request (requirement-parser agent)
-   - Phase 2: Product Analysis with Constitution Alignment (product-manager agent)
-   - Phase 2.5: Technical Discovery (Explore agent) - **CRITICAL: Deep code exploration**
-   - Phase 3: Technical Feasibility (senior-software-engineer agent)
-   - Phase 4: Strategic Assessment (technical-cto-advisor agent)
-   - Phase 5: Generate Research Report (documentation-analyst-writer agent)
-4. **Synthesize Recommendation**: Combine all analyses into clear go/no-go recommendation
-5. **Validate Output**: Check against quality gates
-6. **Report Completion**: Provide recommendation, next steps, and report location
+1. **컨텍스트 로드**: `rpi/{feature-slug}/`에서 피처 설명 읽기 및 프로젝트 헌법 읽기 (존재하는 경우)
+2. **피처 요청 파싱**: requirement-parser 에이전트를 사용하여 구조화된 요구사항 추출
+3. **다단계 연구 실행**:
+   - 1단계: 피처 요청 파싱 (requirement-parser 에이전트)
+   - 2단계: 헌법 정렬과 함께 제품 분석 (product-manager 에이전트)
+   - 2.5단계: 기술 탐색 (Explore 에이전트) - **중요: 심층 코드 탐색**
+   - 3단계: 기술 타당성 (senior-software-engineer 에이전트)
+   - 4단계: 전략적 평가 (technical-cto-advisor 에이전트)
+   - 5단계: 연구 보고서 생성 (documentation-analyst-writer 에이전트)
+4. **추천 합성**: 모든 분석을 명확한 GO/NO-GO 추천으로 결합
+5. **출력 검증**: 품질 게이트 확인
+6. **완료 보고**: 추천, 다음 단계, 보고서 위치 제공
 
-## Phases
+## 단계
 
-### Phase 0: Load Context
+### 0단계: 컨텍스트 로드
 
-**Prerequisites**: Feature slug provided, `rpi/{feature-slug}/REQUEST.md` exists
+**사전 요구사항**: 피처 슬러그 제공됨, `rpi/{feature-slug}/REQUEST.md` 존재
 
-**Process**:
-1. **Read feature description**:
-   - Read `rpi/{feature-slug}/REQUEST.md` (required)
-   - Extract feature requirements and goals from REQUEST.md
+**프로세스**:
+1. **피처 설명 읽기**:
+   - `rpi/{feature-slug}/REQUEST.md` 읽기 (필수)
+   - REQUEST.md에서 피처 요구사항 및 목표 추출
 
-2. **Check for project constitution** (optional):
-   - Look for a constitution or principles document in the repository
-   - Common locations: `constitution.md`, `PRINCIPLES.md`, `.project/constitution.md`
-   - If found, extract core principles, constraints, and objectives
+2. **프로젝트 헌법 확인** (선택사항):
+   - 리포지토리에서 헌법 또는 원칙 문서 검색
+   - 일반적인 위치: `constitution.md`, `PRINCIPLES.md`, `.project/constitution.md`
+   - 발견된 경우, 핵심 원칙, 제약, 목표 추출
 
-3. **Create research context**:
-   - Synthesize into concise summary for agents
-   - Identify key alignment criteria
+3. **연구 컨텍스트 생성**:
+   - 에이전트를 위한 간결한 요약으로 합성
+   - 핵심 정렬 기준 파악
 
-**Outputs**:
-- Feature description summary
-- Constitutional principles (if found)
-- Alignment criteria for evaluation
+**출력물**:
+- 피처 설명 요약
+- 헌법 원칙 (발견된 경우)
+- 평가를 위한 정렬 기준
 
-**Validation**:
-- [ ] Feature folder exists in `rpi/{feature-slug}/`
-- [ ] Feature description extracted
-- [ ] Constitution checked and loaded (if exists)
-
----
-
-### Phase 1: Parse Feature Request
-
-**Prerequisites**: Phase 0 complete
-
-**Agent**: requirement-parser (planning domain)
-
-**Process**:
-1. **Launch requirement-parser agent** with feature description
-2. **Agent extracts**:
-   - Feature name and type
-   - Target component(s)
-   - Goals and objectives
-   - Functional and non-functional requirements
-   - Constraints and assumptions
-   - Complexity estimate
-   - Clarifying questions (if any)
-
-3. **Review parsing results**:
-   - If clarifying questions exist, **STOP and ask user** before proceeding
-
-**Outputs**:
-- Structured requirements document
-- Feature metadata (name, type, component, complexity)
-- Clarifying questions (if any)
+**검증**:
+- [ ] `rpi/{feature-slug}/`에 피처 폴더 존재
+- [ ] 피처 설명 추출됨
+- [ ] 헌법 확인 및 로드됨 (존재하는 경우)
 
 ---
 
-### Phase 2: Product Analysis with Constitution Alignment
+### 1단계: 피처 요청 파싱
 
-**Prerequisites**: Phase 1 complete, requirements clear
+**사전 요구사항**: 0단계 완료
 
-**Agent**: product-manager
+**에이전트**: requirement-parser (계획 도메인)
 
-**Process**:
-1. **Launch product-manager agent** with:
-   - Parsed requirements from Phase 1
-   - Constitutional context from Phase 0
+**프로세스**:
+1. 피처 설명과 함께 **requirement-parser 에이전트 실행**
+2. **에이전트가 추출**:
+   - 피처 이름 및 유형
+   - 대상 컴포넌트(들)
+   - 목표 및 목적
+   - 기능 및 비기능 요구사항
+   - 제약 및 가정
+   - 복잡성 추정
+   - 명확화 질문 (있는 경우)
 
-2. **Agent analyzes**:
-   - **User Value**: Who benefits? How much impact?
-   - **Market Fit**: Does this align with market needs?
-   - **Product Vision**: Does this fit our product strategy?
-   - **Constitutional Alignment**: Does this align with project principles?
-   - **Constraints Check**: Does this violate any constitutional constraints?
+3. **파싱 결과 검토**:
+   - 명확화 질문이 있으면 진행 전에 **중지하고 사용자에게 질문**
 
-3. **Agent provides**:
-   - Product viability score (High/Medium/Low)
-   - User value assessment
-   - Strategic alignment evaluation
-   - Priority recommendation
-   - Product concerns or red flags
-
-**Outputs**:
-- Product viability assessment
-- User value analysis
-- Strategic alignment score
-- Constitutional alignment summary (if applicable)
+**출력물**:
+- 구조화된 요구사항 문서
+- 피처 메타데이터 (이름, 유형, 컴포넌트, 복잡성)
+- 명확화 질문 (있는 경우)
 
 ---
 
-### Phase 2.5: Technical Discovery (Code Exploration)
+### 2단계: 헌법 정렬과 함께 제품 분석
 
-**Prerequisites**: Phases 1-2 complete, product viability established
+**사전 요구사항**: 1단계 완료, 요구사항 명확함
 
-**Agent**: Explore (via Task tool with subagent_type="Explore")
+**에이전트**: product-manager
 
-**Purpose**: **CRITICAL PHASE** - Deeply analyze existing codebase BEFORE making technical feasibility assessment.
+**프로세스**:
+1. 다음과 함께 **product-manager 에이전트 실행**:
+   - 1단계의 파싱된 요구사항
+   - 0단계의 헌법 컨텍스트
 
-**Process**:
-1. **Launch Explore agent** with target component(s)
-2. **Agent investigates**:
-   - **Existing Implementation**: What code already exists for similar functionality?
-   - **Integration Points**: What systems/modules would this feature touch?
-   - **Current Architecture**: How is the current system structured?
-   - **Data Models**: What database schemas or data structures exist?
-   - **Dependencies**: What libraries, services are already integrated?
-   - **Existing Patterns**: What coding patterns and conventions are used?
+2. **에이전트가 분석**:
+   - **사용자 가치**: 누가 이득을 받는가? 얼마나 많은 영향?
+   - **시장 적합성**: 이것이 시장 필요에 부합하는가?
+   - **제품 비전**: 이것이 제품 전략에 맞는가?
+   - **헌법 정렬**: 이것이 프로젝트 원칙에 부합하는가?
+   - **제약 확인**: 이것이 헌법 제약을 위반하는가?
 
-3. **Agent provides**:
-   - **Current State Summary**: What exists today
-   - **Integration Analysis**: Where proposed feature would fit
-   - **Code Conflicts**: What would break or conflict
-   - **Leverage Opportunities**: What can be reused vs rebuilt
-   - **Technical Constraints**: Real constraints from existing code
+3. **에이전트가 제공**:
+   - 제품 타당성 점수 (높음/중간/낮음)
+   - 사용자 가치 평가
+   - 전략적 정렬 평가
+   - 우선순위 추천
+   - 제품 우려사항 또는 적색 신호
 
-**Outputs**:
-- Current implementation summary
-- Integration points map
-- Code conflicts identified
-- Reusable components identified
-- Technical constraints from code
-
-**Critical**: This phase ensures Phase 3 is based on **actual code reality**, not assumptions.
+**출력물**:
+- 제품 타당성 평가
+- 사용자 가치 분석
+- 전략적 정렬 점수
+- 헌법 정렬 요약 (해당되는 경우)
 
 ---
 
-### Phase 3: Technical Feasibility Assessment
+### 2.5단계: 기술 탐색 (코드 탐색)
 
-**Prerequisites**: Phases 1-2.5 complete, code explored
+**사전 요구사항**: 1-2단계 완료, 제품 타당성 확립됨
 
-**Agent**: senior-software-engineer
+**에이전트**: Explore (Task 도구를 통해 `subagent_type="Explore"`로)
 
-**Process**:
-1. **Launch senior-software-engineer agent** with:
-   - Parsed requirements from Phase 1
-   - Product context from Phase 2
-   - **Technical discovery results from Phase 2.5**
+**목적**: **중요 단계** - 기술 타당성 평가를 하기 전에 기존 코드베이스를 심층 분석합니다.
 
-2. **Agent analyzes** (informed by Phase 2.5 discoveries):
-   - **Technical Approach**: What are the implementation options?
-   - **Complexity**: How difficult is this to build?
-   - **Dependencies**: What systems/services are needed?
-   - **Technical Debt**: Will this create or reduce tech debt?
-   - **Risks**: What are the technical risks?
+**프로세스**:
+1. 대상 컴포넌트(들)로 **Explore 에이전트 실행**
+2. **에이전트가 조사**:
+   - **기존 구현**: 유사한 기능에 대해 어떤 코드가 이미 존재하는가?
+   - **통합 지점**: 이 피처가 어떤 시스템/모듈에 영향을 미치는가?
+   - **현재 아키텍처**: 현재 시스템이 어떻게 구조화되어 있는가?
+   - **데이터 모델**: 어떤 데이터베이스 스키마 또는 데이터 구조가 존재하는가?
+   - **의존성**: 어떤 라이브러리, 서비스가 이미 통합되어 있는가?
+   - **기존 패턴**: 어떤 코딩 패턴과 규칙이 사용되는가?
 
-3. **Agent provides**:
-   - Technical feasibility score (High/Medium/Low)
-   - Recommended approach (with alternatives)
-   - Complexity estimate (Simple/Medium/Complex)
-   - Technical risks and mitigations
+3. **에이전트가 제공**:
+   - **현재 상태 요약**: 오늘 무엇이 존재하는가
+   - **통합 분석**: 제안된 피처가 어디에 맞는가
+   - **코드 충돌**: 무엇이 깨지거나 충돌할 것인가
+   - **활용 기회**: 재구축 vs 재사용 가능한 것
+   - **기술 제약**: 기존 코드에서의 실제 제약
 
-**Outputs**:
-- Technical feasibility score
-- Recommended implementation approach
-- Complexity and effort estimate
-- Technical risks and mitigations
+**출력물**:
+- 현재 구현 요약
+- 통합 지점 맵
+- 파악된 코드 충돌
+- 재사용 가능한 컴포넌트 파악됨
+- 코드에서의 기술 제약
 
----
-
-### Phase 4: Strategic Assessment
-
-**Prerequisites**: Phases 1-3 complete
-
-**Agent**: technical-cto-advisor
-
-**Process**:
-1. **Launch technical-cto-advisor agent** with all previous phase outputs
-
-2. **Agent synthesizes**:
-   - **Overall Assessment**: Combine product + technical perspectives
-   - **Strategic Alignment**: Does this align with engineering principles AND project constitution?
-   - **Risk vs. Reward**: Is the value worth the effort and risk?
-   - **Alternative Options**: Build, buy, partner, defer, or decline?
-
-3. **Agent provides**:
-   - **Go/No-Go Recommendation**: Clear decision with confidence level
-   - **Rationale**: Detailed reasoning
-   - **Recommended Approach**: If "go", what's the best path forward?
-   - **Conditions**: Any prerequisites for proceeding?
-   - **Risks**: Key risks if we proceed
-
-**Outputs**:
-- Go/No-Go recommendation
-- Strategic rationale
-- Recommended approach
-- Risk summary
+**중요**: 이 단계는 3단계가 가정이 아닌 **실제 코드 현실**에 기반하도록 보장합니다.
 
 ---
 
-### Phase 5: Generate Research Report
+### 3단계: 기술 타당성 평가
 
-**Prerequisites**: Phases 1-4 complete
+**사전 요구사항**: 1-2.5단계 완료, 코드 탐색됨
 
-**Agent**: documentation-analyst-writer (via Task tool)
+**에이전트**: senior-software-engineer
 
-**Process**:
-1. **Launch documentation-analyst-writer agent** with all phase outputs
+**프로세스**:
+1. 다음과 함께 **senior-software-engineer 에이전트 실행**:
+   - 1단계의 파싱된 요구사항
+   - 2단계의 제품 컨텍스트
+   - **2.5단계의 기술 탐색 결과**
 
-2. **Agent generates report** with sections:
-   - **Executive Summary**: One-paragraph overview with recommendation
-   - **Feature Overview**: Name, type, component, goals
-   - **Requirements Summary**: Key functional and non-functional requirements
-   - **Product Analysis**: User value, market fit, strategic alignment
-   - **Technical Discovery**: Current state, integration points, constraints from code
-   - **Technical Analysis**: Feasibility, approach, complexity, risks
-   - **Strategic Recommendation**: Go/no-go with detailed rationale
-   - **Next Steps**: What to do based on recommendation
+2. **에이전트가 분석** (2.5단계 발견에 기반):
+   - **기술 접근방식**: 구현 옵션은 무엇인가?
+   - **복잡성**: 이것을 구축하는 것이 얼마나 어려운가?
+   - **의존성**: 어떤 시스템/서비스가 필요한가?
+   - **기술 부채**: 이것이 기술 부채를 만들거나 줄이는가?
+   - **리스크**: 기술 리스크는 무엇인가?
 
-3. **Agent creates markdown file**: `rpi/{feature-slug}/research/RESEARCH.md`
+3. **에이전트가 제공**:
+   - 기술 타당성 점수 (높음/중간/낮음)
+   - 추천 접근방식 (대안 포함)
+   - 복잡성 추정 (단순/중간/복잡)
+   - 기술 리스크 및 완화
 
-**Outputs**:
-- Complete research report saved to `rpi/{feature-slug}/research/RESEARCH.md`
+**출력물**:
+- 기술 타당성 점수
+- 추천 구현 접근방식
+- 복잡성 및 노력 추정
+- 기술 리스크 및 완화
 
 ---
 
-## Sub-Agent Delegation
+### 4단계: 전략적 평가
 
-This command orchestrates 6 specialist agents:
+**사전 요구사항**: 1-3단계 완료
 
-| Phase | Agent | Type | Location |
+**에이전트**: technical-cto-advisor
+
+**프로세스**:
+1. 모든 이전 단계 출력물과 함께 **technical-cto-advisor 에이전트 실행**
+
+2. **에이전트가 합성**:
+   - **전반적 평가**: 제품 + 기술 관점 결합
+   - **전략적 정렬**: 이것이 엔지니어링 원칙 AND 프로젝트 헌법과 일치하는가?
+   - **리스크 대 보상**: 가치가 노력과 리스크를 감수할 가치가 있는가?
+   - **대안 옵션**: 구축, 구매, 파트너, 연기, 또는 거절?
+
+3. **에이전트가 제공**:
+   - **GO/NO-GO 추천**: 신뢰도 수준이 있는 명확한 결정
+   - **근거**: 상세한 이유
+   - **추천 접근방식**: "GO"인 경우, 가장 좋은 경로는?
+   - **조건**: 진행을 위한 전제조건
+   - **리스크**: 진행할 경우 핵심 리스크
+
+**출력물**:
+- GO/NO-GO 추천
+- 전략적 근거
+- 추천 접근방식
+- 리스크 요약
+
+---
+
+### 5단계: 연구 보고서 생성
+
+**사전 요구사항**: 1-4단계 완료
+
+**에이전트**: documentation-analyst-writer (Task 도구를 통해)
+
+**프로세스**:
+1. 모든 단계 출력물과 함께 **documentation-analyst-writer 에이전트 실행**
+
+2. **에이전트가 섹션이 있는 보고서 생성**:
+   - **요약**: 추천과 함께 한 단락 개요
+   - **피처 개요**: 이름, 유형, 컴포넌트, 목표
+   - **요구사항 요약**: 핵심 기능 및 비기능 요구사항
+   - **제품 분석**: 사용자 가치, 시장 적합성, 전략적 정렬
+   - **기술 탐색**: 현재 상태, 통합 지점, 코드에서의 제약
+   - **기술 분석**: 타당성, 접근방식, 복잡성, 리스크
+   - **전략적 추천**: 상세한 근거와 함께 GO/NO-GO
+   - **다음 단계**: 추천에 기반하여 무엇을 할지
+
+3. **에이전트가 마크다운 파일 생성**: `rpi/{feature-slug}/research/RESEARCH.md`
+
+**출력물**:
+- `rpi/{feature-slug}/research/RESEARCH.md`에 저장된 완전한 연구 보고서
+
+---
+
+## 서브에이전트 위임
+
+이 커맨드는 6개의 전문 에이전트를 오케스트레이션합니다:
+
+| 단계 | 에이전트 | 유형 | 위치 |
 |-------|-------|------|----------|
-| Phase 1 | requirement-parser | Custom | .claude/agents/requirement-parser.md |
-| Phase 2 | product-manager | Custom | .claude/agents/product-manager.md |
-| Phase 2.5 | Explore | Built-in | Task tool with subagent_type="Explore" |
-| Phase 3 | senior-software-engineer | Custom | .claude/agents/senior-software-engineer.md |
-| Phase 4 | technical-cto-advisor | Custom | .claude/agents/technical-cto-advisor.md |
-| Phase 5 | documentation-analyst-writer | Built-in | Task tool with subagent_type="documentation-analyst-writer" |
+| 1단계 | requirement-parser | 커스텀 | .claude/agents/requirement-parser.md |
+| 2단계 | product-manager | 커스텀 | .claude/agents/product-manager.md |
+| 2.5단계 | Explore | 내장 | `subagent_type="Explore"`로 Task 도구 |
+| 3단계 | senior-software-engineer | 커스텀 | .claude/agents/senior-software-engineer.md |
+| 4단계 | technical-cto-advisor | 커스텀 | .claude/agents/technical-cto-advisor.md |
+| 5단계 | documentation-analyst-writer | 내장 | `subagent_type="documentation-analyst-writer"`로 Task 도구 |
 
 ---
 
-## Completion Report
+## 완료 보고서
 
-Report the following on successful completion:
+성공적으로 완료 시 다음을 보고하세요:
 
-### Research Recommendation
+### 연구 추천
 
-**Decision**: [GO | NO-GO | CONDITIONAL GO | DEFER]
+**결정**: [GO | NO-GO | 조건부 GO | 연기]
 
-**Confidence**: [High | Medium | Low]
+**신뢰도**: [높음 | 중간 | 낮음]
 
-**Rationale** (1-2 sentences):
-[Key reasons for recommendation]
+**근거** (1-2 문장):
+[추천 주요 이유]
 
 ---
 
-### Research Summary
+### 연구 요약
 
-**Feature**: {feature-name}
-**Type**: {feature-type}
-**Component**: {target-component}
-**Complexity**: {Simple | Medium | Complex}
+**피처**: {feature-name}
+**유형**: {feature-type}
+**컴포넌트**: {target-component}
+**복잡성**: {단순 | 중간 | 복잡}
 
-**Scores**:
-- Product Viability: [High/Medium/Low]
-- Technical Feasibility: [High/Medium/Low]
-- Overall Assessment: [High/Medium/Low]
+**점수**:
+- 제품 타당성: [높음/중간/낮음]
+- 기술 타당성: [높음/중간/낮음]
+- 전반적 평가: [높음/중간/낮음]
 
-**Key Risks**:
+**핵심 리스크**:
 1. {risk-1}
 2. {risk-2}
 3. {risk-3}
 
 ---
 
-### Report Location
+### 보고서 위치
 
-**Full Research Report**: `rpi/{feature-slug}/research/RESEARCH.md`
-
----
-
-### Next Steps
-
-Based on the **[GO/NO-GO]** recommendation:
-
-**If GO**:
-1. Review the research report: `rpi/{feature-slug}/research/RESEARCH.md`
-2. Proceed to planning: `/rpi:plan "{feature-slug}"`
-
-**If CONDITIONAL GO**:
-1. Review conditions in report
-2. Address conditions before proceeding
-3. Re-run research if needed
-
-**If DEFER**:
-1. Review timeline recommendation in report
-2. Revisit when timing is appropriate
-
-**If NO-GO**:
-1. Review rationale in report
-2. Consider alternatives mentioned
-3. Archive for future reference
+**전체 연구 보고서**: `rpi/{feature-slug}/research/RESEARCH.md`
 
 ---
 
-## Error Handling
+### 다음 단계
 
-**If REQUEST.md doesn't exist**:
-- Action: Stop and inform user
-- Message: "Feature request file `rpi/{feature-slug}/REQUEST.md` not found. Create the feature folder and REQUEST.md first (Step 1: Describe in Plan Mode)."
+**[GO/NO-GO]** 추천에 기반하여:
 
-**If feature description is too vague**:
-- Action: requirement-parser will identify clarifying questions
-- Message: "Need more information. Please answer:"
-- Next: Wait for answers, then proceed
+**GO인 경우**:
+1. 연구 보고서 검토: `rpi/{feature-slug}/research/RESEARCH.md`
+2. 계획으로 진행: `/rpi:plan "{feature-slug}"`
 
-**If agents fail or timeout**:
-- Action: Retry once
-- Next: If retry fails, ask user whether to continue with incomplete research
+**조건부 GO인 경우**:
+1. 보고서의 조건 검토
+2. 진행 전 조건 해결
+3. 필요한 경우 연구 재실행
+
+**연기인 경우**:
+1. 보고서의 일정 추천 검토
+2. 적절한 시기에 재검토
+
+**NO-GO인 경우**:
+1. 보고서의 근거 검토
+2. 언급된 대안 고려
+3. 향후 참조를 위해 보관
 
 ---
 
-## Notes
+## 오류 처리
 
-- **When to Use**: After Step 1 (Describe) creates the feature folder
-- **Critical Gate**: This prevents wasted effort on non-viable features
-- **Part of RPI Workflow**: Step 2 of 4 (Describe → Research → Plan → Implement)
+**REQUEST.md가 존재하지 않는 경우**:
+- 동작: 중지하고 사용자에게 알림
+- 메시지: "피처 요청 파일 `rpi/{feature-slug}/REQUEST.md`를 찾을 수 없습니다. 먼저 피처 폴더와 REQUEST.md를 생성하세요 (1단계: 플랜 모드에서 설명)."
+
+**피처 설명이 너무 모호한 경우**:
+- 동작: requirement-parser가 명확화 질문 파악
+- 메시지: "더 많은 정보가 필요합니다. 다음에 답해 주세요:"
+- 다음: 답변 대기 후 진행
+
+**에이전트가 실패하거나 타임아웃되는 경우**:
+- 동작: 한 번 재시도
+- 다음: 재시도도 실패하면 불완전한 연구로 계속할지 사용자에게 질문
 
 ---
 
-## Post-Completion Action
+## 비고
 
-**IMPORTANT**: After completing the research workflow, ALWAYS prompt the user to compact the conversation:
+- **사용 시기**: 1단계 (설명)가 피처 폴더를 생성한 후
+- **중요 게이트**: 실행 불가능한 피처에 대한 낭비된 노력 방지
+- **RPI 워크플로우의 일부**: 4단계 중 2단계 (설명 → 연구 → 계획 → 구현)
 
-> **Context Management**: This research workflow consumed significant context. To free up space for the next steps, please run:
+---
+
+## 완료 후 작업
+
+**중요**: 연구 워크플로우 완료 후, 항상 사용자에게 대화를 컴팩트하도록 프롬프트하세요:
+
+> **컨텍스트 관리**: 이 연구 워크플로우는 상당한 컨텍스트를 사용했습니다. 다음 단계를 위한 공간을 확보하려면 다음을 실행하세요:
 >
 > ```
 > /compact
 > ```
 >
-> This will summarize the conversation and preserve important findings while reducing token usage for subsequent commands.
+> 이렇게 하면 대화를 요약하고 후속 커맨드를 위해 토큰 사용을 줄이면서 중요한 발견을 보존합니다.

@@ -1,12 +1,12 @@
-# Subagents Report — Changelog History
+# Subagents Report — 체인지로그 히스토리
 
-## Status Legend
+## 상태 범례
 
-| Status | Meaning |
+| 상태 | 의미 |
 |--------|---------|
-| ✅ `COMPLETE (reason)` | Action was taken and resolved successfully |
-| ❌ `INVALID (reason)` | Finding was incorrect, not applicable, or intentional |
-| ✋ `ON HOLD (reason)` | Action deferred — waiting on external dependency or user decision |
+| ✅ `COMPLETE (reason)` | 조치가 취해지고 성공적으로 해결됨 |
+| ❌ `INVALID (reason)` | 발견 사항이 잘못되었거나, 적용되지 않거나, 의도적인 것임 |
+| ✋ `ON HOLD (reason)` | 조치 보류 — 외부 의존성 또는 사용자 결정 대기 중 |
 
 ---
 
@@ -43,37 +43,37 @@
 
 ## [2026-03-12 12:17 PM PKT] Claude Code v2.1.74
 
-No drift detected — report is fully in sync with official docs. All 13 frontmatter fields and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 13개와 내장 에이전트 6개 모두 일치.
 
 ---
 
 ## [2026-03-13 04:21 PM PKT] Claude Code v2.1.74
 
-No drift detected — report is fully in sync with official docs. All 13 frontmatter fields and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 13개와 내장 에이전트 6개 모두 일치.
 
 ---
 
 ## [2026-03-15 12:50 PM PKT] Claude Code v2.1.76
 
-No drift detected — report is fully in sync with official docs. All 13 frontmatter fields and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 13개와 내장 에이전트 6개 모두 일치.
 
 ---
 
 ## [2026-03-17 12:42 PM PKT] Claude Code v2.1.77
 
-No drift detected — report is fully in sync with official docs. All 13 frontmatter fields and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 13개와 내장 에이전트 6개 모두 일치.
 
 ---
 
 ## [2026-03-18 11:41 PM PKT] Claude Code v2.1.78
 
-No drift detected — report is fully in sync with official docs. All 13 frontmatter fields and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 13개와 내장 에이전트 6개 모두 일치.
 
 ---
 
 ## [2026-03-19 11:56 AM PKT] Claude Code v2.1.79
 
-No drift detected — report is fully in sync with official docs. All 13 frontmatter fields and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 13개와 내장 에이전트 6개 모두 일치.
 
 ---
 
@@ -87,21 +87,21 @@ No drift detected — report is fully in sync with official docs. All 13 frontma
 
 ## [2026-03-21 09:07 PM PKT] Claude Code v2.1.81
 
-No drift detected — report is fully in sync with official docs. All 15 frontmatter fields and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 15개와 내장 에이전트 6개 모두 일치.
 
 ---
 
 ## [2026-03-23 09:49 PM PKT] Claude Code v2.1.81
 
-No drift detected — report is fully in sync with official docs. All 15 frontmatter fields (14 official + 1 unofficial `color`) and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 15개 (공식 14개 + 비공식 `color` 1개)와 내장 에이전트 6개 모두 일치.
 
 ---
 
 ## [2026-03-25 08:07 PM PKT] Claude Code v2.1.83
 
-No drift detected — report is fully in sync with official docs. All 15 frontmatter fields (14 official + 1 unofficial `color`) and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 15개 (공식 14개 + 비공식 `color` 1개)와 내장 에이전트 6개 모두 일치.
 
-**Watch item:** `initialPrompt` was added in v2.1.83 changelog but has not yet appeared in the official docs' supported frontmatter fields table. When it does, the report will need updating.
+**주시 항목:** `initialPrompt`가 v2.1.83 체인지로그에 추가되었지만 공식 문서의 지원 프론트매터 필드 표에는 아직 나타나지 않음. 반영되면 보고서 업데이트 필요.
 
 ---
 
@@ -115,19 +115,19 @@ No drift detected — report is fully in sync with official docs. All 15 frontma
 
 ## [2026-03-27 06:28 PM PKT] Claude Code v2.1.85
 
-No drift detected — report is fully in sync with official docs. All 16 frontmatter fields (15 official + 1 unofficial `color`) and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 16개 (공식 15개 + 비공식 `color` 1개)와 내장 에이전트 6개 모두 일치.
 
 ---
 
 ## [2026-03-28 06:00 PM PKT] Claude Code v2.1.86
 
-No drift detected — report is fully in sync with official docs. All 16 frontmatter fields (15 official + 1 unofficial `color`) and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 16개 (공식 15개 + 비공식 `color` 1개)와 내장 에이전트 6개 모두 일치.
 
 ---
 
 ## [2026-04-01 12:26 PM PKT] Claude Code v2.1.89
 
-No drift detected — report is fully in sync with official docs. All 16 frontmatter fields (15 official + 1 unofficial `color`) and 6 built-in agents match.
+드리프트 없음 — 보고서가 공식 문서와 완전히 동기화됨. 프론트매터 필드 16개 (공식 15개 + 비공식 `color` 1개)와 내장 에이전트 6개 모두 일치.
 
 ---
 

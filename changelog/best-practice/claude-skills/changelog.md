@@ -1,12 +1,12 @@
-# Skills Report Changelog
+# Skills Report 체인지로그
 
-**Status Legend:**
+**상태 범례:**
 
-| Status | Meaning |
+| 상태 | 의미 |
 |--------|---------|
-| ✅ `COMPLETE (reason)` | Action was taken and resolved successfully |
-| ❌ `INVALID (reason)` | Finding was incorrect, not applicable, or intentional |
-| ✋ `ON HOLD (reason)` | Action deferred — waiting on external dependency or user decision |
+| ✅ `COMPLETE (reason)` | 조치가 취해지고 성공적으로 해결됨 |
+| ❌ `INVALID (reason)` | 발견 사항이 잘못되었거나, 적용되지 않거나, 의도적인 것임 |
+| ✋ `ON HOLD (reason)` | 조치 보류 — 외부 의존성 또는 사용자 결정 대기 중 |
 
 ---
 
@@ -28,43 +28,43 @@
 
 ## [2026-03-17 12:42 PM PKT] Claude Code v2.1.77
 
-No drift detected — frontmatter fields (10) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(10개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
 ## [2026-03-18 11:38 PM PKT] Claude Code v2.1.78
 
-No drift detected — frontmatter fields (10) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(10개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
 ## [2026-03-19 11:54 AM PKT] Claude Code v2.1.79
 
-No drift detected — frontmatter fields (10) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(10개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
 ## [2026-03-20 08:32 AM PKT] Claude Code v2.1.80
 
-No drift detected — frontmatter fields (10) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(10개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
 ## [2026-03-21 09:07 PM PKT] Claude Code v2.1.81
 
-No drift detected — frontmatter fields (11) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(11개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
 ## [2026-03-23 09:48 PM PKT] Claude Code v2.1.81
 
-No drift detected — frontmatter fields (11) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(11개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
 ## [2026-03-25 08:06 PM PKT] Claude Code v2.1.83
 
-No drift detected — frontmatter fields (11) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(11개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
@@ -86,22 +86,22 @@ No drift detected — frontmatter fields (11) and bundled skills (5) are fully s
 
 ## [2026-03-28 05:59 PM PKT] Claude Code v2.1.86
 
-No drift detected — frontmatter fields (13) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(13개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
 ## [2026-03-31 06:51 PM PKT] Claude Code v2.1.88
 
-No drift detected — frontmatter fields (13) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(13개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
 ## [2026-04-01 12:27 PM PKT] Claude Code v2.1.89
 
-No drift detected — frontmatter fields (13) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(13개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.
 
 ---
 
 ## [2026-04-02 09:11 PM PKT] Claude Code v2.1.90
 
-No drift detected — frontmatter fields (13) and bundled skills (5) are fully synchronized with official docs.
+드리프트 없음 — 프론트매터 필드(13개)와 번들 스킬(5개)이 공식 문서와 완전히 동기화됨.

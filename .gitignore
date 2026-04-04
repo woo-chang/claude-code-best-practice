@@ -1,2 +1,6 @@
 plan/
 .idea/
+.originals/
+reports/back-translation-report*.md
+reports/translation-progress.md
+reports/retranslation-needed.md

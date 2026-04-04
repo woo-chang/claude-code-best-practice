@@ -1,69 +1,69 @@
-# Claude Agent SDK vs Claude CLI: System Prompts and Output Consistency
+# Claude Agent SDK vs Claude CLI: 시스템 프롬프트와 출력 일관성
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
-![SDK vs CLI System Prompts Diagram](assets/sdk-vs-cli-diagram.svg)
+![SDK vs CLI 시스템 프롬프트 다이어그램](assets/sdk-vs-cli-diagram.svg)
 
 ---
 
-## Executive Summary
+## 요약
 
-When sending the same message (e.g., "What is the capital of Norway?") through the **Claude Agent SDK** versus the **Claude CLI (Claude Code)**, the system prompts accompanying these messages are fundamentally different. The CLI uses a **modular system prompt architecture** (~269 base tokens with additional context conditionally loaded based on features), while the SDK uses a minimal prompt by default. **There is no guarantee of identical output between the two**, even with matching configurations, due to the absence of a seed parameter and inherent non-determinism in Claude's architecture.
+동일한 메시지 (예: "노르웨이의 수도는 어디입니까?")를 **Claude Agent SDK**와 **Claude CLI (Claude Code)**를 통해 전송할 때, 이 메시지와 함께 전달되는 시스템 프롬프트는 근본적으로 다릅니다. CLI는 **모듈식 시스템 프롬프트 아키텍처** (~269 기본 토큰, 기능에 따라 조건부로 로드되는 추가 컨텍스트)를 사용하는 반면, SDK는 기본적으로 최소 프롬프트를 사용합니다. **두 가지 사이의 동일한 출력은 보장되지 않습니다**, 시드 매개변수 부재와 Claude 아키텍처의 내재된 비결정론 때문입니다.
 
 ---
 
-## 1. System Prompt Comparison
+## 1. 시스템 프롬프트 비교
 
 ### Claude CLI (Claude Code)
 
-The Claude CLI uses a **modular system prompt architecture** with a ~269-token base prompt, with additional context conditionally loaded:
+Claude CLI는 **모듈식 시스템 프롬프트 아키텍처**를 사용하며 ~269 토큰의 기본 프롬프트와 조건부로 로드되는 추가 컨텍스트가 있습니다:
 
-| Component | Description | Loading |
+| 구성 요소 | 설명 | 로딩 |
 |-----------|-------------|---------|
-| **Base System Prompt** | Core instructions and behavior | Always (~269 tokens) |
-| **Tool Instructions** | 18+ builtin tools (Write, Read, Edit, Bash, TodoWrite, etc.) | Always |
-| **Coding Guidelines** | Code style, formatting rules, security practices | Always |
-| **Safety Rules** | Refusal rules, injection defense, harm prevention | Always |
-| **Response Style** | Tone, verbosity, explanation depth, emoji usage | Always |
-| **Environment Context** | Working directory, git status, platform info | Always |
-| **Project Context** | CLAUDE.md content, settings, hooks configuration | Conditional |
-| **Subagent Prompts** | Plan mode, Explore agent, Task agent | Conditional |
-| **Security Review** | Extended security instructions (~2,610 tokens) | Conditional |
+| **기본 시스템 프롬프트** | 핵심 지침 및 동작 | 항상 (~269 토큰) |
+| **도구 지침** | 18개 이상의 내장 도구 (Write, Read, Edit, Bash, TodoWrite 등) | 항상 |
+| **코딩 가이드라인** | 코드 스타일, 형식 규칙, 보안 관행 | 항상 |
+| **안전 규칙** | 거부 규칙, 주입 방어, 피해 방지 | 항상 |
+| **응답 스타일** | 톤, 상세도, 설명 깊이, 이모지 사용 | 항상 |
+| **환경 컨텍스트** | 작업 디렉토리, git 상태, 플랫폼 정보 | 항상 |
+| **프로젝트 컨텍스트** | CLAUDE.md 내용, 설정, 훅 구성 | 조건부 |
+| **서브에이전트 프롬프트** | 플랜 모드, Explore 에이전트, Task 에이전트 | 조건부 |
+| **보안 검토** | 확장된 보안 지침 (~2,610 토큰) | 조건부 |
 
-**Key Characteristics:**
-- **Modular architecture** with 110+ system prompt strings loaded conditionally
-- Base prompt is modest (~269 tokens), total varies by features activated
-- Includes extensive security and injection defense layers
-- Automatically loads CLAUDE.md files in the working directory
-- Session-persistent context in interactive mode
+**주요 특성:**
+- 110개 이상의 시스템 프롬프트 문자열이 조건부로 로드되는 **모듈식 아키텍처**
+- 기본 프롬프트는 작습니다 (~269 토큰), 활성화된 기능에 따라 총계 변동
+- 광범위한 보안 및 주입 방어 레이어 포함
+- 작업 디렉토리의 CLAUDE.md 파일 자동 로드
+- 대화형 모드에서 세션 영속 컨텍스트
 
 ### Claude Agent SDK
 
-The Agent SDK uses a **minimal system prompt by default** containing:
+Agent SDK는 기본적으로 **최소 시스템 프롬프트**를 사용하며 다음을 포함합니다:
 
-| Component | Description | Token Impact |
+| 구성 요소 | 설명 | 토큰 영향 |
 |-----------|-------------|--------------|
-| **Essential Tool Instructions** | Only tools explicitly provided | Minimal |
-| **Basic Safety** | Minimal safety instructions | Minimal |
+| **필수 도구 지침** | 명시적으로 제공된 도구만 | 최소 |
+| **기본 안전** | 최소한의 안전 지침 | 최소 |
 
-**Key Characteristics:**
-- No coding guidelines or style preferences by default
-- No project context unless explicitly configured
-- No extensive tool descriptions
-- Requires explicit configuration to match CLI behavior
+**주요 특성:**
+- 기본적으로 코딩 가이드라인이나 스타일 선호 없음
+- 명시적으로 구성하지 않으면 프로젝트 컨텍스트 없음
+- 광범위한 도구 설명 없음
+- CLI 동작을 맞추려면 명시적 구성 필요
 
 ---
 
-## 2. What Each Interface Sends
+## 2. 각 인터페이스가 보내는 것
 
-### Example: "What is the capital of Norway?"
+### 예시: "노르웨이의 수도는 어디입니까?"
 
-#### Via Claude CLI
+#### Claude CLI를 통해
 
 ```
 System Prompt: [modular, ~269+ base tokens]
@@ -82,7 +82,7 @@ System Prompt: [modular, ~269+ base tokens]
 User Message: "What is the capital of Norway?"
 ```
 
-#### Via Claude Agent SDK (Default)
+#### Claude Agent SDK (기본값)를 통해
 
 ```
 System Prompt: [minimal]
@@ -92,7 +92,7 @@ System Prompt: [minimal]
 User Message: "What is the capital of Norway?"
 ```
 
-#### Via Agent SDK (with `claude_code` preset)
+#### Agent SDK (`claude_code` 프리셋 사용)를 통해
 
 ```typescript
 const response = await query({
@@ -118,91 +118,91 @@ System Prompt: [modular, matches CLI]
 
 ---
 
-## 3. Customization Methods
+## 3. 사용자 정의 방법
 
-### Claude CLI Customization
+### Claude CLI 사용자 정의
 
-| Method | Command | Effect |
+| 방법 | 커맨드 | 효과 |
 |--------|---------|--------|
-| **Append to prompt** | `claude -p "..." --append-system-prompt "..."` | Adds instructions while preserving defaults |
-| **Replace prompt** | `claude -p "..." --system-prompt "..."` | Completely replaces the system prompt |
-| **Project context** | CLAUDE.md file | Automatically loaded, persistent |
-| **Output styles** | `/output-style [name]` | Apply predefined response styles |
+| **프롬프트에 추가** | `claude -p "..." --append-system-prompt "..."` | 기본값을 보존하면서 지침 추가 |
+| **프롬프트 대체** | `claude -p "..." --system-prompt "..."` | 시스템 프롬프트 완전 대체 |
+| **프로젝트 컨텍스트** | CLAUDE.md 파일 | 자동 로드, 영속적 |
+| **출력 스타일** | `/output-style [name]` | 미리 정의된 응답 스타일 적용 |
 
-### Agent SDK Customization
+### Agent SDK 사용자 정의
 
-| Method | Configuration | Effect |
+| 방법 | 구성 | 효과 |
 |--------|---------------|--------|
-| **Custom prompt** | `systemPrompt: "..."` | Replaces default entirely (loses tools) |
-| **Preset with append** | `systemPrompt: { type: "preset", preset: "claude_code", append: "..." }` | Preserves CLI functionality + custom instructions |
-| **CLAUDE.md loading** | `settingSources: ["project"]` | Loads project-level instructions |
-| **Output styles** | `settingSources: ["user"]` or `settingSources: ["project"]` | Loads saved output styles |
+| **사용자 정의 프롬프트** | `systemPrompt: "..."` | 기본값 완전 대체 (도구 손실) |
+| **추가가 있는 프리셋** | `systemPrompt: { type: "preset", preset: "claude_code", append: "..." }` | CLI 기능 + 사용자 정의 지침 보존 |
+| **CLAUDE.md 로딩** | `settingSources: ["project"]` | 프로젝트 수준 지침 로드 |
+| **출력 스타일** | `settingSources: ["user"]` 또는 `settingSources: ["project"]` | 저장된 출력 스타일 로드 |
 
-### Configuration Comparison Table
+### 구성 비교 표
 
-| Feature | CLI Default | SDK Default | SDK with Preset |
+| 기능 | CLI 기본값 | SDK 기본값 | 프리셋 사용 SDK |
 |---------|-------------|-------------|-----------------|
-| Tool instructions | ✅ Full | ❌ Minimal | ✅ Full |
-| Coding guidelines | ✅ Yes | ❌ No | ✅ Yes |
-| Safety rules | ✅ Yes | ❌ Basic | ✅ Yes |
-| CLAUDE.md auto-load | ✅ Yes | ❌ No | ❌ No* |
-| Project context | ✅ Automatic | ❌ No | ❌ No* |
+| 도구 지침 | ✅ 전체 | ❌ 최소 | ✅ 전체 |
+| 코딩 가이드라인 | ✅ 예 | ❌ 아니오 | ✅ 예 |
+| 안전 규칙 | ✅ 예 | ❌ 기본 | ✅ 예 |
+| CLAUDE.md 자동 로드 | ✅ 예 | ❌ 아니오 | ❌ 아니오* |
+| 프로젝트 컨텍스트 | ✅ 자동 | ❌ 아니오 | ❌ 아니오* |
 
-*Requires explicit `settingSources: ["project"]` configuration
+*명시적인 `settingSources: ["project"]` 구성 필요
 
 ---
 
-## 4. Output Consistency Guarantees
+## 4. 출력 일관성 보장
 
-### Critical Finding: NO Determinism Guaranteed
+### 중요 발견: 결정론 보장 없음
 
-**The Claude Messages API does not provide a seed parameter for reproducibility.** This is a fundamental architectural limitation.
+**Claude Messages API는 재현성을 위한 시드 매개변수를 제공하지 않습니다.** 이것은 근본적인 아키텍처 제한입니다.
 
-### Factors Preventing Identical Output
+### 동일한 출력을 방지하는 요인
 
-| Factor | Description | Controllable? |
+| 요인 | 설명 | 제어 가능? |
 |--------|-------------|---------------|
-| **Different system prompts** | CLI vs SDK have different defaults | ✅ Yes (with configuration) |
-| **Floating-point arithmetic** | Parallel hardware quirks | ❌ No |
-| **MoE routing** | Mixture-of-Experts architecture variations | ❌ No |
-| **Batching/scheduling** | Cloud infrastructure differences | ❌ No |
-| **Numeric precision** | Inference engine variations | ❌ No |
-| **Model snapshots** | Version updates/changes | ❌ No |
+| **다른 시스템 프롬프트** | CLI vs SDK는 다른 기본값을 가짐 | ✅ 예 (구성으로) |
+| **부동 소수점 연산** | 병렬 하드웨어 특성 | ❌ 아니오 |
+| **MoE 라우팅** | 전문가 혼합 아키텍처 변동 | ❌ 아니오 |
+| **배치/스케줄링** | 클라우드 인프라 차이 | ❌ 아니오 |
+| **수치 정밀도** | 추론 엔진 변동 | ❌ 아니오 |
+| **모델 스냅샷** | 버전 업데이트/변경 | ❌ 아니오 |
 
-### Temperature and Sampling
+### 온도 및 샘플링
 
-Even with `temperature=0.0` (greedy decoding):
-- Full determinism is **NOT guaranteed**
-- Minor variations can still occur due to infrastructure factors
-- Known bug: [Claude CLI produces non-deterministic output for identical inputs](https://github.com/anthropics/claude-code/issues/3370)
+`temperature=0.0` (탐욕적 디코딩)에서도:
+- 완전한 결정론은 **보장되지 않습니다**
+- 인프라 요인으로 인해 경미한 변동이 여전히 발생할 수 있습니다
+- 알려진 버그: [Claude CLI가 동일한 입력에 대해 비결정론적 출력 생성](https://github.com/anthropics/claude-code/issues/3370)
 
 ---
 
-## 5. Achieving Maximum Consistency
+## 5. 최대 일관성 달성
 
-To get the **closest possible** identical outputs between SDK and CLI:
+SDK와 CLI 사이에서 **가능한 한 동일한** 출력을 얻으려면:
 
-### Agent SDK Configuration
+### Agent SDK 구성
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
-// Option 1: Use claude_code preset
+// 옵션 1: claude_code 프리셋 사용
 const response = await client.messages.create({
   model: "claude-sonnet-4-20250514",
   max_tokens: 1024,
-  // Match CLI system prompt as closely as possible
+  // CLI 시스템 프롬프트와 최대한 맞추기
   system: "Your exact system prompt matching CLI",
   messages: [
     { role: "user", content: "What is the capital of Norway?" }
   ],
-  // Use greedy decoding for maximum consistency
+  // 최대 일관성을 위한 탐욕적 디코딩
   temperature: 0
 });
 
-// Option 2: With Agent SDK query function
+// 옵션 2: Agent SDK query 함수 사용
 import { query } from "@anthropic-ai/agent-sdk";
 
 for await (const message of query({
@@ -214,57 +214,57 @@ for await (const message of query({
     },
     temperature: 0,
     model: "claude-sonnet-4-20250514",
-    // Load project context like CLI does
+    // CLI처럼 프로젝트 컨텍스트 로드
     settingSources: ["project"]
   }
 })) {
-  // Process response
+  // 응답 처리
 }
 ```
 
-### CLI Configuration
+### CLI 구성
 
 ```bash
-# Match the SDK configuration as closely as possible
+# SDK 구성과 최대한 맞추기
 claude -p "What is the capital of Norway?" \
   --model claude-sonnet-4-20250514 \
   --temperature 0
 ```
 
-### Still Not Guaranteed
+### 여전히 보장되지 않음
 
-Even with perfectly matching configurations:
-- Output may differ between runs
-- Output may differ between SDK and CLI
-- No seed parameter exists to force reproducibility
+완벽하게 일치하는 구성으로도:
+- 실행 간에 출력이 다를 수 있음
+- SDK와 CLI 간에 출력이 다를 수 있음
+- 재현성을 강제하는 시드 매개변수 없음
 
 ---
 
-## 6. Practical Implications
+## 6. 실용적인 시사점
 
-### When to Use Each Interface
+### 각 인터페이스 사용 시기
 
-| Use Case | Recommended Interface | Reason |
+| 사용 사례 | 권장 인터페이스 | 이유 |
 |----------|----------------------|--------|
-| Interactive development | Claude CLI | Full tool suite, project context |
-| Programmatic integration | Agent SDK | Fine-grained control, embedding |
-| Consistent API responses | Agent SDK + custom prompt | More control over system prompt |
-| Batch processing | Agent SDK | Better for automation pipelines |
-| One-off tasks | Claude CLI | Faster setup, immediate context |
+| 대화형 개발 | Claude CLI | 전체 도구 세트, 프로젝트 컨텍스트 |
+| 프로그래밍 방식 통합 | Agent SDK | 세밀한 제어, 임베딩 |
+| 일관된 API 응답 | Agent SDK + 사용자 정의 프롬프트 | 시스템 프롬프트에 대한 더 많은 제어 |
+| 일괄 처리 | Agent SDK | 자동화 파이프라인에 더 적합 |
+| 일회성 작업 | Claude CLI | 더 빠른 설정, 즉각적인 컨텍스트 |
 
-### Design Recommendations
+### 설계 권장 사항
 
-1. **Don't rely on bit-perfect reproducibility**
-   - Build applications robust to minor output variations
-   - Use structured outputs and validation
+1. **비트 완벽한 재현성에 의존하지 마세요**
+   - 경미한 출력 변동에 강건한 애플리케이션 구축
+   - 구조화된 출력 및 검증 사용
 
-2. **For production pipelines requiring consistency:**
-   - Cache results when possible
-   - Use structured outputs with JSON schema validation
-   - Combine with deterministic logic and validation
-   - Consider multiple generations with consensus
+2. **일관성이 필요한 프로덕션 파이프라인의 경우:**
+   - 가능하면 결과 캐시
+   - JSON 스키마 검증이 있는 구조화된 출력 사용
+   - 결정론적 로직 및 검증과 결합
+   - 합의를 통한 여러 생성 고려
 
-3. **For matching CLI behavior in SDK:**
+3. **SDK에서 CLI 동작 맞추기:**
    ```typescript
    systemPrompt: {
      type: "preset",
@@ -276,65 +276,65 @@ Even with perfectly matching configurations:
 
 ---
 
-## 7. System Prompt Token Impact
+## 7. 시스템 프롬프트 토큰 영향
 
-| Configuration | Architecture | Notes |
+| 구성 | 아키텍처 | 참고 |
 |---------------|-------------|-------|
-| SDK (minimal) | Minimal default | Only essential tool instructions |
-| SDK (claude_code preset) | Modular (~269+ base) | Matches CLI, varies by features |
-| CLI (default) | Modular (~269+ base) | Additional context loaded conditionally |
-| CLI (with MCP tools) | Modular + MCP | MCP tool descriptions add significant tokens |
+| SDK (최소) | 최소 기본값 | 필수 도구 지침만 |
+| SDK (claude_code 프리셋) | 모듈식 (~269+ 기본) | CLI와 일치, 기능에 따라 변동 |
+| CLI (기본값) | 모듈식 (~269+ 기본) | 조건부로 로드된 추가 컨텍스트 |
+| CLI (MCP 도구 포함) | 모듈식 + MCP | MCP 도구 설명이 상당한 토큰 추가 |
 
-**Note:** Claude Code uses a modular architecture with 110+ system prompt strings. The base prompt is ~269 tokens, with individual components ranging from 18 to 2,610 tokens depending on features activated.
+**참고:** Claude Code는 110개 이상의 시스템 프롬프트 문자열의 모듈식 아키텍처를 사용합니다. 기본 프롬프트는 ~269 토큰이며, 활성화된 기능에 따라 개별 구성 요소는 18에서 2,610 토큰 사이입니다.
 
-**Implication:** The SDK's minimal default gives you more context for your actual task, but at the cost of Claude Code's full capabilities.
+**시사점:** SDK의 최소 기본값은 실제 작업을 위한 더 많은 컨텍스트를 제공하지만, Claude Code의 전체 기능을 희생합니다.
 
 ---
 
-## 8. Summary Table
+## 8. 요약 표
 
-| Aspect | Claude CLI | Agent SDK (Default) | Agent SDK (Preset) |
+| 측면 | Claude CLI | Agent SDK (기본값) | Agent SDK (프리셋) |
 |--------|------------|--------------------|--------------------|
-| **System prompt** | Modular (~269+ base) | Minimal | Modular (matches CLI) |
-| **Tools included** | 18+ builtin | Only if provided | 18+ builtin |
-| **CLAUDE.md auto-load** | Yes | No | No (needs config) |
-| **Coding guidelines** | Yes | No | Yes |
-| **Safety rules** | Full | Basic | Full |
-| **Temperature control** | Yes | Yes | Yes |
-| **Determinism guarantee** | No | No | No |
-| **Identical outputs?** | N/A | No (vs CLI) | Closer, but no |
+| **시스템 프롬프트** | 모듈식 (~269+ 기본) | 최소 | 모듈식 (CLI와 일치) |
+| **포함된 도구** | 18개 이상 내장 | 제공된 경우만 | 18개 이상 내장 |
+| **CLAUDE.md 자동 로드** | 예 | 아니오 | 아니오 (구성 필요) |
+| **코딩 가이드라인** | 예 | 아니오 | 예 |
+| **안전 규칙** | 전체 | 기본 | 전체 |
+| **온도 제어** | 예 | 예 | 예 |
+| **결정론 보장** | 아니오 | 아니오 | 아니오 |
+| **동일한 출력?** | 해당 없음 | 아니오 (CLI 대비) | 더 가깝지만, 아니오 |
 
 ---
 
-## 9. Conclusion
+## 9. 결론
 
-**Q: What system prompts accompany the same message in SDK vs CLI?**
+**Q: SDK vs CLI에서 동일한 메시지에 어떤 시스템 프롬프트가 동반됩니까?**
 
-The CLI uses a **modular system prompt architecture** with a ~269-token base prompt and 110+ conditionally-loaded components (tool instructions, coding guidelines, safety rules, project context). The SDK uses a **minimal default** with only essential tool instructions, though it can be configured to match CLI behavior using the `claude_code` preset.
+CLI는 ~269 토큰의 기본 프롬프트와 110개 이상의 조건부 로드 구성 요소 (도구 지침, 코딩 가이드라인, 안전 규칙, 프로젝트 컨텍스트)가 있는 **모듈식 시스템 프롬프트 아키텍처**를 사용합니다. SDK는 필수 도구 지침만 있는 **최소 기본값**을 사용하지만, `claude_code` 프리셋을 사용하여 CLI 동작을 맞추도록 구성할 수 있습니다.
 
-**Q: Is there a guarantee of identical output?**
+**Q: 동일한 출력이 보장됩니까?**
 
-**No.** Even with matching system prompts, identical inputs, and `temperature=0`, there is no guarantee of identical outputs due to:
-- Absence of a seed parameter in Claude's API
-- Floating-point arithmetic variations
-- Infrastructure-level non-determinism
-- Model architecture (Mixture-of-Experts) routing variations
+**아니오.** 일치하는 시스템 프롬프트, 동일한 입력, `temperature=0`으로도 동일한 출력은 보장되지 않습니다:
+- Claude API에 시드 매개변수 부재
+- 부동 소수점 연산 변동
+- 인프라 수준의 비결정론
+- 모델 아키텍처 (전문가 혼합) 라우팅 변동
 
-**Recommendation:** Design systems to be robust to output variations rather than relying on deterministic behavior. For consistency-critical applications, use structured outputs, caching, and validation layers.
-
----
-
-## Sources
-
-- [Modifying System Prompts - Agent SDK](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/sdk#modifying-system-prompts)
-- [Claude Code CLI Reference](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/cli)
-- [Claude Code Headless Mode](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/headless)
-- [Claude Code Best Practices - Anthropic Engineering](https://www.anthropic.com/engineering/claude-code-best-practices)
-- [Claude Messages API Reference](https://docs.anthropic.com/en/api/messages)
-- [GitHub Issue #3370: Non-deterministic output](https://github.com/anthropics/claude-code/issues/3370)
-- [Claude Code System Prompts Repository](https://github.com/Piebald-AI/claude-code-system-prompts) - Analysis of modular prompt architecture
-- [Why Deterministic Output from LLMs is Nearly Impossible](https://unstract.com/blog/understanding-why-deterministic-output-from-llms-is-nearly-impossible/)
+**권장 사항:** 결정론적 동작에 의존하기보다 출력 변동에 강건한 시스템을 설계하세요. 일관성이 중요한 애플리케이션의 경우 구조화된 출력, 캐싱, 검증 레이어를 사용하세요.
 
 ---
 
-*This report was generated by Claude Code using the Opus 4.5 model on February 3, 2026.*
+## 소스
+
+- [시스템 프롬프트 수정 - Agent SDK](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/sdk#modifying-system-prompts)
+- [Claude Code CLI 참조](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/cli)
+- [Claude Code 헤드리스 모드](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/headless)
+- [Claude Code 모범 사례 - Anthropic 엔지니어링](https://www.anthropic.com/engineering/claude-code-best-practices)
+- [Claude Messages API 참조](https://docs.anthropic.com/en/api/messages)
+- [GitHub 이슈 #3370: 비결정론적 출력](https://github.com/anthropics/claude-code/issues/3370)
+- [Claude Code 시스템 프롬프트 리포지토리](https://github.com/Piebald-AI/claude-code-system-prompts) - 모듈식 프롬프트 아키텍처 분석
+- [LLM에서 결정론적 출력이 거의 불가능한 이유](https://unstract.com/blog/understanding-why-deterministic-output-from-llms-is-nearly-impossible/)
+
+---
+
+*이 리포트는 2026년 2월 3일에 Opus 4.5 모델을 사용하여 Claude Code에 의해 생성되었습니다.*

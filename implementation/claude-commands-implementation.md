@@ -1,10 +1,10 @@
-# Commands Implementation
+# 커맨드 구현
 
 ![Last Updated](https://img.shields.io/badge/Last_Updated-Mar_02%2C_2026-white?style=flat&labelColor=555)
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
@@ -13,13 +13,13 @@
 
 <a href="#weather-orchestrator"><img src="../!/tags/implemented-hd.svg" alt="Implemented"></a>
 
-The weather orchestrator command is implemented in this repo as the entry point of the **Command → Agent → Skill** architecture pattern, demonstrating how commands orchestrate multi-step workflows.
+날씨 오케스트레이터 커맨드는 이 리포지토리에서 **커맨드 → 에이전트 → 스킬** 아키텍처 패턴의 진입점으로 구현되어 있으며, 커맨드가 다단계 워크플로우를 오케스트레이션하는 방법을 시연합니다.
 
 ---
 
-## Weather Orchestrator
+## 날씨 오케스트레이터
 
-**File**: [`.claude/commands/weather-orchestrator.md`](../.claude/commands/weather-orchestrator.md)
+**파일**: [`.claude/commands/weather-orchestrator.md`](../.claude/commands/weather-orchestrator.md)
 
 ```yaml
 ---
@@ -49,7 +49,7 @@ Use the Skill tool to invoke the weather-svg-creator skill:
 ...
 ```
 
-The command orchestrates the entire workflow: it asks the user for their temperature unit preference, invokes the `weather-agent` via the Agent tool, and then invokes the `weather-svg-creator` skill via the Skill tool.
+커맨드는 전체 워크플로우를 오케스트레이션합니다: 사용자에게 온도 단위 선호도를 묻고, Agent 도구를 통해 `weather-agent`를 호출한 다음, Skill 도구를 통해 `weather-svg-creator` 스킬을 호출합니다.
 
 ---
 
@@ -64,20 +64,20 @@ $ claude
 
 ## ![How to Implement](../!/tags/how-to-implement.svg)
 
-Ask Claude to create one for you — it will generate the markdown file with YAML frontmatter and body in `.claude/commands/<name>.md`
+Claude에게 만들어 달라고 요청하면 — YAML 프론트매터와 본문이 있는 마크다운 파일을 `.claude/commands/<name>.md`에 생성합니다
 
 ---
 
 <a href="https://github.com/shanraisshan/claude-code-best-practice#orchestration-workflow"><img src="../!/tags/orchestration-workflow-hd.svg" alt="Orchestration Workflow"></a>
 
-The weather orchestrator is the **Command** in the Command → Agent → Skill orchestration pattern. It serves as the entry point — handling user interaction (temperature unit preference), delegating data fetching to the `weather-agent`, and invoking the `weather-svg-creator` skill for visual output.
+날씨 오케스트레이터는 커맨드 → 에이전트 → 스킬 오케스트레이션 패턴의 **커맨드**입니다. 진입점 역할을 합니다 — 사용자 상호작용 처리 (온도 단위 선호도), `weather-agent`에 데이터 가져오기 위임, 시각적 출력을 위한 `weather-svg-creator` 스킬 호출.
 
 <p align="center">
-  <img src="../orchestration-workflow/orchestration-workflow.svg" alt="Command Skill Agent Architecture Flow" width="100%">
+  <img src="../orchestration-workflow/orchestration-workflow.svg" alt="커맨드 스킬 에이전트 아키텍처 흐름" width="100%">
 </p>
 
-| Component | Role | This Repo |
+| 구성 요소 | 역할 | 이 리포지토리 |
 |-----------|------|-----------|
-| **Command** | Entry point, user interaction | [`/weather-orchestrator`](../.claude/commands/weather-orchestrator.md) |
-| **Agent** | Fetches data with preloaded skill (agent skill) | [`weather-agent`](../.claude/agents/weather-agent.md) with [`weather-fetcher`](../.claude/skills/weather-fetcher/SKILL.md) |
-| **Skill** | Creates output independently (skill) | [`weather-svg-creator`](../.claude/skills/weather-svg-creator/SKILL.md) |
+| **커맨드** | 진입점, 사용자 상호작용 | [`/weather-orchestrator`](../.claude/commands/weather-orchestrator.md) |
+| **에이전트** | 사전 로드된 스킬로 데이터 가져오기 (에이전트 스킬) | [`weather-agent`](../.claude/agents/weather-agent.md)와 [`weather-fetcher`](../.claude/skills/weather-fetcher/SKILL.md) |
+| **스킬** | 독립적으로 출력 생성 (스킬) | [`weather-svg-creator`](../.claude/skills/weather-svg-creator/SKILL.md) |

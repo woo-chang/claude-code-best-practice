@@ -1,8 +1,8 @@
-# Cross-Model (Claude Code + Codex) Workflow
+# 크로스 모델 (Claude Code + Codex) 워크플로우
 
-based on [claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) and [codex-cli-best-practice](https://github.com/shanraisshan/codex-cli-best-practice)
+[claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) 및 [codex-cli-best-practice](https://github.com/shanraisshan/codex-cli-best-practice) 기반
 
-## Workflow
+## 워크플로우
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -48,8 +48,8 @@ based on [claude-code-best-practice](https://github.com/shanraisshan/claude-code
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## How cross-model workflow actually looks in production
+## 크로스 모델 워크플로우 실제 프로덕션 모습
 
-![Cross-Model Workflow](assets/cross-model-workflow.png)
+![크로스 모델 워크플로우](assets/cross-model-workflow.png)
 
-*Last Updated: 2026-03-06*
+*최종 업데이트: 2026-03-06*

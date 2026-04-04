@@ -1,174 +1,174 @@
-# 12 Ways to Customize Claude Code — Tips from Boris Cherny
+# Claude Code 커스터마이즈 12가지 방법 — Boris Cherny의 팁
 
-A summary of customization tips shared by Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on February 12, 2026.
+Claude Code 창시자 Boris Cherny ([@bcherny](https://x.com/bcherny))가 2026년 2월 12일에 공유한 커스터마이즈 팁 요약.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Context
+## 배경
 
-Boris Cherny highlighted that customizability is one of the things engineers love most about Claude Code — hooks, plugins, LSPs, MCPs, skills, effort, custom agents, status lines, output styles, and more. He shared 12 practical ways developers and teams are customizing their setups.
+Boris Cherny는 커스터마이즈 가능성이 엔지니어들이 Claude Code에서 가장 좋아하는 것 중 하나라고 강조했습니다 — 훅, 플러그인, LSP, MCP, 스킬, 노력 수준, 커스텀 에이전트, 상태 표시줄, 출력 스타일 등. 그는 개발자와 팀이 설정을 커스터마이즈하는 12가지 실용적인 방법을 공유했습니다.
 
-<a href="https://x.com/bcherny/status/2021699851499798911"><img src="assets/boris-12-feb-26/0.webp" alt="Boris Cherny intro tweet" width="50%" /></a>
-
----
-
-## 1/ Configure Your Terminal
-
-Set up your terminal for the best Claude Code experience:
-
-- **Theme**: Run `/config` to set light/dark mode
-- **Notifications**: Enable notifications for iTerm2, or use a custom notification hook
-- **Newlines**: If using Claude Code in an IDE terminal, Apple Terminal, Warp, or Alacritty, run `/terminal-setup` to enable shift+enter for newlines (so you don't need to type `\`)
-- **Vim mode**: Run `/vim`
-
-<a href="https://x.com/bcherny/status/2021699859359883608"><img src="assets/boris-12-feb-26/1.webp" alt="Configure your terminal" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2021699851499798911"><img src="assets/boris-12-feb-26/0.webp" alt="Boris Cherny 소개 트윗" width="50%" /></a>
 
 ---
 
-## 2/ Adjust Effort Level
+## 1/ 터미널 구성
 
-Run `/model` to pick your preferred effort level:
+최상의 Claude Code 경험을 위해 터미널을 설정하세요:
 
-- **Low** — fewer tokens, faster responses
-- **Medium** — balanced behavior
-- **High** — more tokens, more intelligence
+- **테마**: `/config`를 실행하여 라이트/다크 모드 설정
+- **알림**: iTerm2용 알림 활성화, 또는 커스텀 알림 훅 사용
+- **개행**: IDE 터미널, Apple Terminal, Warp, 또는 Alacritty에서 Claude Code를 사용하는 경우 `/terminal-setup`을 실행하여 개행에 shift+enter를 활성화 (`\`를 입력할 필요 없음)
+- **Vim 모드**: `/vim` 실행
 
-Boris's preference: High for everything.
-
-<a href="https://x.com/bcherny/status/2021699860869902424"><img src="assets/boris-12-feb-26/2.webp" alt="Adjust effort level" width="50%" /></a>
-
----
-
-## 3/ Install Plugins, MCPs, and Skills
-
-Plugins let you install LSPs (available for every major language), MCPs, skills, agents, and custom hooks.
-
-Install from the official Anthropic plugin marketplace, or create your own marketplace for your company. Check the `settings.json` into your codebase to auto-add the marketplaces for your team.
-
-Run `/plugin` to get started.
-
-<a href="https://x.com/bcherny/status/2021699862522364149"><img src="assets/boris-12-feb-26/3.webp" alt="Install Plugins, MCPs, and Skills" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2021699859359883608"><img src="assets/boris-12-feb-26/1.webp" alt="터미널 구성" width="50%" /></a>
 
 ---
 
-## 4/ Create Custom Agents
+## 2/ 노력 수준 조정
 
-Drop `.md` files in `.claude/agents` to create custom agents. Each agent can have a custom name, color, tool set, pre-allowed and pre-disallowed tools, permission mode, and model.
+`/model`을 실행하여 선호하는 노력 수준을 선택하세요:
 
-You can also set the default agent for the main conversation using the `"agent"` field in `settings.json` or the `--agent` flag.
+- **Low** — 적은 토큰, 빠른 응답
+- **Medium** — 균형 잡힌 동작
+- **High** — 더 많은 토큰, 더 높은 지능
 
-Run `/agents` to get started.
+Boris의 선호: 모든 것에 High.
 
-<a href="https://x.com/bcherny/status/2021700144039903699"><img src="assets/boris-12-feb-26/4.webp" alt="Create custom agents" width="50%" /></a>
-
----
-
-## 5/ Pre-approve Common Permissions
-
-Claude Code uses a permission system combining prompt injection detection, static analysis, sandboxing, and human oversight.
-
-Out of the box, a small set of safe commands are pre-approved. To pre-approve more, run `/permissions` and add to the allow and block lists. Check these into your team's `settings.json`.
-
-Full wildcard syntax is supported — e.g., `Bash(bun run *)` or `Edit(/docs/**)`.
-
-<a href="https://x.com/bcherny/status/2021700332292911228"><img src="assets/boris-12-feb-26/5.webp" alt="Pre-approve common permissions" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2021699860869902424"><img src="assets/boris-12-feb-26/2.webp" alt="노력 수준 조정" width="50%" /></a>
 
 ---
 
-## 6/ Enable Sandboxing
+## 3/ 플러그인, MCP, 스킬 설치
 
-Opt into Claude Code's open source sandbox runtime to improve safety while reducing permission prompts.
+플러그인으로 LSP (모든 주요 언어 지원), MCP, 스킬, 에이전트, 커스텀 훅을 설치할 수 있습니다.
 
-Run `/sandbox` to enable it. Sandboxing runs on your machine and supports both file and network isolation.
+공식 Anthropic 플러그인 마켓플레이스에서 설치하거나, 회사만의 마켓플레이스를 만드세요. `settings.json`을 코드베이스에 체크인하여 팀용 마켓플레이스를 자동으로 추가하세요.
 
-<a href="https://x.com/bcherny/status/2021700506465579443"><img src="assets/boris-12-feb-26/6.webp" alt="Enable sandboxing" width="50%" /></a>
+`/plugin`을 실행하여 시작하세요.
 
----
-
-## 7/ Add a Status Line
-
-Custom status lines show up right below the composer, displaying model, directory, remaining context, cost, and anything else you want to see while you work.
-
-Every team member can have a different statusline. Use `/statusline` to have Claude generate one based on your `.bashrc`/`.zshrc`.
-
-<a href="https://x.com/bcherny/status/2021700784019452195"><img src="assets/boris-12-feb-26/7.webp" alt="Add a status line" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2021699862522364149"><img src="assets/boris-12-feb-26/3.webp" alt="플러그인, MCP, 스킬 설치" width="50%" /></a>
 
 ---
 
-## 8/ Customize Your Keybindings
+## 4/ 커스텀 에이전트 만들기
 
-Every key binding in Claude Code is customizable. Run `/keybindings` to re-map any key. Settings live reload so you can see how it feels immediately.
+`.claude/agents`에 `.md` 파일을 넣어 커스텀 에이전트를 만드세요. 각 에이전트는 커스텀 이름, 색상, 도구 세트, 사전 허용 및 사전 거부 도구, 권한 모드, 모델을 가질 수 있습니다.
 
-<a href="https://x.com/bcherny/status/2021700883873165435"><img src="assets/boris-12-feb-26/8.webp" alt="Customize your keybindings" width="50%" /></a>
+`settings.json`의 `"agent"` 필드 또는 `--agent` 플래그를 사용하여 메인 대화의 기본 에이전트를 설정할 수도 있습니다.
 
----
+`/agents`를 실행하여 시작하세요.
 
-## 9/ Set Up Hooks
-
-Hooks let you deterministically hook into Claude's lifecycle:
-
-- Automatically route permission requests to Slack or Opus
-- Nudge Claude to keep going when it reaches the end of a turn (you can even kick off an agent or use a prompt to decide whether Claude should keep going)
-- Pre-process or post-process tool calls, e.g., to add your own logging
-
-Ask Claude to add a hook to get started.
-
-<a href="https://x.com/bcherny/status/2021701059253874861"><img src="assets/boris-12-feb-26/9.webp" alt="Set up hooks" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2021700144039903699"><img src="assets/boris-12-feb-26/4.webp" alt="커스텀 에이전트 만들기" width="50%" /></a>
 
 ---
 
-## 10/ Customize Your Spinner Verbs
+## 5/ 일반 권한 사전 승인
 
-Customize your spinner verbs to add or replace the default list with your own verbs. Check the `settings.json` into source control to share verbs with your team.
+Claude Code는 프롬프트 인젝션 감지, 정적 분석, 샌드박싱, 인간 감독을 결합한 권한 시스템을 사용합니다.
 
-<a href="https://x.com/bcherny/status/2021701145023197516"><img src="assets/boris-12-feb-26/10.webp" alt="Customize your spinner verbs" width="50%" /></a>
+기본적으로 소수의 안전한 커맨드가 사전 승인됩니다. 더 많이 사전 승인하려면 `/permissions`를 실행하고 허용 및 차단 목록에 추가하세요. 이를 팀의 `settings.json`에 체크인하세요.
 
----
+전체 와일드카드 구문이 지원됩니다 — 예: `Bash(bun run *)` 또는 `Edit(/docs/**)`.
 
-## 11/ Use Output Styles
-
-Run `/config` and set an output style to have Claude respond using a different tone or format.
-
-- **Explanatory** — recommended when getting familiar with a new codebase, to have Claude explain frameworks and code patterns as it works
-- **Learning** — to have Claude coach you through making code changes
-- **Custom** — create custom output styles to adjust Claude's voice
-
-<a href="https://x.com/bcherny/status/2021701379409273093"><img src="assets/boris-12-feb-26/11.webp" alt="Use output styles" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2021700332292911228"><img src="assets/boris-12-feb-26/5.webp" alt="일반 권한 사전 승인" width="50%" /></a>
 
 ---
 
-## 12/ Customize All the Things!
+## 6/ 샌드박싱 활성화
 
-Claude Code works great out of the box, but when you do customize, check your `settings.json` into git so your team can benefit too. Configuration is supported at multiple levels:
+Claude Code의 오픈 소스 샌드박스 런타임을 사용하여 권한 프롬프트를 줄이면서 안전성을 향상시키세요.
 
-- For your codebase
-- For a sub-folder
-- For just yourself
-- Via enterprise-wide policies
+`/sandbox`를 실행하여 활성화하세요. 샌드박싱은 머신에서 실행되며 파일 및 네트워크 격리를 모두 지원합니다.
 
-With 37 settings and 84 environment variables (use the `"env"` field in your `settings.json` to avoid wrapper scripts), there's a good chance any behavior you want is configurable.
-
-<a href="https://x.com/bcherny/status/2021701636075458648"><img src="assets/boris-12-feb-26/12.webp" alt="Customize all the things" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2021700506465579443"><img src="assets/boris-12-feb-26/6.webp" alt="샌드박싱 활성화" width="50%" /></a>
 
 ---
 
-## Sources
+## 7/ 상태 표시줄 추가
 
-- [Boris Cherny (@bcherny) on X — February 12, 2026](https://x.com/bcherny)
-- [Claude Code Terminal Setup Docs](https://code.claude.com/docs/en/terminal)
-- [Claude Code Plugins & Discovery Docs](https://code.claude.com/docs/en/discover-plugins)
-- [Claude Code Sub-agents Docs](https://code.claude.com/docs/en/sub-agents)
-- [Claude Code Permissions Docs](https://code.claude.com/docs/en/permissions)
-- [Claude Code Sandbox Docs](https://code.claude.com/docs/en/sandbox)
-- [Claude Code Status Line Docs](https://code.claude.com/docs/en/statusline)
-- [Claude Code Keyboard Shortcuts Docs](https://code.claude.com/docs/en/keybindings)
-- [Claude Code Hooks Reference](https://code.claude.com/docs/en/hooks)
-- [Claude Code Output Styles Docs](https://code.claude.com/docs/en/output-styles)
-- [Claude Code Settings Docs](https://code.claude.com/docs/en/settings)
+커스텀 상태 표시줄은 작성기 바로 아래에 표시되어 작업하는 동안 보고 싶은 모델, 디렉토리, 남은 컨텍스트, 비용 등을 표시합니다.
+
+모든 팀원이 다른 상태 표시줄을 가질 수 있습니다. `/statusline`을 사용하여 Claude가 `.bashrc`/`.zshrc`를 기반으로 생성하게 하세요.
+
+<a href="https://x.com/bcherny/status/2021700784019452195"><img src="assets/boris-12-feb-26/7.webp" alt="상태 표시줄 추가" width="50%" /></a>
+
+---
+
+## 8/ 키 바인딩 커스터마이즈
+
+Claude Code의 모든 키 바인딩은 커스터마이즈 가능합니다. `/keybindings`를 실행하여 키를 다시 매핑하세요. 설정이 즉시 다시 로드되므로 즉시 어떻게 느껴지는지 확인할 수 있습니다.
+
+<a href="https://x.com/bcherny/status/2021700883873165435"><img src="assets/boris-12-feb-26/8.webp" alt="키 바인딩 커스터마이즈" width="50%" /></a>
+
+---
+
+## 9/ 훅 설정
+
+훅으로 Claude의 라이프사이클에 결정론적으로 연결하세요:
+
+- 권한 요청을 Slack이나 Opus로 자동 라우팅
+- Claude가 턴 끝에 도달했을 때 계속하도록 유도 (계속할지 여부를 결정하기 위해 에이전트를 시작하거나 프롬프트를 사용할 수도 있음)
+- 도구 호출 전후 처리, 예: 자체 로깅 추가
+
+Claude에게 훅을 추가하도록 요청하여 시작하세요.
+
+<a href="https://x.com/bcherny/status/2021701059253874861"><img src="assets/boris-12-feb-26/9.webp" alt="훅 설정" width="50%" /></a>
+
+---
+
+## 10/ 스피너 동사 커스터마이즈
+
+스피너 동사를 커스터마이즈하여 기본 목록에 추가하거나 자신의 동사로 교체하세요. `settings.json`을 소스 컨트롤에 체크인하여 팀과 동사를 공유하세요.
+
+<a href="https://x.com/bcherny/status/2021701145023197516"><img src="assets/boris-12-feb-26/10.webp" alt="스피너 동사 커스터마이즈" width="50%" /></a>
+
+---
+
+## 11/ 출력 스타일 사용
+
+`/config`를 실행하고 출력 스타일을 설정하여 Claude가 다른 톤이나 형식으로 응답하게 하세요.
+
+- **Explanatory** — 새 코드베이스를 익힐 때 권장, Claude가 작업하면서 프레임워크와 코드 패턴을 설명하게 합니다
+- **Learning** — Claude가 코드 변경을 코치하게 합니다
+- **Custom** — Claude의 목소리를 조정하기 위한 커스텀 출력 스타일 만들기
+
+<a href="https://x.com/bcherny/status/2021701379409273093"><img src="assets/boris-12-feb-26/11.webp" alt="출력 스타일 사용" width="50%" /></a>
+
+---
+
+## 12/ 모든 것을 커스터마이즈!
+
+Claude Code는 기본 설정으로도 훌륭하게 작동하지만, 커스터마이즈할 때는 `settings.json`을 git에 체크인하여 팀도 혜택을 받을 수 있게 하세요. 구성은 여러 수준에서 지원됩니다:
+
+- 코드베이스 전체용
+- 하위 폴더용
+- 자신만을 위한
+- 엔터프라이즈 전체 정책을 통한
+
+37개의 설정과 84개의 환경 변수 (래퍼 스크립트를 피하기 위해 `settings.json`의 `"env"` 필드 사용)로, 원하는 동작이 구성 가능할 가능성이 높습니다.
+
+<a href="https://x.com/bcherny/status/2021701636075458648"><img src="assets/boris-12-feb-26/12.webp" alt="모든 것을 커스터마이즈" width="50%" /></a>
+
+---
+
+## 소스
+
+- [Boris Cherny (@bcherny) on X — 2026년 2월 12일](https://x.com/bcherny)
+- [Claude Code 터미널 설정 문서](https://code.claude.com/docs/en/terminal)
+- [Claude Code 플러그인 및 탐색 문서](https://code.claude.com/docs/en/discover-plugins)
+- [Claude Code 서브에이전트 문서](https://code.claude.com/docs/en/sub-agents)
+- [Claude Code 권한 문서](https://code.claude.com/docs/en/permissions)
+- [Claude Code 샌드박스 문서](https://code.claude.com/docs/en/sandbox)
+- [Claude Code 상태 표시줄 문서](https://code.claude.com/docs/en/statusline)
+- [Claude Code 키보드 단축키 문서](https://code.claude.com/docs/en/keybindings)
+- [Claude Code 훅 참조](https://code.claude.com/docs/en/hooks)
+- [Claude Code 출력 스타일 문서](https://code.claude.com/docs/en/output-styles)
+- [Claude Code 설정 문서](https://code.claude.com/docs/en/settings)

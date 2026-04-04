@@ -1,10 +1,10 @@
-# LLM Day-to-Day Degradation: Myth vs Reality
+# LLM 일일 성능 저하: 신화 vs 현실
 
-Can a deployed LLM's performance change day-to-day even though the model weights are frozen? A deep-dive into proven causes, infrastructure bugs, and psychological factors.
+배포된 LLM의 모델 가중치가 고정되어 있음에도 하루하루 성능이 변할 수 있을까요? 입증된 원인, 인프라 버그, 심리적 요인에 대한 심층 분석입니다.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
@@ -13,348 +13,348 @@ Can a deployed LLM's performance change day-to-day even though the model weights
 
 <table width="100%">
 <tr>
-<td width="50%"><a href="https://x.com/nicksdot/status/2029520949176049704"><img src="assets/llm-degradation.png" alt="Twitter users reporting day-to-day Claude quality degradation" width="100%" /></a></td>
-<td width="50%"><a href="https://x.com/levelsio/status/2029369159893569680"><img src="assets/llm-degradation-2.png" alt="Twitter users reporting day-to-day Claude quality degradation" width="100%" /></a></td>
+<td width="50%"><a href="https://x.com/nicksdot/status/2029520949176049704"><img src="assets/llm-degradation.png" alt="Twitter 사용자들이 일일 Claude 품질 저하를 보고하는 화면" width="100%" /></a></td>
+<td width="50%"><a href="https://x.com/levelsio/status/2029369159893569680"><img src="assets/llm-degradation-2.png" alt="Twitter 사용자들이 일일 Claude 품질 저하를 보고하는 화면" width="100%" /></a></td>
 </tr>
 </table>
 
 ---
 ---
 
-# 🔥 Claude Code Ops 4.6 Analysis. High Reasoning
+# 🔥 Claude Code Ops 4.6 분석. 고도 추론
 
-When Anthropic launches a model like Opus 4.6, the **model weights** — billions of learned parameters — are frozen. Training is enormously expensive (millions of dollars, weeks of compute). Nobody is retraining the model overnight.
+Anthropic이 Opus 4.6과 같은 모델을 출시할 때, **모델 가중치** — 수십억 개의 학습된 매개변수 — 는 고정됩니다. 학습은 엄청나게 비용이 많이 들며 (수백만 달러, 수 주의 컴퓨팅). 아무도 하룻밤 사이에 모델을 재학습시키지 않습니다.
 
-But weights are only one layer of a much larger system. Research reveals at least **7 distinct mechanisms** that can cause real or perceived quality changes, even when model weights are frozen.
+하지만 가중치는 훨씬 더 큰 시스템의 한 레이어일 뿐입니다. 연구에 따르면 모델 가중치가 고정되어 있어도 실제 또는 인식된 품질 변화를 일으킬 수 있는 **7가지 별개의 메커니즘**이 있습니다.
 
-| Question | Answer |
+| 질문 | 답변 |
 |----------|--------|
-| Do model weights change after launch? | **No** — confirmed by all providers |
-| Can the model behave differently day-to-day? | **Yes** — proven with ±8-14% variance |
-| Is it intentional "nerfing"? | **No** — no evidence of deliberate degradation |
-| Are infrastructure bugs real? | **Yes** — Anthropic confirmed 3 bugs affecting up to 16% of requests |
-| Is some of it psychological? | **Yes** — confirmation bias and honeymoon effects are real |
-| Can system prompts/post-training change? | **Yes** — documented across providers |
-| Should users trust their perception? | **Partially** — real causes exist, but perception amplifies them |
+| 모델 가중치는 출시 후 변경되나요? | **아니오** — 모든 공급업체에서 확인 |
+| 모델이 하루하루 다르게 동작할 수 있나요? | **예** — ±8-14% 분산으로 입증됨 |
+| 의도적인 "약화"인가요? | **아니오** — 의도적인 저하의 증거 없음 |
+| 인프라 버그가 실제로 있나요? | **예** — Anthropic이 요청의 최대 16%에 영향을 미치는 3개의 버그 확인 |
+| 일부는 심리적인가요? | **예** — 확증 편향과 허니문 효과는 실제 |
+| 시스템 프롬프트/사후 학습이 변경될 수 있나요? | **예** — 공급업체 전반에 걸쳐 문서화됨 |
+| 사용자는 자신의 인식을 신뢰해야 하나요? | **부분적으로** — 실제 원인이 있지만 인식이 이를 증폭시킴 |
 
 ---
 
-## The Full Inference Stack
+## 전체 추론 스택
 
-The model weights are frozen, but **nine layers above them** can independently affect what you experience:
+모델 가중치는 고정되어 있지만, **그 위의 아홉 레이어**가 독립적으로 경험에 영향을 줄 수 있습니다:
 
 ```
 ┌──────────────────────────────────────────────┐
-│  YOUR SESSION CONTEXT                        │  ← Degrades within session
-│  (accumulated errors, long conversations)    │
+│  세션 컨텍스트                               │  ← 세션 내에서 저하
+│  (누적 오류, 긴 대화)                        │
 ├──────────────────────────────────────────────┤
-│  SYSTEM PROMPT                               │  ← Updated regularly
-│  (safety rules, behavior instructions)       │
+│  시스템 프롬프트                              │  ← 정기적으로 업데이트
+│  (안전 규칙, 동작 지침)                       │
 ├──────────────────────────────────────────────┤
-│  POST-TRAINING (RLHF / Fine-tuning)         │  ← Can be updated quietly
-│  (instruction following, safety alignment)   │
+│  사후 학습 (RLHF / 파인튜닝)                 │  ← 조용히 업데이트 가능
+│  (지시 따르기, 안전 정렬)                     │
 ├──────────────────────────────────────────────┤
-│  SAMPLING PARAMETERS                         │  ← Can be tuned server-side
+│  샘플링 매개변수                              │  ← 서버 측에서 조정 가능
 │  (temperature, top-p, top-k)                 │
 ├──────────────────────────────────────────────┤
-│  SPECULATIVE DECODING                        │  ← Draft model quality varies
-│  (draft model predictions + verification)    │
+│  추측 디코딩                                  │  ← 초안 모델 품질 변동
+│  (초안 모델 예측 + 검증)                      │
 ├──────────────────────────────────────────────┤
-│  MoE ROUTING / BATCH COMPOSITION             │  ← ±8-14% variance proven
-│  (which experts activate per request)        │
+│  MoE 라우팅 / 배치 구성                      │  ← ±8-14% 분산 입증됨
+│  (요청당 활성화되는 전문가)                   │
 ├──────────────────────────────────────────────┤
-│  HARDWARE ROUTING                            │  ← TPU vs GPU vs Trainium
-│  (which cluster serves your request)         │
+│  하드웨어 라우팅                              │  ← TPU vs GPU vs Trainium
+│  (어떤 클러스터가 요청을 처리하는지)          │
 ├──────────────────────────────────────────────┤
-│  QUANTIZATION LEVEL                          │  ← May vary under load
-│  (FP16 vs INT8 vs INT4 precision)            │
+│  양자화 수준                                  │  ← 부하에 따라 변동 가능
+│  (FP16 vs INT8 vs INT4 정밀도)               │
 ├──────────────────────────────────────────────┤
-│  COMPILER & RUNTIME                          │  ← XLA bugs proven real
-│  (XLA:TPU, CUDA, hardware-specific code)     │
+│  컴파일러 및 런타임                           │  ← XLA 버그가 실제로 입증됨
+│  (XLA:TPU, CUDA, 하드웨어별 코드)            │
 ├──────────────────────────────────────────────┤
-│  MODEL WEIGHTS (FROZEN)                      │  ← These DON'T change
-│  (billions of learned parameters)            │
+│  모델 가중치 (고정됨)                         │  ← 이것은 변경되지 않음
+│  (수십억 개의 학습된 매개변수)                │
 └──────────────────────────────────────────────┘
 ```
 
-The key mental model: **frozen weights ≠ frozen behavior**. This is like saying "same engine = same driving experience" while ignoring the tires, road conditions, fuel quality, and driver fatigue.
+핵심 사고 모델: **고정된 가중치 ≠ 고정된 동작**. 이것은 "같은 엔진 = 같은 주행 경험"이라고 말하면서 타이어, 도로 상태, 연료 품질, 운전자 피로를 무시하는 것과 같습니다.
 
 ---
 
-## Proven Causes: Infrastructure Bugs
+## 입증된 원인: 인프라 버그
 
-### Anthropic's September 2025 Postmortem
+### Anthropic의 2025년 9월 사후 분석
 
-In September 2025, Anthropic published a detailed postmortem revealing **three separate infrastructure bugs** that degraded Claude's quality between August and September 2025. Their official statement:
+2025년 9월, Anthropic은 2025년 8월에서 9월 사이에 Claude의 품질을 저하시킨 **세 가지 별개의 인프라 버그**를 공개하는 상세한 사후 분석을 발표했습니다. 공식 성명:
 
-> "We never reduce model quality due to demand, time of day, or server load. The problems our users reported were due to infrastructure bugs alone."
+> "저희는 수요, 시간대, 서버 부하로 인해 모델 품질을 절대 낮추지 않습니다. 사용자들이 보고한 문제는 오직 인프라 버그 때문이었습니다."
 
-### Bug #1 — Context Window Routing Error
+### 버그 #1 — 컨텍스트 윈도우 라우팅 오류
 
-Sonnet 4 requests were accidentally routed to servers configured for 1M token context windows instead of standard servers.
+Sonnet 4 요청이 표준 서버 대신 1M 토큰 컨텍스트 윈도우용으로 구성된 서버로 실수로 라우팅되었습니다.
 
-- **Timeline**: Introduced August 5, worsened August 29 after a load balancing change
-- **Peak impact**: 16% of Sonnet 4 requests affected at worst hour (August 31)
-- **User impact**: ~30% of Claude Code users had at least one degraded message
-- **Insidious detail**: Routing was "sticky" — once you hit a bad server, subsequent requests kept going there
-- **Fixed**: September 4–18 (rolled out across platforms)
+- **타임라인**: 8월 5일 도입, 로드 밸런싱 변경 후 8월 29일 악화
+- **최대 영향**: 최악의 시간 (8월 31일)에 Sonnet 4 요청의 16% 영향
+- **사용자 영향**: 약 30%의 Claude Code 사용자가 저하된 메시지를 하나 이상 경험
+- **교활한 세부 사항**: 라우팅이 "고착" — 한 번 나쁜 서버에 연결되면 후속 요청도 계속 거기로 감
+- **수정**: 9월 4~18일 (플랫폼 전반에 걸쳐 배포)
 
-### Bug #2 — TPU Output Corruption
+### 버그 #2 — TPU 출력 손상
 
-A misconfiguration on TPU servers caused errors during token generation, assigning high probability to tokens that should rarely appear.
+TPU 서버의 잘못된 구성으로 인해 토큰 생성 중 오류가 발생하여 드물게 나타나야 할 토큰에 높은 확률이 할당되었습니다.
 
-- **Symptoms**: Thai or Chinese characters appearing mid-English response, obvious code syntax errors
-- **Affected**: Opus 4.1 and Opus 4 (August 25–28), Sonnet 4 (August 25–September 2)
-- **Scope**: Only Claude API; third-party platforms unaffected
-- **Fixed**: Rolled back September 2
+- **증상**: 영어 응답 중간에 태국어 또는 중국어 문자 등장, 명백한 코드 구문 오류
+- **영향**: Opus 4.1과 Opus 4 (8월 25~28일), Sonnet 4 (8월 25일~9월 2일)
+- **범위**: Claude API만 해당; 서드파티 플랫폼은 영향 없음
+- **수정**: 9월 2일 롤백
 
-### Bug #3 — XLA:TPU Compiler Miscompilation (the nastiest)
+### 버그 #3 — XLA:TPU 컴파일러 잘못된 컴파일 (가장 심각)
 
-A code change to fix precision issues accidentally exposed a **latent compiler bug** in Google's XLA:TPU.
+정밀도 문제를 수정하기 위한 코드 변경이 Google의 XLA:TPU에서 **잠재적 컴파일러 버그**를 우연히 노출시켰습니다.
 
-- **Root cause**: The approximate top-k operation (used to pick the most likely next tokens) "sometimes returned completely wrong results, but only for certain batch sizes and model configurations"
-- **Why it was hard to find**: It changed behavior depending on what operations ran before or after it, and whether debugging tools were enabled
-- **Hidden for months**: A previous workaround from December 2024 had been accidentally masking this deeper bug
-- **Affected**: Haiku 3.5 confirmed; subset of Sonnet 4 and Opus 3 suspected
-- **Resolution**: Switched from approximate to exact top-k; accepted "minor efficiency impact" because "Model quality is non-negotiable"
+- **근본 원인**: 가장 가능성 높은 다음 토큰을 선택하는 데 사용되는 근사 top-k 연산이 "특정 배치 크기와 모델 구성에서 완전히 잘못된 결과를 반환"
+- **발견이 어려운 이유**: 이전이나 이후에 실행된 작업과 디버깅 도구 활성화 여부에 따라 동작이 변경됨
+- **수개월간 숨겨짐**: 2024년 12월의 이전 해결 방법이 이 더 깊은 버그를 실수로 마스킹하고 있었음
+- **영향**: Haiku 3.5 확인; Sonnet 4와 Opus 3의 일부 의심
+- **해결**: 근사 top-k에서 정확한 top-k로 전환; "모델 품질은 타협할 수 없다"는 이유로 "경미한 효율성 영향" 수용
 
-### Why Detection Was Difficult
+### 감지가 어려운 이유
 
-Anthropic's own automated evaluations didn't catch the degradation users reported, "in part because Claude often recovers well from isolated mistakes." Each bug produced different symptoms on different platforms at different rates, creating "a confusing mix of reports that didn't point to any single cause."
+Anthropic의 자체 자동화 평가가 사용자들이 보고한 저하를 포착하지 못했습니다. "부분적으로 Claude가 종종 격리된 실수에서 잘 회복하기 때문"입니다. 각 버그는 서로 다른 비율로 서로 다른 플랫폼에서 서로 다른 증상을 나타내어 "단일 원인을 지목하지 못하는 혼란스러운 보고 모음"을 만들었습니다.
 
-Key context: Claude runs on **three different hardware platforms** (AWS Trainium, NVIDIA GPUs, Google TPUs), each with different failure modes, compilers, and precision behaviors. Your request might hit different hardware on different days.
+주요 컨텍스트: Claude는 **세 가지 다른 하드웨어 플랫폼** (AWS Trainium, NVIDIA GPU, Google TPU)에서 실행되며, 각각 다른 오류 모드, 컴파일러, 정밀도 동작을 갖습니다. 요청이 날마다 다른 하드웨어에 도달할 수 있습니다.
 
 ---
 
-## Proven Causes: MoE Routing Variance
+## 입증된 원인: MoE 라우팅 분산
 
-Modern large models often use a **Mixture-of-Experts (MoE)** architecture, where only a subset of the model's parameters ("experts") activate for each input. A learned router decides which experts to use.
+현대 대형 모델은 종종 **Mixture-of-Experts (MoE)** 아키텍처를 사용하며, 각 입력에 대해 모델 매개변수 ("전문가")의 일부만 활성화됩니다. 학습된 라우터가 어떤 전문가를 사용할지 결정합니다.
 
-Scale AI's research revealed a critical finding:
+Scale AI의 연구가 중요한 발견을 공개했습니다:
 
-> "The combination of Sparse MoE and batched inference creates unpredictable results because the composition of a batch can determine which expert your query gets routed to, and the mix of queries from other users in the same batch is not deterministic."
+> "Sparse MoE와 배치 추론의 조합은 예측 불가능한 결과를 만들어냅니다. 배치 구성이 쿼리가 라우팅되는 전문가를 결정할 수 있기 때문이며, 같은 배치의 다른 사용자 쿼리 혼합은 결정론적이지 않습니다."
 
-### Measured Day-to-Day Variance Across Providers
+### 공급업체별 측정된 일일 분산
 
-| Provider | Day-to-Day Score Variance |
+| 공급업체 | 일일 점수 분산 |
 |----------|--------------------------|
-| OpenAI (GPT-4 variants) | ±10–12% |
-| Anthropic (Claude variants) | ±8–11% |
-| Google (Gemini variants) | ±9–14% |
+| OpenAI (GPT-4 변형) | ±10–12% |
+| Anthropic (Claude 변형) | ±8–11% |
+| Google (Gemini 변형) | ±9–14% |
 
-Concrete example: the same model scored **77% on jailbreak resistance one day and 63% the next**. Same model, same weights, same test — 14 percentage points of swing from infrastructure alone.
+구체적인 예시: 동일한 모델이 **어느 날 탈옥 저항에서 77%를 기록하고 다음 날은 63%**를 기록했습니다. 동일한 모델, 동일한 가중치, 동일한 테스트 — 인프라만으로 14 퍼센트 포인트 차이.
 
-This means even with zero bugs and zero changes, the same model can produce noticeably different quality outputs on different days purely due to how requests are batched and routed. An A/B test cannot reliably detect a 5% quality signal when the day-to-day noise is 10–15%.
-
----
-
-## Proven Causes: System Prompt & Post-Training Updates
-
-### System Prompt Changes
-
-The model weights don't change, but the **system prompt** wrapping those weights can be updated at any time. Analysis of Claude's system prompt evolution shows dozens of iterations, with "hot-fixes" — short instructions added to patch undesired behavior — being added and removed regularly.
-
-Claude 3.7's system prompt contained multiple hot-fix instructions targeting common LLM "gotchas." Claude 4.0's system prompt removed all of them, with the behaviors addressed during post-training through reinforcement learning instead.
-
-### The Post-Training Theory
-
-The most plausible theory for unexplained quality shifts: companies can update **fine-tuning and RLHF** (reinforcement learning from human feedback) without changing the base model weights. This would technically make it truthful to say "the model hasn't changed" while still altering behavior through updated safety guardrails and instruction-following adjustments.
+즉, 버그와 변경 사항이 전혀 없더라도 같은 모델이 요청이 배치되고 라우팅되는 방식 때문에 다른 날에 눈에 띄게 다른 품질의 출력을 생성할 수 있습니다. A/B 테스트는 일일 노이즈가 10~15%일 때 5% 품질 신호를 안정적으로 감지할 수 없습니다.
 
 ---
 
-## Proven Causes: Silent Model Swaps
+## 입증된 원인: 시스템 프롬프트 및 사후 학습 업데이트
 
-OpenAI has been documented multiple times silently changing which model users interact with:
+### 시스템 프롬프트 변경
 
-- Removing the model picker overnight, forcing users from GPT-4o to GPT-5
-- Making GPT-4o a hidden "legacy model" requiring a manual toggle in settings, with no in-app notification
-- An "autoswitcher" bug routing users to wrong models
-- Plus subscribers reported models switching to a "restricted version" without consent
+모델 가중치는 변경되지 않지만, 그것을 감싸는 **시스템 프롬프트**는 언제든지 업데이트될 수 있습니다. Claude의 시스템 프롬프트 발전 분석은 수십 번의 반복을 보여주며, 원치 않는 동작을 패치하기 위해 추가되고 제거되는 짧은 지침인 "핫픽스"가 정기적으로 추가됩니다.
 
-Sam Altman acknowledged the rollout was "a little more bumpy than we hoped for." Reddit threads received thousands of upvotes calling the new model a "disaster" and a "downgrade."
+Claude 3.7의 시스템 프롬프트에는 일반적인 LLM "함정"을 대상으로 하는 여러 핫픽스 지침이 있었습니다. Claude 4.0의 시스템 프롬프트는 이 모든 것을 제거하고, 해당 동작들을 강화 학습을 통해 사후 학습에서 대신 처리했습니다.
 
-This demonstrates that model swaps **do happen** in the industry — sometimes intentionally (product decisions) and sometimes accidentally (routing bugs).
+### 사후 학습 이론
 
----
-
-## Contributing Factors
-
-### Quantization Under Load
-
-To serve millions of users cost-effectively, companies may serve **quantized** versions of models — reducing precision from FP16 to INT8 or INT4. This can reduce memory usage by 2–4x and accelerate inference, but introduces subtle quality loss. Whether providers dynamically switch quantization levels under load is debated, but the technical capability exists and is well-documented in serving frameworks like vLLM and TensorRT.
-
-### Speculative Decoding
-
-Modern serving stacks use a smaller "draft" model to predict multiple tokens ahead, then have the real model verify them. Theoretically this preserves the same output distribution, but in practice acceptance rates vary by domain and context. Out-of-the-box draft models may work fine in some cases but often struggle with domain-specific tasks or very long contexts.
-
-### Context Window Pollution
-
-In a long coding session, earlier mistakes accumulate in context. The model sees its own errors and may perpetuate them. This is the most common cause of "Claude got dumber" within a single session — it's not the model degrading, it's context contamination.
-
-**Practical tip**: Use `/compact` or start fresh sessions when quality feels off. This is the single most actionable thing you can do.
+설명되지 않는 품질 변화에 대한 가장 그럴듯한 이론: 회사들은 기본 모델 가중치를 변경하지 않고 **파인튜닝 및 RLHF** (인간 피드백으로부터의 강화 학습)를 업데이트할 수 있습니다. 이를 통해 "모델이 변경되지 않았다"고 기술적으로 사실을 말하면서도 업데이트된 안전 가드레일과 지시 따르기 조정을 통해 동작을 변경할 수 있습니다.
 
 ---
 
-## The Stanford Study — And Why It's Complicated
+## 입증된 원인: 조용한 모델 교체
 
-The landmark 2023 study by Stanford and UC Berkeley (Chen, Zaharia, Zou) — "How is ChatGPT's Behavior Changing Over Time?" — is frequently cited as proof that LLMs degrade. The headline finding:
+OpenAI는 사용자가 상호작용하는 모델을 조용히 변경하는 것이 여러 차례 문서화되었습니다:
 
-> GPT-4's accuracy on "Is this number prime? Think step by step" fell from **97.6% to 2.4%** between March and June 2023.
+- 모델 선택기를 하룻밤 사이에 제거하여 사용자를 GPT-4o에서 GPT-5로 강제 전환
+- 설정에서 수동 전환이 필요한 숨겨진 "레거시 모델"로 GPT-4o를 만들고, 앱 내 알림 없음
+- 사용자를 잘못된 모델로 라우팅하는 "자동 전환기" 버그
+- Plus 구독자가 동의 없이 "제한된 버전"으로 전환된다고 보고
 
-### What the Study Proved
+Sam Altman은 배포가 "우리가 바랐던 것보다 조금 더 불안정했다"고 인정했습니다. Reddit 스레드는 새 모델을 "재앙"과 "다운그레이드"라고 부르며 수천 개의 업보트를 받았습니다.
 
-- The behavior of the "same" LLM service **can change substantially** in a short period
-- Different capabilities can move in opposite directions (GPT-4 got worse at math, GPT-3.5 got better)
-- Code generation quality dropped (GPT-4 executable code: 52% → 10%)
-- The study coined the term **"LLM drift"**
-
-### Methodological Critiques
-
-- The March version used **temperature 0.0** while the June version used **temperature 1.0** — a fundamental confounding variable that increases randomness
-- Only **500 queries per task** — too small for definitive statistical claims
-- The "math questions" were actually yes/no questions where the model's guessing pattern changed, not its mathematical ability
-- Changes likely reflected intentional **post-training safety updates**, not degradation
-
-The study proved something important — LLM behavior changes over time — but the mechanism was likely intentional updates, not unintentional degradation.
+이는 모델 교체가 업계에서 **실제로 발생한다**는 것을 보여줍니다 — 때로는 의도적으로 (제품 결정) 그리고 때로는 우발적으로 (라우팅 버그).
 
 ---
 
-## The Psychology
+## 기여 요인
 
-### Confirmation Bias
+### 부하 시 양자화
 
-Once someone tweets "Claude is dumb today," you start noticing every mistake. On days when nobody complains, you brush off the same errors. Social media amplifies this effect.
+수백만 명의 사용자에게 비용 효율적으로 서비스를 제공하기 위해, 회사들은 **양자화된** 버전의 모델을 제공할 수 있습니다 — 정밀도를 FP16에서 INT8 또는 INT4로 낮춥니다. 이를 통해 메모리 사용량을 2~4배 줄이고 추론을 가속화할 수 있지만, 미묘한 품질 손실이 발생합니다. 공급업체가 부하 시 동적으로 양자화 수준을 전환하는지 여부는 논쟁 중이지만, 기술적 능력은 존재하며 vLLM 및 TensorRT와 같은 서빙 프레임워크에서 잘 문서화되어 있습니다.
 
-### The Honeymoon Effect
+### 추측 디코딩
 
-Users experience an initial honeymoon period with new models, then gradually discover limitations. The model didn't change — expectations adjusted upward faster than capabilities warranted.
+현대 서빙 스택은 더 작은 "초안" 모델을 사용하여 여러 토큰을 미리 예측한 다음, 실제 모델이 이를 검증합니다. 이론적으로는 동일한 출력 분포를 유지하지만, 실제로는 도메인과 컨텍스트에 따라 수용률이 다릅니다. 기성 초안 모델은 어떤 경우에는 잘 작동하지만 도메인 특화 작업이나 매우 긴 컨텍스트에서 종종 어려움을 겪습니다.
 
-### Task Difficulty Variance
+### 컨텍스트 윈도우 오염
 
-Your tasks vary day to day. A day of hard problems feels like the model got worse, even when it hasn't.
+긴 코딩 세션에서 이전 실수가 컨텍스트에 쌓입니다. 모델은 자신의 오류를 보고 이를 지속시킬 수 있습니다. 이것은 단일 세션 내에서 "Claude가 더 멍청해졌다"는 가장 일반적인 원인입니다 — 모델이 저하되는 것이 아니라 컨텍스트 오염입니다.
 
-### The "Weekend Claude" Myth
-
-Despite many users believing in day-of-week patterns, rigorous analysis found **no consistent evidence** for day-of-week quality patterns. One analysis titled "AI is Dumber on Mondays" came up empty.
-
-### Stochastic Nature of LLMs
-
-LLMs are probabilistic. The same prompt can produce different outputs each time. On a bad luck streak, you might get several poor responses in a row — pure randomness, not degradation.
+**실용적인 팁**: 품질이 낮게 느껴질 때 `/compact`를 사용하거나 새 세션을 시작하세요. 이것이 당신이 할 수 있는 가장 실행 가능한 단일 조치입니다.
 
 ---
 
-## Bottom Line
+## Stanford 연구 — 그리고 왜 복잡한가
 
-The phenomenon users describe is **real but misattributed**:
+Stanford와 UC Berkeley의 2023년 랜드마크 연구 (Chen, Zaharia, Zou) — "ChatGPT의 동작은 시간이 지남에 따라 어떻게 변하고 있는가?" — 는 LLM이 저하된다는 증거로 자주 인용됩니다. 헤드라인 발견:
 
-- **Correct**: their experience degraded on certain days
-- **Incorrect**: the model was intentionally "nerfed"
+> GPT-4의 "이 숫자가 소수인가? 단계별로 생각하라"의 정확도가 2023년 3월과 6월 사이에 **97.6%에서 2.4%로** 떨어졌다.
 
-The actual causes are a combination of:
+### 연구가 입증한 것
 
-1. **Infrastructure bugs** — proven by Anthropic's postmortem (up to 16% of requests affected)
-2. **MoE routing variance** — ±8-14% quality swing measured by Scale AI, even with zero changes
-3. **System prompt and post-training updates** — documented across providers
-4. **Hardware heterogeneity** — TPU vs GPU vs Trainium, each with different failure modes
-5. **Context pollution** — long sessions degrade within-session quality
-6. **Confirmation bias** — social media amplifies perceived patterns
-7. **Stochastic variance** — same model, same prompt, different output every time
+- "같은" LLM 서비스의 동작이 짧은 기간에 **실질적으로 변할 수 있다**
+- 다른 기능들이 반대 방향으로 이동할 수 있다 (GPT-4는 수학에서 악화되고 GPT-3.5는 향상됨)
+- 코드 생성 품질이 떨어졌다 (GPT-4 실행 가능한 코드: 52% → 10%)
+- 연구는 **"LLM 드리프트"** 용어를 만들어냄
 
-The measurement problem is severe: day-to-day variance of ±8-14% means you cannot distinguish a real 5% quality change from noise. This is why both the "it's all in your head" and "they nerfed it" camps feel confident — the signal-to-noise ratio makes it impossible to tell from individual experience alone.
+### 방법론적 비판
+
+- 3월 버전은 **temperature 0.0**을 사용하고 6월 버전은 **temperature 1.0**을 사용 — 무작위성을 높이는 근본적인 교란 변수
+- **작업당 500개의 쿼리**만 — 결정적인 통계적 주장을 하기에는 너무 작음
+- "수학 문제"는 실제로 예/아니오 질문이었으며 모델의 추측 패턴이 변경된 것이지 수학 능력이 아님
+- 변경 사항은 의도치 않은 저하가 아닌 의도적인 **사후 학습 안전 업데이트**를 반영했을 가능성이 높음
+
+연구는 중요한 것을 입증했습니다 — LLM 동작은 시간이 지남에 따라 변한다 — 하지만 메커니즘은 의도치 않은 저하가 아닌 의도적인 업데이트였을 가능성이 높습니다.
+
+---
+
+## 심리학
+
+### 확증 편향
+
+누군가가 "Claude가 오늘 멍청하다"고 트윗하면, 모든 실수를 알아차리기 시작합니다. 아무도 불평하지 않는 날에는 같은 오류를 무시합니다. 소셜 미디어가 이 효과를 증폭시킵니다.
+
+### 허니문 효과
+
+사용자는 새 모델과 초기 허니문 기간을 경험하고, 그 후 점차 한계를 발견합니다. 모델이 변경된 것이 아니라 기대치가 능력보다 더 빠르게 상향 조정된 것입니다.
+
+### 작업 난이도 분산
+
+작업은 날마다 다릅니다. 어려운 문제의 날은 모델이 나빠진 것처럼 느껴지지만, 실제로는 그렇지 않습니다.
+
+### "주말 Claude" 신화
+
+많은 사용자들이 요일별 패턴을 믿음에도 불구하고, 엄격한 분석은 **요일별 품질 패턴에 대한 일관된 증거를 찾지 못했습니다**. "월요일에 AI가 더 멍청하다"라는 분석 제목의 글이 결과가 없었습니다.
+
+### LLM의 확률론적 특성
+
+LLM은 확률론적입니다. 같은 프롬프트가 매번 다른 출력을 생성할 수 있습니다. 운이 나쁜 연속으로 여러 개의 나쁜 응답을 받을 수 있습니다 — 순수한 무작위성이지, 저하가 아닙니다.
 
 ---
 
-## Sources
+## 결론
 
-- [Anthropic: A Postmortem of Three Recent Issues](https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues) — Official postmortem detailing three infrastructure bugs (September 2025)
-- [Anthropic Reveals Three Infrastructure Bugs — InfoQ](https://www.infoq.com/news/2025/10/anthropic-infrastructure-bugs/) — Technical analysis of the postmortem
-- [How is ChatGPT's Behavior Changing Over Time? — Stanford/UC Berkeley](https://arxiv.org/abs/2307.09009) — Landmark study on LLM drift (2023)
-- [The Truth About ChatGPT's Degrading Capabilities — TechTalks](https://bdtechtalks.com/2023/07/24/chatgpt-capabilities-degrading-study/) — Methodological critique of the Stanford study
-- [LLMs Are Getting Dumber and We Have No Idea Why — Ignorance.ai](https://www.ignorance.ai/p/llms-are-getting-dumber-and-we-have) — Five theories for perceived degradation
-- [When Claude Forgets How to Code — Robert Matsuoka](https://hyperdev.matsuoka.com/p/when-claude-forgets-how-to-code) — Analysis of Claude quality fluctuations and infrastructure causes
-- [Smoothing Out LLM Variance — Scale AI](https://scale.com/blog/smoothing-out-llm-variance) — Measured ±8-14% day-to-day variance across providers
-- [What We Can Learn from Anthropic's System Prompt Updates — PromptLayer](https://blog.promptlayer.com/what-we-can-learn-from-anthropics-system-prompt-updates/) — System prompt evolution analysis
-- [Claude's System Prompt Changes Reveal Anthropic's Priorities — Drew Breunig](https://www.dbreunig.com/2025/06/03/comparing-system-prompts-across-claude-versions.html) — Hot-fix patterns in system prompts
-- [Complaints About Secretly Switching Models — OpenAI Forum](https://community.openai.com/t/complaints-about-secretly-switching-models/1360150) — Documented silent model swaps
-- [Speculative Decoding — BentoML LLM Inference Handbook](https://bentoml.com/llm/inference-optimization/speculative-decoding) — How draft models affect serving
-- [A Visual Guide to Mixture of Experts — Maarten Grootendorst](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-mixture-of-experts) — MoE architecture and routing explained
+사용자들이 설명하는 현상은 **실제이지만 잘못 귀인된 것**입니다:
+
+- **맞는 것**: 특정 날에 경험이 저하됨
+- **틀린 것**: 모델이 의도적으로 "약화"됨
+
+실제 원인의 조합:
+
+1. **인프라 버그** — Anthropic의 사후 분석으로 입증됨 (최대 16%의 요청 영향)
+2. **MoE 라우팅 분산** — Scale AI가 측정한 ±8-14% 품질 변동, 변경 사항 없이도 발생
+3. **시스템 프롬프트 및 사후 학습 업데이트** — 공급업체 전반에 걸쳐 문서화됨
+4. **하드웨어 이질성** — TPU vs GPU vs Trainium, 각각 다른 오류 모드
+5. **컨텍스트 오염** — 긴 세션이 세션 내 품질을 저하시킴
+6. **확증 편향** — 소셜 미디어가 인식된 패턴을 증폭시킴
+7. **확률론적 분산** — 같은 모델, 같은 프롬프트, 매번 다른 출력
+
+측정 문제가 심각합니다: 일일 분산이 ±8-14%라는 것은 개별 경험만으로는 실제 5% 품질 변화와 노이즈를 구별할 수 없다는 것을 의미합니다. 이것이 "전부 상상"과 "약화됨" 캠프 모두가 자신감을 느끼는 이유입니다 — 신호 대 노이즈 비율이 개별 경험만으로는 알 수 없게 만들기 때문입니다.
+
+---
+
+## 소스
+
+- [Anthropic: 최근 세 가지 문제의 사후 분석](https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues) — 세 가지 인프라 버그를 상세히 설명하는 공식 사후 분석 (2025년 9월)
+- [Anthropic이 세 가지 인프라 버그 공개 — InfoQ](https://www.infoq.com/news/2025/10/anthropic-infrastructure-bugs/) — 사후 분석의 기술적 분석
+- [ChatGPT의 동작은 시간이 지남에 따라 어떻게 변하고 있는가? — Stanford/UC Berkeley](https://arxiv.org/abs/2307.09009) — LLM 드리프트에 관한 랜드마크 연구 (2023)
+- [ChatGPT의 저하되는 기능에 대한 진실 — TechTalks](https://bdtechtalks.com/2023/07/24/chatgpt-capabilities-degrading-study/) — Stanford 연구의 방법론적 비판
+- [LLM이 더 멍청해지고 있으며 그 이유를 모른다 — Ignorance.ai](https://www.ignorance.ai/p/llms-are-getting-dumber-and-we-have) — 인식된 저하에 대한 다섯 가지 이론
+- [Claude가 코딩을 잊어버릴 때 — Robert Matsuoka](https://hyperdev.matsuoka.com/p/when-claude-forgets-how-to-code) — Claude 품질 변동 및 인프라 원인 분석
+- [LLM 분산 평탄화 — Scale AI](https://scale.com/blog/smoothing-out-llm-variance) — 공급업체별 ±8-14% 일일 분산 측정
+- [Anthropic의 시스템 프롬프트 업데이트에서 배울 수 있는 것 — PromptLayer](https://blog.promptlayer.com/what-we-can-learn-from-anthropics-system-prompt-updates/) — 시스템 프롬프트 발전 분석
+- [Claude의 시스템 프롬프트 변경이 Anthropic의 우선순위를 드러낸다 — Drew Breunig](https://www.dbreunig.com/2025/06/03/comparing-system-prompts-across-claude-versions.html) — 시스템 프롬프트의 핫픽스 패턴
+- [모델 은밀 교체에 대한 불만 — OpenAI 포럼](https://community.openai.com/t/complaints-about-secretly-switching-models/1360150) — 문서화된 조용한 모델 교체
+- [추측 디코딩 — BentoML LLM 추론 핸드북](https://bentoml.com/llm/inference-optimization/speculative-decoding) — 초안 모델이 서빙에 미치는 영향
+- [Mixture of Experts 시각적 안내서 — Maarten Grootendorst](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-mixture-of-experts) — MoE 아키텍처 및 라우팅 설명
 
 ---
 ---
 
-# 🔥 Codex 5.3 High Reason and Finding
+# 🔥 Codex 5.3 고도 추론 및 발견
 
-### Report Scope
+### 리포트 범위
 
-This section explains why users can experience a short window where Claude output quality drops while Codex 5.3 feels stable or stronger on coding tasks. The focus is not on permanent model quality rankings. The focus is short-horizon production behavior under real serving conditions.
+이 섹션은 사용자가 Codex 5.3이 코딩 작업에서 안정적이거나 더 강하게 느껴지는 동안 Claude 출력 품질이 떨어지는 짧은 기간을 경험할 수 있는 이유를 설명합니다. 초점은 영구적인 모델 품질 순위에 있지 않습니다. 실제 서빙 조건에서의 단기 프로덕션 동작에 초점을 맞춥니다.
 
-Report date: March 5, 2026.
+리포트 날짜: 2026년 3월 5일.
 
-### Observed Pattern
+### 관찰된 패턴
 
-The reported pattern is:
+보고된 패턴은 다음과 같습니다:
 
-1. Model quality is acceptable for a period.
-2. Quality appears to degrade for several days.
-3. Quality returns close to prior baseline.
+1. 모델 품질이 일정 기간 동안 허용 가능합니다.
+2. 품질이 수일 동안 저하된 것처럼 보입니다.
+3. 품질이 이전 기준선 근처로 돌아옵니다.
 
-This shape is usually a serving-stack or rollout pattern, not a permanent base-model capability change. Permanent capability decline would not normally recover this quickly without an explicit rollback or fix.
+이 패턴은 일반적으로 영구적인 기본 모델 기능 변화가 아닌 서빙 스택이나 배포 패턴입니다. 명시적인 롤백이나 수정 없이는 영구적인 기능 저하가 이렇게 빨리 회복되지 않습니다.
 
-### High Reason: Why Codex 5.3 Can Look Better in a Bad Window
+### 고도 추론: Codex 5.3이 나쁜 기간에 더 좋게 보일 수 있는 이유
 
-Codex 5.3 can appear clearly stronger during another provider's degraded period for several technical reasons that can all happen at the same time:
+Codex 5.3은 다른 공급업체의 저하 기간 동안 여러 기술적 이유로 명확히 더 강하게 보일 수 있으며, 이 이유들은 동시에 발생할 수 있습니다:
 
-1. Product-objective fit. Codex 5.3 is optimized for code-generation and agentic coding workflows, so even equal raw model strength can yield better coding outcomes due to tool orchestration, repository reasoning, and code-centric instruction tuning.
-2. Inference policy differences. Providers tune latency, reasoning depth, and decoding defaults independently. A more conservative policy at one provider can look "smarter" than an aggressive speed-optimized policy at another for the same day.
-3. Serving-path separation. Even if two providers host state-of-the-art models, they run different routing layers, compiler/runtime stacks, and rollout pipelines. An incident in one stack does not imply correlated degradation in the other.
-4. Rollout and rollback timing. If one provider is mid-rollout while another is stable, users can see large temporary quality divergence with no underlying long-term change in model weights.
-5. Session-level contamination effects. In long coding chats, error accumulation can amplify perceived decline. A competing assistant can feel better simply because the failing session was reset or because its tool loop recovered faster.
+1. 제품-목표 적합성. Codex 5.3은 코드 생성 및 에이전틱 코딩 워크플로우에 최적화되어 있어, 동등한 원시 모델 강도에서도 도구 오케스트레이션, 저장소 추론, 코드 중심 지시 튜닝으로 인해 더 나은 코딩 결과를 낼 수 있습니다.
+2. 추론 정책 차이. 공급업체들은 지연 시간, 추론 깊이, 디코딩 기본값을 독립적으로 조정합니다. 한 공급업체의 더 보수적인 정책이 같은 날 다른 공급업체의 공격적인 속도 최적화 정책보다 같은 작업에서 "더 스마트"해 보일 수 있습니다.
+3. 서빙 경로 분리. 두 공급업체가 최신 모델을 호스팅하더라도, 다른 라우팅 레이어, 컴파일러/런타임 스택, 배포 파이프라인을 실행합니다. 한 스택의 인시던트가 다른 스택의 상관된 저하를 의미하지 않습니다.
+4. 배포 및 롤백 타이밍. 한 공급업체가 중간 배포 중이고 다른 공급업체는 안정적이면, 사용자는 모델 가중치의 기본적인 장기 변화 없이 큰 일시적인 품질 차이를 볼 수 있습니다.
+5. 세션 수준 오염 효과. 긴 코딩 채팅에서 오류 축적이 인식된 저하를 증폭시킬 수 있습니다. 경쟁사 어시스턴트는 실패한 세션이 재설정되었거나 도구 루프가 더 빨리 회복되었기 때문에 단순히 더 좋게 느껴질 수 있습니다.
 
-### Detailed Finding
+### 상세 발견
 
-For a report like "Claude felt very weak for about four days, then came back," the most probable explanation is:
+"Claude가 약 나흘 동안 매우 약했다가 돌아왔다"는 리포트에 대한 가장 가능한 설명은:
 
-1. A provider-side incident, routing issue, decoding/runtime bug, or rollout regression affected a subset of requests.
-2. The issue persisted long enough to be noticed repeatedly in real workflows.
-3. The issue was fixed or rolled back.
-4. Perceived quality returned quickly.
+1. 공급업체 측 인시던트, 라우팅 문제, 디코딩/런타임 버그, 또는 배포 회귀가 요청의 일부에 영향을 미쳤습니다.
+2. 실제 워크플로우에서 반복적으로 알아차릴 만큼 오래 지속되었습니다.
+3. 문제가 수정되거나 롤백되었습니다.
+4. 인식된 품질이 빠르게 돌아왔습니다.
 
-During that same period, Codex 5.3 could feel substantially better because it did not share the same incident path and because coding-task optimization magnified the gap in practical outcomes.
+같은 기간 동안 Codex 5.3은 동일한 인시던트 경로를 공유하지 않고 같은 기간 동안 안정적으로 운영되며 코딩 작업 최적화가 실제 결과의 차이를 증폭시켰기 때문에 훨씬 더 좋게 느껴질 수 있었습니다.
 
-### Hypothesis Ranking for This Pattern
+### 이 패턴에 대한 가설 순위
 
-| Hypothesis | Likelihood | Rationale |
+| 가설 | 가능성 | 근거 |
 |------------|------------|-----------|
-| Provider incident plus rollback | High | Best match for multi-day dip followed by fast recovery |
-| Serving configuration change (sampling/latency/reasoning budget) | High | Common source of sudden behavior shifts without model retraining |
-| Silent alias or snapshot movement | Medium-High | Can change behavior with no visible user action |
-| Prompt drift and context contamination only | Medium | Can degrade sessions, but less likely to explain broad multi-day reports alone |
-| Permanent base-model degradation | Low | Inconsistent with fast return to previous quality |
+| 공급업체 인시던트 + 롤백 | 높음 | 빠른 회복 후 수일 간의 저하에 가장 잘 맞음 |
+| 서빙 구성 변경 (샘플링/지연 시간/추론 예산) | 높음 | 모델 재학습 없이 갑작스러운 동작 변화의 일반적인 원인 |
+| 조용한 별칭 또는 스냅샷 이동 | 중간-높음 | 사용자 액션 없이 동작을 변경할 수 있음 |
+| 프롬프트 드리프트 및 컨텍스트 오염만 | 중간 | 세션을 저하시킬 수 있지만 광범위한 수일 간의 보고를 단독으로 설명하기 어려움 |
+| 영구적인 기본 모델 저하 | 낮음 | 이전 품질로의 빠른 회복과 일관성 없음 |
 
-### What Would Confirm or Falsify This Finding
+### 이 발견을 확인하거나 반박하는 것
 
-To turn this from high-confidence inference into hard proof, collect request-level telemetry for the same task set across days:
+이것을 고확신 추론에서 확실한 증거로 전환하려면, 동일한 작업 세트에 대한 요청 수준 텔레메트리를 수집하세요:
 
-1. Exact model identifier and snapshot/alias at request time.
-2. Any backend fingerprint or release marker exposed by the provider.
-3. Decoding parameters (temperature, top_p, top_k, max tokens).
-4. Latency, timeout, and error-rate traces.
-5. Structured quality scores on a fixed coding benchmark prompt set.
-6. Session length and token-context depth at failure points.
+1. 요청 시간의 정확한 모델 식별자 및 스냅샷/별칭.
+2. 공급업체가 노출하는 모든 백엔드 핑거프린트 또는 릴리스 마커.
+3. 디코딩 매개변수 (temperature, top_p, top_k, max tokens).
+4. 지연 시간, 타임아웃, 오류율 추적.
+5. 고정된 코딩 벤치마크 프롬프트 세트에 대한 구조화된 품질 점수.
+6. 실패 지점에서의 세션 길이 및 토큰 컨텍스트 깊이.
 
-If quality drops correlate with an incident window, a config change, or a backend fingerprint shift, the incident/config hypothesis is confirmed. If no such shifts exist and degradation is only in long sessions, context contamination becomes the primary explanation.
+품질 저하가 인시던트 기간, 구성 변경, 또는 백엔드 핑거프린트 변화와 상관관계가 있다면 인시던트/구성 가설이 확인됩니다. 그러한 변화가 없고 저하가 긴 세션에서만 나타난다면, 컨텍스트 오염이 주요 설명이 됩니다.
 
-### Practical Engineering Guidance
+### 실용적인 엔지니어링 지침
 
-To reduce day-to-day variance in production:
+프로덕션에서 일일 분산을 줄이기 위해:
 
-1. Pin model snapshots when available instead of using floating aliases.
-2. Store request metadata (model ID, parameters, latency, errors, response quality label).
-3. Run a fixed daily canary suite for coding tasks and alert on regression.
-4. Reset or compact long-running sessions after several failed turns.
-5. Keep a fallback provider/model path for incident windows.
-6. Separate "model quality" from "serving reliability" in internal dashboards.
+1. 부동 별칭 대신 가능한 경우 모델 스냅샷을 고정하세요.
+2. 요청 메타데이터 (모델 ID, 매개변수, 지연 시간, 오류, 응답 품질 레이블)를 저장하세요.
+3. 코딩 작업에 대한 고정된 일일 카나리 스위트를 실행하고 회귀 시 알림을 받으세요.
+4. 여러 번의 실패한 턴 후 오래 실행된 세션을 리셋하거나 압축하세요.
+5. 인시던트 기간을 위한 대체 공급업체/모델 경로를 유지하세요.
+6. 내부 대시보드에서 "모델 품질"과 "서빙 신뢰성"을 구분하세요.
 
-### Final Conclusion
+### 최종 결론
 
-Codex 5.3 looking better during a short Claude degradation window is a technically plausible and expected outcome in modern LLM operations. The strongest explanation is not permanent model collapse. The strongest explanation is temporary serving-path degradation at one provider, combined with coding-specific optimization and stable operation at the other provider during the same period.
+짧은 Claude 저하 기간 동안 Codex 5.3이 더 좋게 보이는 것은 현대 LLM 운영에서 기술적으로 그럴듯하고 예상되는 결과입니다. 가장 강력한 설명은 영구적인 모델 붕괴가 아닙니다. 가장 강력한 설명은 한 공급업체에서의 임시 서빙 경로 저하이며, 다른 공급업체에서의 안정적인 운영과 코딩 특화 최적화가 같은 기간 동안 결합된 것입니다.

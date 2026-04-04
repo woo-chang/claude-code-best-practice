@@ -1,31 +1,31 @@
 ---
 name: time-fetcher
-description: Instructions for fetching current Dubai time via bash command
+description: bash 커맨드를 통해 현재 두바이 시간을 가져오는 지시사항
 user-invocable: false
 ---
 
-## Dubai Time Fetcher
+## 두바이 시간 가져오기
 
-### Command
+### 커맨드
 
 ```bash
 TZ='Asia/Dubai' date '+%Y-%m-%d %H:%M:%S %Z'
 ```
 
-### Expected Output Format
+### 예상 출력 형식
 
-`YYYY-MM-DD HH:MM:SS +04` (Gulf Standard Time)
+`YYYY-MM-DD HH:MM:SS +04` (걸프 표준시)
 
-### Timezone Details
+### 타임존 상세
 
-- Timezone: Asia/Dubai
-- Offset: UTC+4
-- Abbreviation: GST (Gulf Standard Time)
-- Dubai does not observe daylight saving time
+- 타임존: Asia/Dubai
+- 오프셋: UTC+4
+- 약어: GST (걸프 표준시)
+- 두바이는 일광 절약 시간제를 준수하지 않음
 
-### Return Format
+### 반환 형식
 
-Provide the following fields:
-- `time`: Just the time portion (HH:MM:SS)
+다음 필드를 제공하세요:
+- `time`: 시간 부분만 (HH:MM:SS)
 - `timezone`: "GST (UTC+4)"
-- `formatted`: The full output string from the command
+- `formatted`: 커맨드에서의 전체 출력 문자열

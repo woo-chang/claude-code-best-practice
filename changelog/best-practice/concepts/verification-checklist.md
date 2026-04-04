@@ -1,45 +1,45 @@
-# Verification Checklist — README CONCEPTS Section
+# 검증 체크리스트 — README CONCEPTS 섹션
 
-Rules for verifying CONCEPTS table accuracy. Each rule is checked during every workflow run.
+CONCEPTS 표 정확성을 검증하는 규칙. 각 규칙은 모든 워크플로우 실행 시 확인됩니다.
 
-## Rules
+## 규칙
 
-### 1. External URL Liveness
-- **Category**: URL Accuracy
-- **What to check**: Every external URL in the CONCEPTS table (docs links) returns a valid page
-- **Depth**: Fetch each URL and confirm it loads the expected page (not a redirect to wrong page)
-- **Source to compare against**: `https://code.claude.com/docs/llms.txt` for canonical URL list
-- **Date added**: 2026-03-02
-- **Origin**: Permissions URL `/iam` was found to redirect to Authentication page instead of Permissions
+### 1. 외부 URL 유효성
+- **카테고리**: URL 정확성
+- **확인할 사항**: CONCEPTS 표의 모든 외부 URL(문서 링크)이 유효한 페이지를 반환하는지
+- **깊이**: 각 URL을 가져와서 예상 페이지가 로드되는지 확인 (잘못된 페이지로의 리디렉트가 아닌지)
+- **비교할 소스**: 정식 URL 목록은 `https://code.claude.com/docs/llms.txt`
+- **추가 일자**: 2026-03-02
+- **출처**: 권한 URL `/iam`이 권한 페이지 대신 인증 페이지로 리디렉트됨을 발견
 
-### 2. Anchor Fragment Validity
-- **Category**: URL Accuracy
-- **What to check**: Any URL with an anchor fragment (`#section-name`) matches an actual heading on the target page
-- **Depth**: Fetch the page and verify the heading exists with the expected anchor
-- **Source to compare against**: Fetched page content
-- **Date added**: 2026-03-02
-- **Origin**: Rules anchor `#modular-rules-with-clauderules` was stale; section renamed to `#organize-rules-with-clauderules`
+### 2. 앵커 프래그먼트 유효성
+- **카테고리**: URL 정확성
+- **확인할 사항**: 앵커 프래그먼트(`#section-name`)가 있는 URL이 대상 페이지의 실제 제목과 일치하는지
+- **깊이**: 페이지를 가져와서 예상 앵커로 제목이 존재하는지 확인
+- **비교할 소스**: 가져온 페이지 콘텐츠
+- **추가 일자**: 2026-03-02
+- **출처**: Rules 앵커 `#modular-rules-with-clauderules`가 오래됨; 섹션이 `#organize-rules-with-clauderules`로 이름 변경됨
 
-### 3. Missing Docs Pages
-- **Category**: Missing Concepts
-- **What to check**: Every page in the official docs index (`llms.txt`) that represents a user-facing feature has a corresponding row in the CONCEPTS table
-- **Depth**: Compare full docs index against CONCEPTS table entries
-- **Source to compare against**: `https://code.claude.com/docs/llms.txt`
-- **Date added**: 2026-03-02
-- **Origin**: Multiple missing concepts found (Agent Teams, Keybindings, Model Configuration, etc.)
+### 3. 누락된 문서 페이지
+- **카테고리**: 누락된 개념
+- **확인할 사항**: 공식 문서 인덱스(`llms.txt`)의 사용자 대면 기능을 나타내는 모든 페이지가 CONCEPTS 표에 해당 행이 있는지
+- **깊이**: 전체 문서 인덱스를 CONCEPTS 표 항목과 비교
+- **비교할 소스**: `https://code.claude.com/docs/llms.txt`
+- **추가 일자**: 2026-03-02
+- **출처**: 여러 누락된 개념 발견 (Agent Teams, Keybindings, Model Configuration 등)
 
-### 4. Local Badge Link Validity
-- **Category**: Badge Accuracy
-- **What to check**: Every badge target path in the CONCEPTS table (`best-practice/*.md`, `implementation/*.md`, `.claude/*/`) points to a file or directory that exists
-- **Depth**: Use Read/Glob to verify file existence
-- **Source to compare against**: Local filesystem
-- **Date added**: 2026-03-02
-- **Origin**: Initial checklist creation
+### 4. 로컬 배지 링크 유효성
+- **카테고리**: 배지 정확성
+- **확인할 사항**: CONCEPTS 표의 모든 배지 대상 경로(`best-practice/*.md`, `implementation/*.md`, `.claude/*/`)가 존재하는 파일 또는 디렉토리를 가리키는지
+- **깊이**: Read/Glob을 사용하여 파일 존재 확인
+- **비교할 소스**: 로컬 파일시스템
+- **추가 일자**: 2026-03-02
+- **출처**: 체크리스트 초기 생성
 
-### 5. Description Currency
-- **Category**: Description Accuracy
-- **What to check**: Each concept's description accurately reflects the current official docs description
-- **Depth**: Compare README description against the official page's meta description or first paragraph
-- **Source to compare against**: Official docs page content
-- **Date added**: 2026-03-02
-- **Origin**: Memory description missing auto memory; MCP Servers location missing `.mcp.json`
+### 5. 설명 최신성
+- **카테고리**: 설명 정확성
+- **확인할 사항**: 각 개념의 설명이 현재 공식 문서 설명을 정확히 반영하는지
+- **깊이**: README 설명을 공식 페이지의 메타 설명 또는 첫 문단과 비교
+- **비교할 소스**: 공식 문서 페이지 콘텐츠
+- **추가 일자**: 2026-03-02
+- **출처**: 메모리 설명에 자동 메모리 누락; MCP Servers 위치에 `.mcp.json` 누락

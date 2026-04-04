@@ -1,26 +1,26 @@
-# Building Claude Code with Boris Cherny — The Pragmatic Engineer
+# Boris Cherny와 함께하는 Claude Code 구축 — The Pragmatic Engineer
 
-Transcript of the interview with Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on The Pragmatic Engineer podcast, published March 4, 2026.
+Claude Code 창시자 Boris Cherny ([@bcherny](https://x.com/bcherny))가 2026년 3월 4일에 The Pragmatic Engineer 팟캐스트에 출연한 인터뷰 트랜스크립트.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Video Details
+## 영상 정보
 
-- **Guest:** Boris Cherny (Creator of Claude Code)
-- **Host:** Gergely Orosz (The Pragmatic Engineer)
-- **Published:** March 4, 2026
-- **YouTube:** [Watch on YouTube](https://youtu.be/julbw1JuAz0)
+- **게스트:** Boris Cherny (Claude Code 창시자)
+- **호스트:** Gergely Orosz (The Pragmatic Engineer)
+- **공개일:** 2026년 3월 4일
+- **YouTube:** [YouTube에서 시청하기](https://youtu.be/julbw1JuAz0)
 
 ---
 
-## Transcript
+## 트랜스크립트
 
 [`0:01`](https://youtu.be/julbw1JuAz0?t=1) You were the first ever TypeScript book with O'Reilly.
 
@@ -326,7 +326,7 @@ Transcript of the interview with Boris Cherny ([@bcherny](https://x.com/bcherny)
 
 ---
 
-## Sources
+## 소스
 
 - [Building Claude Code with Boris Cherny — The Pragmatic Engineer — YouTube](https://youtu.be/julbw1JuAz0)
 - [The Pragmatic Engineer](https://newsletter.pragmaticengineer.com/)

@@ -1,416 +1,416 @@
 ---
-description: Create comprehensive planning documentation for a feature
+description: 피처에 대한 포괄적인 계획 문서 생성
 argument-hint: "<feature-slug>"
 ---
 
-## User Input
+## 사용자 입력
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** parse the user input to extract the feature slug (the folder name in `rpi/`).
+사용자 입력을 파싱하여 피처 슬러그 (`rpi/`의 폴더 이름)를 추출해야 **합니다**.
 
-## Purpose
+## 목적
 
-This command creates comprehensive planning documentation for a feature request. It generates detailed specifications, technical design, and implementation plans in the feature's RPI folder.
+이 커맨드는 피처 요청에 대한 포괄적인 계획 문서를 생성합니다. 피처의 RPI 폴더에 상세한 명세, 기술 설계, 구현 계획을 생성합니다.
 
-**Prerequisites**:
-- Feature folder exists at `rpi/{feature-slug}/`
-- Research completed with GO recommendation (`rpi/{feature-slug}/research/RESEARCH.md` exists)
+**사전 요구사항**:
+- `rpi/{feature-slug}/`에 피처 폴더가 존재
+- GO 추천과 함께 연구 완료 (`rpi/{feature-slug}/research/RESEARCH.md` 존재)
 
-**Output Location**: All files saved to `rpi/{feature-slug}/plan/`
+**출력 위치**: 모든 파일이 `rpi/{feature-slug}/plan/`에 저장됨
 
-**This is Step 3 of the RPI Workflow** (after Research approves with GO).
+**이것은 RPI 워크플로우의 3단계**입니다 (연구가 GO로 승인한 후).
 
-## Outline
+## 개요
 
-1. **Load Context**: Read research report and project constitution (if exists)
-2. **Understand Requirements**: Parse feature scope and requirements
-3. **Analyze Technical Requirements**: Review architecture and dependencies
-4. **Design Architecture**: Create high-level architecture and API contracts
-5. **Break Down Implementation**: Create phased task breakdown
-6. **Generate Documentation**: Create structured documentation files
-7. **Validate Output**: Ensure all quality gates pass
-8. **Report Completion**: Provide summary and next steps
+1. **컨텍스트 로드**: 연구 보고서 및 프로젝트 헌법 읽기 (존재하는 경우)
+2. **요구사항 이해**: 피처 범위 및 요구사항 파싱
+3. **기술 요구사항 분석**: 아키텍처 및 의존성 검토
+4. **아키텍처 설계**: 고수준 아키텍처 및 API 계약 생성
+5. **구현 분해**: 단계별 작업 분해 생성
+6. **문서 생성**: 구조화된 문서 파일 생성
+7. **출력 검증**: 모든 품질 게이트 통과 확인
+8. **완료 보고**: 요약 및 다음 단계 제공
 
-## Phases
+## 단계
 
-### Phase 0: Load Context
+### 0단계: 컨텍스트 로드
 
-**Prerequisites**: Feature slug provided
+**사전 요구사항**: 피처 슬러그 제공됨
 
-**Process**:
-1. **Verify research completed**:
-   - Check `rpi/{feature-slug}/research/RESEARCH.md` exists
-   - Verify GO recommendation (warn if NO-GO or CONDITIONAL)
+**프로세스**:
+1. **연구 완료 확인**:
+   - `rpi/{feature-slug}/research/RESEARCH.md` 존재 확인
+   - GO 추천 확인 (NO-GO 또는 조건부인 경우 경고)
 
-2. **Read research findings**:
-   - Extract product analysis
-   - Extract technical discovery
-   - Extract technical feasibility assessment
-   - Note risks and constraints
+2. **연구 결과 읽기**:
+   - 제품 분석 추출
+   - 기술 탐색 추출
+   - 기술 타당성 평가 추출
+   - 리스크 및 제약사항 기록
 
-3. **Load project constitution** (if exists):
-   - Look for a constitution or principles document in the repository
-   - Extract relevant constraints and preferences
+3. **프로젝트 헌법 로드** (존재하는 경우):
+   - 리포지토리에서 헌법 또는 원칙 문서 검색
+   - 관련 제약 및 선호사항 추출
 
-**Outputs**:
-- Research summary
-- Constitutional context (if found)
-- Planning constraints
+**출력물**:
+- 연구 요약
+- 헌법 컨텍스트 (발견된 경우)
+- 계획 제약사항
 
-**Validation**:
-- [ ] Research report exists
-- [ ] GO recommendation confirmed
-- [ ] Constitution loaded (if exists)
-
----
-
-### Phase 1: Understand Feature Requirements
-
-**Prerequisites**: Phase 0 complete
-
-**Process**:
-1. **Parse Feature Description** from research report:
-   - Extract feature name and primary goal
-   - Identify target component(s)
-   - Understand user-facing vs. technical feature
-   - Determine feature complexity level
-
-2. **Identify Affected Components**:
-   - Primary component (where feature lives)
-   - Secondary components (integration points)
-   - Shared utilities needed
-   - External dependencies
-
-3. **Research Existing Patterns**:
-   - Search for similar features in codebase
-   - Review component architecture and patterns
-   - Identify reusable code and patterns
-
-**Outputs**:
-- Feature scope document (internal)
-- Affected components list
-- Existing patterns catalog
-
-**Validation**:
-- [ ] Feature name and goal clearly defined
-- [ ] Target component(s) identified
-- [ ] Feature complexity assessed
+**검증**:
+- [ ] 연구 보고서 존재
+- [ ] GO 추천 확인됨
+- [ ] 헌법 로드됨 (존재하는 경우)
 
 ---
 
-### Phase 2: Analyze Technical Requirements
+### 1단계: 피처 요구사항 이해
 
-**Prerequisites**: Phase 1 complete
+**사전 요구사항**: 0단계 완료
 
-**Process**:
-1. **Review Component Architecture**:
-   - Read component README and documentation
-   - Review existing code structure
-   - Identify architectural patterns used
+**프로세스**:
+1. **연구 보고서에서 피처 설명 파싱**:
+   - 피처 이름 및 주요 목표 추출
+   - 대상 컴포넌트(들) 파악
+   - 사용자 대면 vs 기술적 피처 이해
+   - 피처 복잡성 수준 결정
 
-2. **Identify Technical Dependencies**:
-   - Internal dependencies (other components, shared utilities)
-   - External dependencies (APIs, services, libraries)
-   - Database/storage requirements
-   - Authentication/authorization needs
+2. **영향 받는 컴포넌트 파악**:
+   - 주요 컴포넌트 (피처가 위치하는 곳)
+   - 보조 컴포넌트 (통합 지점)
+   - 필요한 공유 유틸리티
+   - 외부 의존성
 
-3. **Assess Integration Points**:
-   - APIs that need to be created or modified
-   - Database schema changes required
-   - Event/message flows
-   - Frontend-backend integration
+3. **기존 패턴 연구**:
+   - 코드베이스에서 유사한 피처 검색
+   - 컴포넌트 아키텍처 및 패턴 검토
+   - 재사용 가능한 코드 및 패턴 파악
 
-4. **Evaluate Technical Risks**:
-   - Breaking changes to existing features
-   - Performance implications
-   - Security concerns
-   - Data migration needs
+**출력물**:
+- 피처 범위 문서 (내부)
+- 영향 받는 컴포넌트 목록
+- 기존 패턴 카탈로그
 
-**Outputs**:
-- Technical requirements document (internal)
-- Dependency map
-- Integration point diagram
-- Risk assessment
-
-**Validation**:
-- [ ] Component architecture understood
-- [ ] All dependencies identified
-- [ ] Integration points mapped
-- [ ] Technical risks assessed
+**검증**:
+- [ ] 피처 이름 및 목표 명확히 정의됨
+- [ ] 대상 컴포넌트(들) 파악됨
+- [ ] 피처 복잡성 평가됨
 
 ---
 
-### Phase 3: Design Feature Architecture
+### 2단계: 기술 요구사항 분석
 
-**Prerequisites**: Phases 1-2 complete
+**사전 요구사항**: 1단계 완료
 
-**Agent**: senior-software-engineer
+**프로세스**:
+1. **컴포넌트 아키텍처 검토**:
+   - 컴포넌트 README 및 문서 읽기
+   - 기존 코드 구조 검토
+   - 사용된 아키텍처 패턴 파악
 
-**Process**:
-1. **Design High-Level Architecture**:
-   - Component/module structure
-   - Data flow diagrams
-   - API interfaces
-   - Database schema changes
+2. **기술 의존성 파악**:
+   - 내부 의존성 (다른 컴포넌트, 공유 유틸리티)
+   - 외부 의존성 (API, 서비스, 라이브러리)
+   - 데이터베이스/스토리지 요구사항
+   - 인증/인가 필요사항
 
-2. **Define Implementation Approach**:
-   - File structure and organization
-   - Code organization patterns
-   - Testing strategy
-   - Error handling approach
+3. **통합 지점 평가**:
+   - 생성하거나 수정해야 할 API
+   - 필요한 데이터베이스 스키마 변경
+   - 이벤트/메시지 흐름
+   - 프론트엔드-백엔드 통합
 
-3. **Plan Database/Storage Changes** (if applicable):
-   - New collections/tables
-   - Schema modifications
-   - Migration strategy
-   - Data validation rules
+4. **기술 리스크 평가**:
+   - 기존 기능에 대한 중단 변경
+   - 성능 영향
+   - 보안 우려사항
+   - 데이터 마이그레이션 필요사항
 
-4. **Design API Contracts** (if applicable):
-   - Request/response formats
-   - Authentication requirements
-   - Error responses
+**출력물**:
+- 기술 요구사항 문서 (내부)
+- 의존성 맵
+- 통합 지점 다이어그램
+- 리스크 평가
 
-5. **Plan Testing Strategy**:
-   - Unit test requirements
-   - Integration test scenarios
-   - End-to-end test cases
-
-**Outputs**:
-- Architecture design document (internal)
-- API specifications
-- Database schema design
-- Testing strategy
-
-**Validation**:
-- [ ] High-level architecture designed
-- [ ] Implementation approach defined
-- [ ] Database changes planned (if needed)
-- [ ] API contracts specified (if needed)
-- [ ] Testing strategy complete
+**검증**:
+- [ ] 컴포넌트 아키텍처 이해됨
+- [ ] 모든 의존성 파악됨
+- [ ] 통합 지점 매핑됨
+- [ ] 기술 리스크 평가됨
 
 ---
 
-### Phase 4: Break Down Implementation Tasks
+### 3단계: 피처 아키텍처 설계
 
-**Prerequisites**: Phases 1-3 complete
+**사전 요구사항**: 1-2단계 완료
 
-**Process**:
-1. **Identify Implementation Phases**:
-   - Break feature into 3-5 logical phases
-   - Each phase should deliver working, testable functionality
-   - Phases should build on each other progressively
+**에이전트**: senior-software-engineer
 
-2. **Create Task Breakdown for Each Phase**:
-   - List specific implementation tasks
-   - Estimate complexity (Low/Medium/High)
-   - Identify task dependencies
-   - Assign to appropriate code areas
+**프로세스**:
+1. **고수준 아키텍처 설계**:
+   - 컴포넌트/모듈 구조
+   - 데이터 흐름 다이어그램
+   - API 인터페이스
+   - 데이터베이스 스키마 변경
 
-3. **Define Success Criteria**:
-   - Acceptance criteria for each phase
-   - Testing requirements
-   - Documentation requirements
+2. **구현 접근방식 정의**:
+   - 파일 구조 및 구성
+   - 코드 구성 패턴
+   - 테스트 전략
+   - 오류 처리 접근방식
 
-4. **Identify Parallelization Opportunities**:
-   - Tasks that can be done concurrently
-   - Frontend/backend parallel work
-   - Independent module development
+3. **데이터베이스/스토리지 변경 계획** (해당되는 경우):
+   - 새로운 컬렉션/테이블
+   - 스키마 수정
+   - 마이그레이션 전략
+   - 데이터 검증 규칙
 
-**Outputs**:
-- Phased implementation plan
-- Task breakdown with estimates
-- Success criteria per phase
-- Dependency chart
+4. **API 계약 설계** (해당되는 경우):
+   - 요청/응답 형식
+   - 인증 요구사항
+   - 오류 응답
 
-**Validation**:
-- [ ] Feature broken into 3-5 logical phases
-- [ ] Each phase has specific tasks
-- [ ] All tasks have complexity estimates
-- [ ] Dependencies clearly marked
-- [ ] Success criteria defined
+5. **테스트 전략 계획**:
+   - 단위 테스트 요구사항
+   - 통합 테스트 시나리오
+   - 엔드투엔드 테스트 케이스
 
----
+**출력물**:
+- 아키텍처 설계 문서 (내부)
+- API 명세
+- 데이터베이스 스키마 설계
+- 테스트 전략
 
-### Phase 5: Generate Documentation
-
-**Prerequisites**: Phases 1-4 complete
-
-**Agent**: documentation-analyst-writer (via Task tool)
-
-**Process**:
-1. **Generate pm.md** (Product Requirements):
-   - Feature description and user stories
-   - Constitutional alignment (if applicable)
-   - Business value and success metrics
-   - User personas and use cases
-   - Acceptance criteria
-   - Out of scope items
-
-2. **Generate ux.md** (User Experience Design):
-   - User interface mockups (text description)
-   - User flows and interactions
-   - Accessibility considerations
-   - Error states and edge cases
-
-3. **Generate eng.md** (Technical Specification):
-   - Architecture design
-   - API specifications
-   - Database schema changes
-   - Technology stack
-   - Technical risks and mitigation
-
-4. **Generate PLAN.md** (Implementation Roadmap):
-   - Phased implementation breakdown
-   - Task list with estimates per phase
-   - Dependencies and ordering
-   - Success criteria per phase
-   - Testing requirements
-   - Validation checkpoints
-
-**Output Files** (all saved to `rpi/{feature-slug}/plan/`):
-- `pm.md` - Product requirements
-- `ux.md` - UX design
-- `eng.md` - Technical specification
-- `PLAN.md` - Detailed implementation roadmap
-
-**Validation**:
-- [ ] All 4 files present (pm, ux, eng, PLAN)
-- [ ] pm.md covers business requirements
-- [ ] ux.md addresses user experience
-- [ ] eng.md provides technical specification
-- [ ] PLAN.md has phased implementation
-- [ ] No placeholder text remains
-- [ ] Markdown formatting is clean
+**검증**:
+- [ ] 고수준 아키텍처 설계됨
+- [ ] 구현 접근방식 정의됨
+- [ ] 데이터베이스 변경 계획됨 (필요한 경우)
+- [ ] API 계약 명세됨 (필요한 경우)
+- [ ] 테스트 전략 완료됨
 
 ---
 
-## Sub-Agent Delegation
+### 4단계: 구현 작업 분해
 
-This command orchestrates specialist agents:
+**사전 요구사항**: 1-3단계 완료
 
-| Phase | Agent | Type | Purpose |
+**프로세스**:
+1. **구현 단계 파악**:
+   - 피처를 3-5개의 논리적 단계로 분해
+   - 각 단계가 작동하는 테스트 가능한 기능을 전달해야 함
+   - 단계가 점진적으로 서로 구축되어야 함
+
+2. **각 단계에 대한 작업 분해 생성**:
+   - 특정 구현 작업 목록
+   - 복잡성 추정 (낮음/중간/높음)
+   - 작업 의존성 파악
+   - 적절한 코드 영역에 할당
+
+3. **성공 기준 정의**:
+   - 각 단계의 인수 기준
+   - 테스트 요구사항
+   - 문서 요구사항
+
+4. **병렬화 기회 파악**:
+   - 동시에 수행할 수 있는 작업
+   - 프론트엔드/백엔드 병렬 작업
+   - 독립적인 모듈 개발
+
+**출력물**:
+- 단계별 구현 계획
+- 추정치가 있는 작업 분해
+- 단계별 성공 기준
+- 의존성 차트
+
+**검증**:
+- [ ] 피처가 3-5개의 논리적 단계로 분해됨
+- [ ] 각 단계에 특정 작업 있음
+- [ ] 모든 작업에 복잡성 추정치 있음
+- [ ] 의존성 명확히 표시됨
+- [ ] 성공 기준 정의됨
+
+---
+
+### 5단계: 문서 생성
+
+**사전 요구사항**: 1-4단계 완료
+
+**에이전트**: documentation-analyst-writer (Task 도구를 통해)
+
+**프로세스**:
+1. **pm.md 생성** (제품 요구사항):
+   - 피처 설명 및 사용자 스토리
+   - 헌법 정렬 (해당되는 경우)
+   - 비즈니스 가치 및 성공 지표
+   - 사용자 페르소나 및 사용 사례
+   - 인수 기준
+   - 범위 밖 항목
+
+2. **ux.md 생성** (사용자 경험 설계):
+   - 사용자 인터페이스 목업 (텍스트 설명)
+   - 사용자 흐름 및 상호작용
+   - 접근성 고려사항
+   - 오류 상태 및 엣지 케이스
+
+3. **eng.md 생성** (기술 명세):
+   - 아키텍처 설계
+   - API 명세
+   - 데이터베이스 스키마 변경
+   - 기술 스택
+   - 기술 리스크 및 완화
+
+4. **PLAN.md 생성** (구현 로드맵):
+   - 단계별 구현 분해
+   - 단계별 추정치가 있는 작업 목록
+   - 의존성 및 순서
+   - 단계별 성공 기준
+   - 테스트 요구사항
+   - 검증 체크포인트
+
+**출력 파일** (모두 `rpi/{feature-slug}/plan/`에 저장):
+- `pm.md` - 제품 요구사항
+- `ux.md` - UX 설계
+- `eng.md` - 기술 명세
+- `PLAN.md` - 상세 구현 로드맵
+
+**검증**:
+- [ ] 4개 파일 모두 존재 (pm, ux, eng, PLAN)
+- [ ] pm.md가 비즈니스 요구사항 다룸
+- [ ] ux.md가 사용자 경험 다룸
+- [ ] eng.md가 기술 명세 제공
+- [ ] PLAN.md가 단계별 구현 있음
+- [ ] 플레이스홀더 텍스트 없음
+- [ ] 마크다운 형식이 깔끔함
+
+---
+
+## 서브에이전트 위임
+
+이 커맨드는 전문 에이전트를 오케스트레이션합니다:
+
+| 단계 | 에이전트 | 유형 | 목적 |
 |-------|-------|------|---------|
-| Phase 3 | senior-software-engineer | Custom | Architecture design |
-| Phase 5 | product-manager | Custom | Product requirements (pm.md) |
-| Phase 5 | ux-designer | Custom | User experience (ux.md) |
-| Phase 5 | senior-software-engineer | Custom | Technical spec (eng.md) |
-| Phase 5 | documentation-analyst-writer | Built-in | Documentation synthesis |
+| 3단계 | senior-software-engineer | 커스텀 | 아키텍처 설계 |
+| 5단계 | product-manager | 커스텀 | 제품 요구사항 (pm.md) |
+| 5단계 | ux-designer | 커스텀 | 사용자 경험 (ux.md) |
+| 5단계 | senior-software-engineer | 커스텀 | 기술 명세 (eng.md) |
+| 5단계 | documentation-analyst-writer | 내장 | 문서 합성 |
 
-### Agent Invocation
+### 에이전트 호출
 
-**Custom Agents** (product-manager, senior-software-engineer, ux-designer):
-- Claude Code automatically detects these from `.claude/agents/`
-- Reference them naturally: "Acting as the senior-software-engineer agent..."
-- NO Task tool invocation needed
+**커스텀 에이전트** (product-manager, senior-software-engineer, ux-designer):
+- Claude Code가 `.claude/agents/`에서 자동으로 감지
+- 자연스럽게 참조: "senior-software-engineer 에이전트로서 작동..."
+- Task 도구 호출 불필요
 
-**Built-in Agent** (documentation-analyst-writer):
-- Use Task tool with `subagent_type="documentation-analyst-writer"`
-
----
-
-## Completion Report
-
-Report the following on successful completion:
-
-### Outputs Created
-
-**Documentation Folder**: `rpi/{feature-slug}/plan/`
-
-Files created:
-- **pm.md**: Product requirements and user stories ({Y} stories)
-- **ux.md**: User experience design ({Z} flows)
-- **eng.md**: Technical specification ({A} APIs, {B} schema changes)
-- **PLAN.md**: Detailed roadmap ({C} phases, {D} tasks)
-
-### Feature Summary
-
-- **Feature Name**: {feature-name}
-- **Target Component**: {component-name}
-- **Complexity**: {Simple/Medium/Complex}
-- **Implementation Phases**: {N} phases
-- **Total Tasks**: {M} tasks
-- **Dependencies**: {Y} internal, {Z} external
-
-### Technical Overview
-
-- **Architecture Pattern**: {pattern-name}
-- **APIs Added/Modified**: {N} APIs
-- **Database Changes**: {Y} collections/tables
-- **Testing Requirements**: {Z} test suites
-- **Risk Level**: {Low/Medium/High}
-
-### Implementation Phases
-
-1. **Phase 1**: {phase-name} - {task-count} tasks
-2. **Phase 2**: {phase-name} - {task-count} tasks
-3. **Phase 3**: {phase-name} - {task-count} tasks
-[Continue for all phases...]
+**내장 에이전트** (documentation-analyst-writer):
+- `subagent_type="documentation-analyst-writer"`로 Task 도구 사용
 
 ---
 
-### Next Steps
+## 완료 보고서
 
-1. **Review Documentation**:
-   - Read planning docs in `rpi/{feature-slug}/plan/`
-   - Review technical spec in `eng.md`
-   - Understand implementation phases in `PLAN.md`
+성공적으로 완료 시 다음을 보고하세요:
 
-2. **Validate with Stakeholders**:
-   - Product review of pm.md
-   - UX review of ux.md
-   - Technical review of eng.md
+### 생성된 출력물
 
-3. **Begin Implementation**:
-   - Run `/rpi:implement "{feature-slug}"` to execute phased implementation
-   - Follow PLAN.md phases
-   - Complete validation gates at each phase
+**문서 폴더**: `rpi/{feature-slug}/plan/`
 
----
+생성된 파일:
+- **pm.md**: 제품 요구사항 및 사용자 스토리 ({Y}개 스토리)
+- **ux.md**: 사용자 경험 설계 ({Z}개 흐름)
+- **eng.md**: 기술 명세 ({A}개 API, {B}개 스키마 변경)
+- **PLAN.md**: 상세 로드맵 ({C}개 단계, {D}개 작업)
 
-## Error Handling
+### 피처 요약
 
-**If research report doesn't exist**:
-- Action: Stop and inform user
-- Message: "Research report not found. Run `/rpi:research` first."
+- **피처 이름**: {feature-name}
+- **대상 컴포넌트**: {component-name}
+- **복잡성**: {단순/중간/복잡}
+- **구현 단계**: {N}개 단계
+- **총 작업**: {M}개 작업
+- **의존성**: {Y}개 내부, {Z}개 외부
 
-**If research recommendation is NO-GO**:
-- Action: Warn user but allow proceeding
-- Message: "Research recommended NO-GO. Proceed anyway? (y/n)"
+### 기술 개요
 
-**If target component doesn't exist**:
-- Action: Confirm with user if this is a new component
-- Message: "Component not found. Is this a new component?"
+- **아키텍처 패턴**: {pattern-name}
+- **추가/수정된 API**: {N}개 API
+- **데이터베이스 변경**: {Y}개 컬렉션/테이블
+- **테스트 요구사항**: {Z}개 테스트 스위트
+- **리스크 수준**: {낮음/중간/높음}
 
-**If documentation agent fails**:
-- Action: Generate documentation directly
-- Warning: "Documentation may not fully adhere to standards"
+### 구현 단계
 
----
-
-## Notes
-
-- **Prerequisites**: Research completed with GO recommendation
-- **Part of RPI Workflow**: Step 3 of 4 (Describe → Research → Plan → Implement)
-
-**Best Practices**:
-1. **Review Research First**: Ensure you understand the viability assessment
-2. **Leverage Discovery**: Use technical discovery from research phase
-3. **Be Specific**: Detailed plans lead to smoother implementation
-4. **Validate Early**: Review docs before implementing
+1. **1단계**: {phase-name} - {task-count}개 작업
+2. **2단계**: {phase-name} - {task-count}개 작업
+3. **3단계**: {phase-name} - {task-count}개 작업
+[모든 단계에 대해 계속...]
 
 ---
 
-## Post-Completion Action
+### 다음 단계
 
-**IMPORTANT**: After completing the planning workflow, ALWAYS prompt the user to compact the conversation:
+1. **문서 검토**:
+   - `rpi/{feature-slug}/plan/`의 계획 문서 읽기
+   - `eng.md`의 기술 명세 검토
+   - `PLAN.md`의 구현 단계 이해
 
-> **Context Management**: This planning workflow consumed significant context. To free up space for implementation, please run:
+2. **이해관계자와 검증**:
+   - pm.md의 제품 검토
+   - ux.md의 UX 검토
+   - eng.md의 기술 검토
+
+3. **구현 시작**:
+   - `/rpi:implement "{feature-slug}"`를 실행하여 단계별 구현 실행
+   - PLAN.md 단계 따르기
+   - 각 단계에서 검증 게이트 완료
+
+---
+
+## 오류 처리
+
+**연구 보고서가 존재하지 않는 경우**:
+- 동작: 중지하고 사용자에게 알림
+- 메시지: "연구 보고서를 찾을 수 없습니다. 먼저 `/rpi:research`를 실행하세요."
+
+**연구 추천이 NO-GO인 경우**:
+- 동작: 사용자에게 경고하지만 진행 허용
+- 메시지: "연구에서 NO-GO를 권장했습니다. 그래도 진행하시겠습니까? (y/n)"
+
+**대상 컴포넌트가 존재하지 않는 경우**:
+- 동작: 이것이 새 컴포넌트인지 사용자에게 확인
+- 메시지: "컴포넌트를 찾을 수 없습니다. 새로운 컴포넌트입니까?"
+
+**문서 에이전트가 실패하는 경우**:
+- 동작: 직접 문서 생성
+- 경고: "문서가 표준을 완전히 준수하지 않을 수 있습니다"
+
+---
+
+## 비고
+
+- **사전 요구사항**: GO 추천으로 연구 완료됨
+- **RPI 워크플로우의 일부**: 4단계 중 3단계 (설명 → 연구 → 계획 → 구현)
+
+**모범 사례**:
+1. **연구 먼저 검토**: 타당성 평가를 이해하는지 확인
+2. **탐색 활용**: 연구 단계의 기술 탐색 사용
+3. **구체적으로 작성**: 상세한 계획이 더 원활한 구현으로 이어짐
+4. **조기 검증**: 구현 전 문서 검토
+
+---
+
+## 완료 후 작업
+
+**중요**: 계획 워크플로우 완료 후, 항상 사용자에게 대화를 컴팩트하도록 프롬프트하세요:
+
+> **컨텍스트 관리**: 이 계획 워크플로우는 상당한 컨텍스트를 사용했습니다. 구현을 위한 공간을 확보하려면 다음을 실행하세요:
 >
 > ```
 > /compact
 > ```
 >
-> This will summarize the conversation and preserve the planning decisions while reducing token usage for the implementation phase.
+> 이렇게 하면 대화를 요약하고 구현 단계를 위해 토큰 사용을 줄이면서 계획 결정사항을 보존합니다.

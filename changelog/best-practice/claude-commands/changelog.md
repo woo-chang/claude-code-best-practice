@@ -1,12 +1,12 @@
-# Commands Report — Changelog History
+# Commands Report — 체인지로그 히스토리
 
-## Status Legend
+## 상태 범례
 
-| Status | Meaning |
+| 상태 | 의미 |
 |--------|---------|
-| ✅ `COMPLETE (reason)` | Action was taken and resolved successfully |
-| ❌ `INVALID (reason)` | Finding was incorrect, not applicable, or intentional |
-| ✋ `ON HOLD (reason)` | Action deferred — waiting on external dependency or user decision |
+| ✅ `COMPLETE (reason)` | 조치가 취해지고 성공적으로 해결됨 |
+| ❌ `INVALID (reason)` | 발견 사항이 잘못되었거나, 적용되지 않거나, 의도적인 것임 |
+| ✋ `ON HOLD (reason)` | 조치 보류 — 외부 의존성 또는 사용자 결정 대기 중 |
 
 ---
 
@@ -93,13 +93,13 @@
 
 ## [2026-03-21 09:08 PM PKT] Claude Code v2.1.81
 
-No priority action items — report is fully in sync with official documentation (11 frontmatter fields, 63 built-in commands).
+우선 조치 항목 없음 — 보고서가 공식 문서와 완전히 동기화됨 (프론트매터 필드 11개, 내장 커맨드 63개).
 
 ---
 
 ## [2026-03-23 09:48 PM PKT] Claude Code v2.1.81
 
-No priority action items — report is fully in sync with official documentation (11 frontmatter fields, 63 built-in commands).
+우선 조치 항목 없음 — 보고서가 공식 문서와 완전히 동기화됨 (프론트매터 필드 11개, 내장 커맨드 63개).
 
 ---
 

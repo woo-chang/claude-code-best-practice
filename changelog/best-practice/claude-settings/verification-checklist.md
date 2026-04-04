@@ -1,22 +1,22 @@
-# Verification Checklist — Settings Report
+# 검증 체크리스트 — Settings Report
 
-Rules accumulate over time. Each workflow-changelog run MUST execute ALL rules at the specified depth. When a new type of drift is caught that an existing rule should have caught (but didn't exist or was too shallow), append a new rule here.
+규칙은 시간이 지남에 따라 축적됩니다. 각 workflow-changelog 실행은 지정된 깊이에서 모든 규칙을 실행해야 합니다. 기존 규칙이 잡았어야 하는(그러나 존재하지 않았거나 너무 얕은) 새로운 유형의 드리프트가 발견되면, 여기에 새 규칙을 추가하세요.
 
-## Depth Levels
+## 깊이 수준
 
-| Depth | Meaning | Example |
+| 깊이 | 의미 | 예시 |
 |-------|---------|---------|
-| `exists` | Check if a section/table/file exists | "Does the report have a Sandbox Settings table?" |
-| `presence-check` | Check if a specific item is present or absent | "Is the `ConfigChange` event in the Hook Events table?" |
-| `content-match` | Compare actual values word-by-word against source | "Does the `model` setting description match official docs?" |
-| `field-level` | Verify every individual field is accounted for | "Does each settings key from official docs appear in the correct table?" |
-| `cross-file` | Same value must match across multiple files | "Does CLAUDE.md hooks section match the report's hook events?" |
+| `exists` | 섹션/표/파일이 존재하는지 확인 | "보고서에 Sandbox Settings 표가 있는가?" |
+| `presence-check` | 특정 항목이 있는지 없는지 확인 | "`ConfigChange` 이벤트가 Hook Events 표에 있는가?" |
+| `content-match` | 소스와 단어 단위로 실제 값 비교 | "`model` 설정 설명이 공식 문서와 일치하는가?" |
+| `field-level` | 모든 개별 필드가 반영되었는지 확인 | "공식 문서의 각 설정 키가 올바른 표에 나타나는가?" |
+| `cross-file` | 동일한 값이 여러 파일에서 일치하는지 확인 | "CLAUDE.md 훅 섹션이 보고서의 훅 이벤트와 일치하는가?" |
 
 ---
 
-## 1. Settings Keys Tables
+## 1. 설정 키 표
 
-Rules that verify settings key tables against official docs.
+공식 문서에 대한 설정 키 표를 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -31,9 +31,9 @@ Rules that verify settings key tables against official docs.
 
 ---
 
-## 2. Settings Hierarchy
+## 2. 설정 계층구조
 
-Rules that verify the settings hierarchy table.
+설정 계층구조 표를 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -44,9 +44,9 @@ Rules that verify the settings hierarchy table.
 
 ---
 
-## 3. Permissions
+## 3. 권한
 
-Rules that verify permission configuration accuracy.
+권한 구성 정확성을 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -57,9 +57,9 @@ Rules that verify permission configuration accuracy.
 
 ---
 
-## 4. Hooks (REDIRECTED)
+## 4. 훅 (리디렉트됨)
 
-Hook analysis is excluded from this workflow. Hooks are maintained in the [claude-code-hooks](https://github.com/shanraisshan/claude-code-hooks) repo. Only verify the redirect link is still valid.
+훅 분석은 이 워크플로우에서 제외됩니다. 훅은 [claude-code-hooks](https://github.com/shanraisshan/claude-code-hooks) 리포지토리에서 관리됩니다. 리디렉트 링크가 여전히 유효한지만 확인하세요.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -67,9 +67,9 @@ Hook analysis is excluded from this workflow. Hooks are maintained in the [claud
 
 ---
 
-## 5. Environment Variables
+## 5. 환경 변수
 
-Rules that verify environment variable completeness and ownership.
+환경 변수 완전성 및 소유권을 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -80,9 +80,9 @@ Rules that verify environment variable completeness and ownership.
 
 ---
 
-## 6. Examples
+## 6. 예시
 
-Rules that verify example accuracy.
+예시 정확성을 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -91,9 +91,9 @@ Rules that verify example accuracy.
 
 ---
 
-## 7. Cross-File Consistency
+## 7. 파일 간 일관성
 
-Rules that verify consistency between the report and other repo files.
+보고서와 다른 리포지토리 파일 간의 일관성을 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -101,9 +101,9 @@ Rules that verify consistency between the report and other repo files.
 
 ---
 
-## 8. Process
+## 8. 프로세스
 
-Meta-rules about the workflow verification process itself.
+워크플로우 검증 프로세스 자체에 대한 메타 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -111,9 +111,9 @@ Meta-rules about the workflow verification process itself.
 
 ---
 
-## 10. Version Metadata & Suspect Key Lifecycle
+## 10. 버전 메타데이터 및 의심 키 수명주기
 
-Meta-rules that verify report metadata accuracy and prevent indefinite accumulation of unresolved items.
+보고서 메타데이터 정확성을 검증하고 미해결 항목의 무한 축적을 방지하는 메타 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -123,9 +123,9 @@ Meta-rules that verify report metadata accuracy and prevent indefinite accumulat
 
 ---
 
-## 9. Hyperlinks
+## 9. 하이퍼링크
 
-Rules that verify all hyperlinks in the report are valid.
+보고서의 모든 하이퍼링크가 유효한지 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|

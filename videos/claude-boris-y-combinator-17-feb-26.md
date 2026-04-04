@@ -1,26 +1,26 @@
-# Inside Claude Code With Its Creator Boris Cherny — Y Combinator
+# Claude Code 창시자 Boris Cherny와의 내부 이야기 — Y Combinator
 
-Transcript of the interview with Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on the Y Combinator Light Cone podcast, published February 17, 2026.
+Claude Code 창시자 Boris Cherny ([@bcherny](https://x.com/bcherny))가 2026년 2월 17일에 Y Combinator Light Cone 팟캐스트에 출연한 인터뷰 트랜스크립트.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Video Details
+## 영상 정보
 
-- **Guest:** Boris Cherny (Creator of Claude Code)
-- **Host:** Y Combinator (The Light Cone)
-- **Published:** February 17, 2026
-- **YouTube:** [Watch on YouTube](https://youtu.be/PQU9o_5rHC4)
+- **게스트:** Boris Cherny (Claude Code 창시자)
+- **호스트:** Y Combinator (The Light Cone)
+- **공개일:** 2026년 2월 17일
+- **YouTube:** [YouTube에서 시청하기](https://youtu.be/PQU9o_5rHC4)
 
 ---
 
-## Transcript
+## 트랜스크립트
 
 [`0:01`](https://youtu.be/PQU9o_5rHC4?t=1) At Enthropic, the way that we thought about it is we don't build for the model of today. We build for the model six months from now. That's actually like still my advice to to founders that are building on LLM. Just try to think about like what is that frontier where the model is not very good at today cuz it's going to get good at it. All of Quad Code has just been written and rewritten and rewritten and rewritten over and over and over. There is no part of Quad Code that was around 6 months ago. You try a thing, you give it to users, you talk to users, you learn, and then eventually you might end up at a good idea. Sometimes you don't. Are you also in the back of your mind thinking that maybe like in 6 months you won't need to prompt that explicitly? Like the model will just be good enough to figure out on its own?
 
@@ -334,7 +334,7 @@ Transcript of the interview with Boris Cherny ([@bcherny](https://x.com/bcherny)
 
 ---
 
-## Sources
+## 소스
 
 - [Inside Claude Code With Its Creator Boris Cherny — Y Combinator — YouTube](https://youtu.be/PQU9o_5rHC4)
 - [Y Combinator](https://www.ycombinator.com/)

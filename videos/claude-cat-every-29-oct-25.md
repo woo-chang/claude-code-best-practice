@@ -1,26 +1,26 @@
-# The Secrets of Claude Code From the Engineers Who Built It — Every
+# Claude Code를 만든 엔지니어들이 공개하는 비밀 — Every
 
-Transcript of the interview with Cat & Boris (Claude Code engineers) on the Every podcast, published October 29, 2025.
+Claude Code 엔지니어 Cat & Boris가 2025년 10월 29일에 Every 팟캐스트에 출연한 인터뷰 트랜스크립트.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Video Details
+## 영상 정보
 
-- **Guest:** Cat & Boris (Claude Code Engineers, Anthropic)
-- **Host:** Every
-- **Published:** October 29, 2025
-- **YouTube:** [Watch on YouTube](https://youtu.be/IDSAMqip6ms)
+- **게스트:** Cat & Boris (Anthropic Claude Code 엔지니어)
+- **호스트:** Every
+- **공개일:** 2025년 10월 29일
+- **YouTube:** [YouTube에서 시청하기](https://youtu.be/IDSAMqip6ms)
 
 ---
 
-## Transcript
+## 트랜스크립트
 
 [`0:02`](https://youtu.be/IDSAMqip6ms?t=2) What made it work really well is that quad code has access to everything that an engineer does at the terminal. Everything you can do, quad code can do. There's nothing in between.
 
@@ -456,7 +456,7 @@ Transcript of the interview with Cat & Boris (Claude Code engineers) on the Ever
 
 ---
 
-## Sources
+## 소스
 
 - [The Secrets of Claude Code From the Engineers Who Built It — Every — YouTube](https://youtu.be/IDSAMqip6ms)
 - [Every](https://every.to/)

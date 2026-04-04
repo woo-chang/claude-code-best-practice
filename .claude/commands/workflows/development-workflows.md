@@ -1,14 +1,14 @@
 ---
-description: Update the DEVELOPMENT WORKFLOWS table by researching all 9 workflow repos in parallel
+description: 9개의 워크플로우 리포지토리를 병렬로 조사하여 DEVELOPMENT WORKFLOWS 테이블을 업데이트합니다
 ---
 
-# Workflow — Development Workflows
+# 워크플로우 — 개발 워크플로우
 
-Update the DEVELOPMENT WORKFLOWS table in `README.md` by researching 9 repos in parallel. Launch agents, merge results, present changes, update table if approved.
+9개의 리포지토리를 병렬로 조사하여 `README.md`의 DEVELOPMENT WORKFLOWS 테이블을 업데이트합니다. 에이전트를 실행하고, 결과를 합치고, 변경사항을 제시하고, 승인 시 테이블을 업데이트합니다.
 
 ---
 
-## The 9 Repos
+## 9개 리포지토리
 
 | # | Repo | Owner |
 |---|------|-------|
@@ -24,56 +24,56 @@ Update the DEVELOPMENT WORKFLOWS table in `README.md` by researching 9 repos in 
 
 ---
 
-## Table Format
+## 테이블 형식
 
-The README table has these columns:
+README 테이블에는 다음 열이 있습니다:
 
 ```markdown
 | Name | ★ | Uniqueness | Plan | <img src="!/tags/a.svg" height="14"> | <img src="!/tags/c.svg" height="14"> | <img src="!/tags/s.svg" height="14"> |
 ```
 
-- **Name**: `[Short Name](github-url)` — use project name, not owner/repo
-- **★**: Star count rounded to `k` (e.g., 98k, 10k, 4.1k). Under 1000 show exact number
-- **Uniqueness**: 2-3 shields.io badge tags using `![tag](https://img.shields.io/badge/TAG-ddf4ff)`. Underscores for spaces, `--` for hyphens, `%2B` for `+`, `%2F` for `/`
-- **Plan**: Icon + linked name of the Plan implementation. Icon is `<img src="!/tags/c.svg" height="14">` for command, `<img src="!/tags/a.svg" height="14">` for agent, `<img src="!/tags/s.svg" height="14">` for skill. Name links to the actual file in the repo
-- **Agent/Command/Skill counts**: Just the number (e.g., `25`, `0`, `108+`)
+- **Name**: `[Short Name](github-url)` — 소유자/리포지토리가 아닌 프로젝트 이름 사용
+- **★**: `k` 단위로 반올림한 스타 수 (예: 98k, 10k, 4.1k). 1000 미만이면 정확한 수치 표시
+- **Uniqueness**: `![tag](https://img.shields.io/badge/TAG-ddf4ff)`를 사용하는 2-3개의 shields.io 배지 태그. 공백에는 밑줄, 하이픈에는 `--`, `+`에는 `%2B`, `/`에는 `%2F`
+- **Plan**: 계획 구현의 아이콘 + 연결된 이름. 커맨드는 `<img src="!/tags/c.svg" height="14">`, 에이전트는 `<img src="!/tags/a.svg" height="14">`, 스킬은 `<img src="!/tags/s.svg" height="14">`. 이름은 리포지토리의 실제 파일에 연결
+- **에이전트/커맨드/스킬 수**: 숫자만 (예: `25`, `0`, `108+`)
 
-**Sort order**: Sorted by stars descending (highest first). Do NOT group by Plan type.
-
----
-
-## Phase 0: Read Current State
-
-Read these files:
-
-1. `README.md` — the `## ⚙️ DEVELOPMENT WORKFLOWS` table (note current stars, tags, Plan links, counts)
-2. `changelog/development-workflows/changelog.md` — previous changelog entries
+**정렬 순서**: 스타 내림차순 (가장 높은 것이 먼저). 계획 유형으로 그룹화하지 마세요.
 
 ---
 
-## Phase 1: Launch 2 Research Agents
+## 0단계: 현재 상태 읽기
 
-**Immediately** spawn both agents in a **single message** (parallel). Each uses `subagent_type: "development-workflows-research-agent"`.
+다음 파일들을 읽으세요:
 
-### Agent 1 (3 repos)
+1. `README.md` — `## ⚙️ DEVELOPMENT WORKFLOWS` 테이블 (현재 스타, 태그, 계획 링크, 수를 기록)
+2. `changelog/development-workflows/changelog.md` — 이전 체인지로그 항목
 
-> Research these 3 Claude Code workflow repositories:
+---
+
+## 1단계: 2개의 리서치 에이전트 실행
+
+**즉시** 두 에이전트를 **단일 메시지** (병렬)로 실행하세요. 각각 `subagent_type: "development-workflows-research-agent"`를 사용합니다.
+
+### 에이전트 1 (3개 리포지토리)
+
+> 다음 3개의 Claude Code 워크플로우 리포지토리를 조사하세요:
 >
-> **Repo 1: github/spec-kit** (https://github.com/github/spec-kit)
-> **Repo 2: affaan-m/everything-claude-code** (https://github.com/affaan-m/everything-claude-code)
-> **Repo 3: obra/superpowers** (https://github.com/obra/superpowers)
+> **리포지토리 1: github/spec-kit** (https://github.com/github/spec-kit)
+> **리포지토리 2: affaan-m/everything-claude-code** (https://github.com/affaan-m/everything-claude-code)
+> **리포지토리 3: obra/superpowers** (https://github.com/obra/superpowers)
 >
-> For EACH repo, return:
+> 각 리포지토리에 대해 다음을 반환하세요:
 >
-> 1. **Stars** — use GitHub API `https://api.github.com/repos/{owner}/{repo}`, read `stargazers_count`. Round to `k`.
-> 2. **Agent count** — count `.md` files in `agents/` or `.claude/agents/`. For obra, also count implicit sub-agents dispatched by skills.
-> 3. **Skill count** — count folders in `skills/` or `.claude/skills/`.
-> 4. **Command count** — count `.md` files in `commands/` or `.claude/commands/`. For spec-kit, count files in `templates/commands/`.
-> 5. **Plan implementation** — find the Plan/planning agent, skill, or command. Return its name, type (agent/skill/command), and file path.
-> 6. **Uniqueness tags** — 2-3 short tags (2-3 words each) capturing what makes this workflow unique.
-> 7. **Notable changes** — any significant recent changes? New agents/skills/commands, major versions?
+> 1. **스타** — GitHub API `https://api.github.com/repos/{owner}/{repo}`를 사용하고, `stargazers_count`를 읽으세요. `k`로 반올림.
+> 2. **에이전트 수** — `agents/` 또는 `.claude/agents/`의 `.md` 파일을 세세요. obra의 경우 스킬에 의해 디스패치된 암묵적 서브에이전트도 세세요.
+> 3. **스킬 수** — `skills/` 또는 `.claude/skills/`의 폴더를 세세요.
+> 4. **커맨드 수** — `commands/` 또는 `.claude/commands/`의 `.md` 파일을 세세요. spec-kit의 경우 `templates/commands/`의 파일을 세세요.
+> 5. **계획 구현** — 계획/계획 에이전트, 스킬, 또는 커맨드를 찾으세요. 이름, 유형 (에이전트/스킬/커맨드), 파일 경로를 반환하세요.
+> 6. **독창성 태그** — 이 워크플로우를 독특하게 만드는 것을 담은 2-3개의 짧은 태그 (각 2-3 단어).
+> 7. **주목할 만한 변경사항** — 최근 중요한 변경사항이 있나요? 새 에이전트/스킬/커맨드, 주요 버전?
 >
-> Return structured report per repo:
+> 리포지토리별 구조화된 보고서 반환:
 > ```
 > REPO: github/spec-kit
 > STARS: <number>k
@@ -85,28 +85,28 @@ Read these files:
 > CHANGES: <changes or "No significant changes">
 > ```
 
-### Agent 2 (6 repos)
+### 에이전트 2 (6개 리포지토리)
 
-> Research these 6 Claude Code workflow repositories:
+> 다음 6개의 Claude Code 워크플로우 리포지토리를 조사하세요:
 >
-> **Repo 1: Fission-AI/OpenSpec** (https://github.com/Fission-AI/OpenSpec)
-> **Repo 2: humanlayer/humanlayer** (https://github.com/humanlayer/humanlayer)
-> **Repo 3: gsd-build/get-shit-done** (https://github.com/gsd-build/get-shit-done)
-> **Repo 4: garrytan/gstack** (https://github.com/garrytan/gstack)
-> **Repo 5: bmad-code-org/BMAD-METHOD** (https://github.com/bmad-code-org/BMAD-METHOD)
-> **Repo 6: EveryInc/compound-engineering-plugin** (https://github.com/EveryInc/compound-engineering-plugin)
+> **리포지토리 1: Fission-AI/OpenSpec** (https://github.com/Fission-AI/OpenSpec)
+> **리포지토리 2: humanlayer/humanlayer** (https://github.com/humanlayer/humanlayer)
+> **리포지토리 3: gsd-build/get-shit-done** (https://github.com/gsd-build/get-shit-done)
+> **리포지토리 4: garrytan/gstack** (https://github.com/garrytan/gstack)
+> **리포지토리 5: bmad-code-org/BMAD-METHOD** (https://github.com/bmad-code-org/BMAD-METHOD)
+> **리포지토리 6: EveryInc/compound-engineering-plugin** (https://github.com/EveryInc/compound-engineering-plugin)
 >
-> For EACH repo, return:
+> 각 리포지토리에 대해 다음을 반환하세요:
 >
-> 1. **Stars** — use GitHub API `https://api.github.com/repos/{owner}/{repo}`, read `stargazers_count`. Round to `k`.
-> 2. **Agent count** — count `.md` files in `agents/` or `.claude/agents/`. For BMAD, count agent-persona skills in `src/bmm-skills/`. For compound-engineering-plugin, count `.md` files across all subdirectories of `plugins/compound-engineering/agents/`.
-> 3. **Skill count** — count folders in `skills/` or `.claude/skills/`. For gstack, skills are root-level directories with SKILL.md. For BMAD, count all skills in `src/bmm-skills/` and `src/core-skills/`. For compound-engineering-plugin, count folders in `plugins/compound-engineering/skills/` plus `plugins/coding-tutor/skills/`.
-> 4. **Command count** — count `.md` files in `commands/` or `.claude/commands/`. For GSD, count in `commands/gsd/`. For OpenSpec, count `/opsx:*` commands. For BMAD, count is 0 (commands generated at install time). For compound-engineering-plugin, count `.md` files in `.claude/commands/` plus `plugins/coding-tutor/commands/`.
-> 5. **Plan implementation** — find the Plan/planning agent, skill, or command. Return its name, type (agent/skill/command), and file path.
-> 6. **Uniqueness tags** — 2-3 short tags (2-3 words each) capturing what makes this workflow unique.
-> 7. **Notable changes** — any significant recent changes? New agents/skills/commands, major versions?
+> 1. **스타** — GitHub API `https://api.github.com/repos/{owner}/{repo}`를 사용하고, `stargazers_count`를 읽으세요. `k`로 반올림.
+> 2. **에이전트 수** — `agents/` 또는 `.claude/agents/`의 `.md` 파일을 세세요. BMAD의 경우 `src/bmm-skills/`의 에이전트 페르소나 스킬을 세세요. compound-engineering-plugin의 경우 `plugins/compound-engineering/agents/`의 모든 하위 디렉토리의 `.md` 파일을 세세요.
+> 3. **스킬 수** — `skills/` 또는 `.claude/skills/`의 폴더를 세세요. gstack의 경우 스킬은 SKILL.md가 있는 루트 레벨 디렉토리입니다. BMAD의 경우 `src/bmm-skills/` 및 `src/core-skills/`의 모든 스킬을 세세요. compound-engineering-plugin의 경우 `plugins/compound-engineering/skills/`와 `plugins/coding-tutor/skills/`의 폴더를 세세요.
+> 4. **커맨드 수** — `commands/` 또는 `.claude/commands/`의 `.md` 파일을 세세요. GSD의 경우 `commands/gsd/`에서 세세요. OpenSpec의 경우 `/opsx:*` 커맨드를 세세요. BMAD의 경우 수는 0 (커맨드는 설치 시 생성됨). compound-engineering-plugin의 경우 `.claude/commands/`와 `plugins/coding-tutor/commands/`의 `.md` 파일을 세세요.
+> 5. **계획 구현** — 계획/계획 에이전트, 스킬, 또는 커맨드를 찾으세요. 이름, 유형 (에이전트/스킬/커맨드), 파일 경로를 반환하세요.
+> 6. **독창성 태그** — 이 워크플로우를 독특하게 만드는 것을 담은 2-3개의 짧은 태그 (각 2-3 단어).
+> 7. **주목할 만한 변경사항** — 최근 중요한 변경사항이 있나요? 새 에이전트/스킬/커맨드, 주요 버전?
 >
-> Return structured report per repo:
+> 리포지토리별 구조화된 보고서 반환:
 > ```
 > REPO: Fission-AI/OpenSpec
 > STARS: <number>k
@@ -120,9 +120,9 @@ Read these files:
 
 ---
 
-## Phase 2: Compare & Report
+## 2단계: 비교 및 보고서
 
-**Wait for both agents.** Then compare findings against the current table and present:
+**두 에이전트를 기다리세요.** 그런 다음 결과를 현재 테이블과 비교하고 다음을 제시하세요:
 
 ```
 Development Workflows — Update Report
@@ -147,15 +147,15 @@ Action Items:
 5  | Sort        | Move <repo> (Plan type changed)      | NEW/RECURRING
 ```
 
-Compare with previous changelog entries and mark items as `NEW`, `RECURRING`, or `RESOLVED`.
+이전 체인지로그 항목과 비교하고 항목을 `NEW`, `RECURRING`, 또는 `RESOLVED`로 표시하세요.
 
 ---
 
-## Phase 2.5: Append to Changelog
+## 2.5단계: 체인지로그에 추가
 
-**MANDATORY** — always execute before presenting to user.
+**필수** — 사용자에게 제시하기 전에 항상 실행하세요.
 
-Read `changelog/development-workflows/changelog.md`, then **append** a new entry. If the file doesn't exist, create it with a Status Legend then the first entry.
+`changelog/development-workflows/changelog.md`를 읽은 다음 새 항목을 **추가**하세요. 파일이 없으면 상태 범례와 함께 생성한 후 첫 번째 항목을 추가하세요.
 
 ```markdown
 ---
@@ -167,41 +167,41 @@ Read `changelog/development-workflows/changelog.md`, then **append** a new entry
 | 1 | HIGH/MED/LOW | <type> | <action> | <status> |
 ```
 
-Get time via `TZ=Asia/Karachi date "+%Y-%m-%d %I:%M %p PKT"`. Status must be one of:
+`TZ=Asia/Karachi date "+%Y-%m-%d %I:%M %p PKT"`를 통해 시간을 가져오세요. 상태는 다음 중 하나여야 합니다:
 - `COMPLETE (reason)` | `INVALID (reason)` | `ON HOLD (reason)`
 
-Always append, never overwrite.
+항상 추가하고, 절대 덮어쓰지 마세요.
 
 ---
 
-## Phase 2.6: Update Last Updated Badge
+## 2.6단계: 마지막 업데이트 배지 업데이트
 
-**MANDATORY** — execute after Phase 2.5.
+**필수** — 2.5단계 후 실행하세요.
 
-Update the badge on line 4 of `README.md`. Get time via `TZ=Asia/Karachi date "+%b %d, %Y %-I:%M %p PKT"`, URL-encode it, replace the date in the badge. Do NOT log this as an action item.
-
----
-
-## Phase 3: Execute
-
-Ask user: **(1) Execute all** | **(2) Execute specific** | **(3) Skip**
-
-When executing, edit the `## ⚙️ DEVELOPMENT WORKFLOWS` table in `README.md`:
-- Update stars, tags, Plan links, counts per row
-- Maintain sort order: stars descending (highest first). Do NOT group by Plan type
-- Match existing format exactly (icons, badge URLs, link style)
+`README.md` 4번째 줄의 배지를 업데이트하세요. `TZ=Asia/Karachi date "+%b %d, %Y %-I:%M %p PKT"`를 통해 시간을 가져오고, URL 인코딩하여 배지의 날짜를 교체하세요. 이것을 실행 항목으로 기록하지 마세요.
 
 ---
 
-## Rules
+## 3단계: 실행
 
-1. **Launch BOTH agents in parallel** — single message, never sequential
-2. **Never guess** — use data from agents only
-3. **Don't auto-execute** — present report first, wait for approval
-4. **ALWAYS append changelog** and **ALWAYS update badge** — mandatory
-5. **Sort by stars descending** — highest stars first, do NOT group by Plan type
-6. **Tags use shields.io** — `![tag](https://img.shields.io/badge/TAG-ddf4ff)` with `_` for spaces, `--` for hyphens
-7. **Plan links must point to actual files** — not repo root
-8. **Agents, commands, skills are different** — count from their respective directories, don't conflate
-9. **Round stars consistently** — `k` suffix (98k, 10k, 4.1k). Under 1000 show exact
-10. **Compare with previous changelog** — mark items NEW, RECURRING, or RESOLVED
+사용자에게 묻습니다: **(1) 모두 실행** | **(2) 특정 실행** | **(3) 건너뜀**
+
+실행 시 `README.md`의 `## ⚙️ DEVELOPMENT WORKFLOWS` 테이블을 편집하세요:
+- 행별 스타, 태그, 계획 링크, 수를 업데이트하세요
+- 정렬 순서 유지: 스타 내림차순 (가장 높은 것이 먼저). 계획 유형으로 그룹화하지 마세요
+- 기존 형식과 정확히 일치하세요 (아이콘, 배지 URL, 링크 스타일)
+
+---
+
+## 규칙
+
+1. **두 에이전트를 병렬로 실행** — 단일 메시지, 순차적으로 절대 실행하지 마세요
+2. **추측하지 마세요** — 에이전트 데이터만 사용
+3. **자동 실행하지 마세요** — 먼저 보고서를 제시하고, 승인 기다리기
+4. **항상 체인지로그에 추가** 및 **항상 배지 업데이트** — 필수
+5. **스타 내림차순 정렬** — 가장 높은 스타가 먼저, 계획 유형으로 그룹화하지 마세요
+6. **태그는 shields.io 사용** — `![tag](https://img.shields.io/badge/TAG-ddf4ff)` (공백에는 `_`, 하이픈에는 `--`)
+7. **계획 링크는 실제 파일을 가리켜야 합니다** — 리포지토리 루트가 아님
+8. **에이전트, 커맨드, 스킬은 다릅니다** — 각각의 디렉토리에서 세세요, 혼동하지 마세요
+9. **스타는 일관되게 반올림** — `k` 접미사 (98k, 10k, 4.1k). 1000 미만이면 정확한 수치
+10. **이전 체인지로그와 비교** — 항목을 NEW, RECURRING, 또는 RESOLVED로 표시하세요

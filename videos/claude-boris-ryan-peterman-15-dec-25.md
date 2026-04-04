@@ -1,26 +1,26 @@
-# Boris Cherny (Creator of Claude Code) On What Grew His Career — Ryan Peterman
+# Claude Code 창시자 Boris Cherny — 커리어 성장의 비결 — Ryan Peterman
 
-Transcript of the interview with Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on Ryan Peterman's channel, published December 15, 2025.
+Claude Code 창시자 Boris Cherny ([@bcherny](https://x.com/bcherny))가 2025년 12월 15일에 Ryan Peterman 채널에 출연한 인터뷰 트랜스크립트.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Video Details
+## 영상 정보
 
-- **Guest:** Boris Cherny (Creator of Claude Code)
-- **Host:** Ryan Peterman
-- **Published:** December 15, 2025
-- **YouTube:** [Watch on YouTube](https://youtu.be/AmdLVWMdjOk)
+- **게스트:** Boris Cherny (Claude Code 창시자)
+- **호스트:** Ryan Peterman
+- **공개일:** 2025년 12월 15일
+- **YouTube:** [YouTube에서 시청하기](https://youtu.be/AmdLVWMdjOk)
 
 ---
 
-## Transcript
+## 트랜스크립트
 
 [`0:02`](https://youtu.be/AmdLVWMdjOk?t=2) The models are moving so quickly. If you ask me this question in 3 months or 6 months, my answer will be totally different. This is Boris Chney. He's the creator of Claude Code and former meta principal engineer. And we talked about everything that shaped his career. Can you explain latent demand?
 
@@ -172,7 +172,7 @@ Transcript of the interview with Boris Cherny ([@bcherny](https://x.com/bcherny)
 
 ---
 
-## Sources
+## 소스
 
 - [Boris Cherny (Creator of Claude Code) On What Grew His Career — Ryan Peterman — YouTube](https://youtu.be/AmdLVWMdjOk)
 - [Ryan Peterman on YouTube](https://www.youtube.com/@RyanPetermanPlus)

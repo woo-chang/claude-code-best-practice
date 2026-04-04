@@ -1,48 +1,48 @@
-# Squash Merging & PR Size Distribution — Tips from Boris Cherny
+# 스쿼시 머징 & PR 크기 분포 — Boris Cherny의 팁
 
-A summary of insights shared by Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on March 25, 2026.
+Claude Code 창시자 Boris Cherny ([@bcherny](https://x.com/bcherny))가 2026년 3월 25일에 공유한 인사이트 요약.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## 1/ 266 Contributions in a Single Day — Always Squash
+## 1/ 단 하루에 266개의 기여 — 항상 스쿼시
 
-Boris shared his GitHub contribution graph showing **266 contributions on March 24th** — from **141 PRs, always squashed** with a median of **118 lines** per PR.
+Boris는 **3월 24일에 266개의 기여** — **141개의 PR, 항상 스쿼시** 및 PR당 중앙값 **118 라인**을 보여주는 GitHub 기여 그래프를 공유했습니다.
 
-- Squash merging combines all branch commits into a single commit on the target branch — keeping history clean and linear
-- Each PR = one commit makes it easy to revert entire features and simplifies `git bisect`
-- At high-velocity AI-assisted workflows (141 PRs/day), squash is the pragmatic choice — individual "fix lint", "try this" commits within a branch are noise
+- 스쿼시 머징은 브랜치의 모든 커밋을 대상 브랜치의 단일 커밋으로 합칩니다 — 히스토리를 깔끔하고 선형으로 유지
+- PR당 하나의 커밋으로 전체 피처를 쉽게 되돌리고 `git bisect`를 단순화할 수 있습니다
+- 고속도 AI 지원 워크플로우 (하루 141개의 PR)에서 스쿼시는 실용적인 선택입니다 — 브랜치 내의 개별 "lint 수정", "이것 시도" 커밋은 노이즈입니다
 
-<a href="https://x.com/bcherny/status/2038552880018538749"><img src="assets/boris-25-mar-26/1.png" alt="Boris Cherny — 266 contributions, always squashed" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2038552880018538749"><img src="assets/boris-25-mar-26/1.png" alt="Boris Cherny — 266개의 기여, 항상 스쿼시" width="50%" /></a>
 
 ---
 
-## 2/ PR Size Distribution — Keep PRs Small
+## 2/ PR 크기 분포 — PR을 작게 유지
 
-Boris shared the size distribution across those 141 PRs, totaling **45,032 lines changed** (additions + deletions):
+Boris는 **45,032 라인 변경** (추가 + 삭제)에 달하는 141개의 PR에 걸친 크기 분포를 공유했습니다:
 
-| Metric | Lines (add+del) | Meaning |
+| 지표 | 라인 (추가+삭제) | 의미 |
 |--------|---------------:|---------|
-| **p50** | **118** | Median PR size — half of all PRs were 118 lines or fewer |
-| p90 | 498 | 90% of PRs were under 500 lines |
-| **p99** | **2,978** | Only ~1 PR exceeded ~3K lines |
-| min | 2 | Smallest PR — a quick 2-line fix |
-| max | 10,459 | Largest single PR — likely a migration or generated code |
+| **p50** | **118** | PR 중앙값 크기 — 모든 PR의 절반이 118 라인 이하 |
+| p90 | 498 | PR의 90%가 500 라인 미만 |
+| **p99** | **2,978** | ~3K 라인을 초과하는 PR은 약 1개뿐 |
+| min | 2 | 가장 작은 PR — 빠른 2줄 수정 |
+| max | 10,459 | 가장 큰 단일 PR — 마이그레이션이나 생성된 코드일 가능성 높음 |
 
-- A **median of 118 lines** means most PRs are focused and reviewable, even at 141 PRs/day
-- The distribution is heavily right-skewed — the occasional large PR is inevitable (bulk renames, migrations), but the norm is tight
-- Small PRs reduce merge conflict risk, are easier to review, and pair perfectly with squash merging for clean reverts
+- **중앙값 118 라인**은 하루 141개의 PR에서도 대부분의 PR이 집중적이고 검토 가능하다는 것을 의미합니다
+- 분포는 크게 오른쪽으로 치우쳐 있습니다 — 가끔 큰 PR은 불가피하지만 (대규모 이름 변경, 마이그레이션), 표준은 작습니다
+- 작은 PR은 머지 충돌 위험을 줄이고, 검토하기 쉬우며, 깔끔한 되돌리기를 위한 스쿼시 머징과 완벽하게 짝을 이룹니다
 
-<a href="https://x.com/bcherny/status/2038552880018538749"><img src="assets/boris-25-mar-26/2.png" alt="Boris Cherny — PR size distribution table" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2038552880018538749"><img src="assets/boris-25-mar-26/2.png" alt="Boris Cherny — PR 크기 분포 테이블" width="50%" /></a>
 
 ---
 
-## Sources
+## 소스
 
-- [Boris Cherny (@bcherny) on X — March 25, 2026](https://x.com/bcherny)
+- [Boris Cherny (@bcherny) on X — 2026년 3월 25일](https://x.com/bcherny)

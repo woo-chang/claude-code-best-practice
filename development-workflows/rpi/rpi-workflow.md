@@ -1,35 +1,35 @@
-# RPI Workflow
+# RPI 워크플로우
 
-**RPI** = **R**esearch → **P**lan → **I**mplement
+**RPI** = **R**esearch(리서치) → **P**lan(플랜) → **I**mplement(구현)
 
-A systematic development workflow with validation gates at each phase. Prevents wasted effort on non-viable features and ensures comprehensive documentation.
+각 단계에서 검증 게이트가 있는 체계적인 개발 워크플로우. 실현 불가능한 기능에 대한 낭비적인 노력을 방지하고 포괄적인 문서화를 보장합니다.
 
 <table width="100%">
 <tr>
-<td><a href="../../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Overview
+## 개요
 
 ![RPI Workflow](rpi-workflow.svg)
 
 ---
 
-## Installation
+## 설치
 
-Copy the `.claude` folder (containing `agents/` and `commands/rpi/`) to your repository root, then create the `rpi/plans` directory.
+`.claude` 폴더(`agents/` 및 `commands/rpi/` 포함)를 리포지토리 루트에 복사한 다음 `rpi/plans` 디렉토리를 생성하세요.
 
 ---
 
-## Example Workflow
+## 예시 워크플로우
 
-### Feature: User Authentication
+### 기능: 사용자 인증
 
-**Step 1: Describe**
+**1단계: 설명**
 ```
 User: "Add OAuth2 authentication with Google and GitHub providers"
 
@@ -41,40 +41,40 @@ User: "Add OAuth2 authentication with Google and GitHub providers"
    → Final: rpi/oauth2-authentication/REQUEST.md
 ```
 
-**Step 2: Research**
+**2단계: 리서치**
 ```bash
 /rpi:research rpi/oauth2-authentication/REQUEST.md
 ```
-Output:
-- `research/RESEARCH.md` with analysis
-- Verdict: **GO** (feasible, aligned with strategy)
+출력:
+- 분석이 담긴 `research/RESEARCH.md`
+- 판정: **GO** (실현 가능, 전략과 부합)
 
-**Step 3: Plan**
+**3단계: 플랜**
 ```bash
 /rpi:plan oauth2-authentication
 ```
-Output:
-- `plan/pm.md` - User stories and acceptance criteria
-- `plan/ux.md` - Login UI flows
-- `plan/eng.md` - Technical architecture
-- `plan/PLAN.md` - 3 phases, 15 tasks
+출력:
+- `plan/pm.md` - 사용자 스토리 및 수용 기준
+- `plan/ux.md` - 로그인 UI 흐름
+- `plan/eng.md` - 기술 아키텍처
+- `plan/PLAN.md` - 3단계, 15개 태스크
 
-**Step 4: Implement**
+**4단계: 구현**
 ```bash
 /rpi:implement oauth2-authentication
 ```
-Progress:
+진행 상황:
 - Phase 1: Backend Foundation → PASS
 - Phase 2: Frontend Integration → PASS
 - Phase 3: Testing & Polish → PASS
 
-Result: Feature complete, ready for PR.
+결과: 기능 완성, PR 준비 완료.
 
 ---
 
-## Feature Folder Structure
+## 기능 폴더 구조
 
-All feature work lives in `rpi/{feature-slug}/`:
+모든 기능 작업은 `rpi/{feature-slug}/`에 위치합니다:
 
 ```
 rpi/{feature-slug}/
@@ -92,9 +92,9 @@ rpi/{feature-slug}/
 
 ---
 
-## Agents and Commands
+## 에이전트와 커맨드
 
-| Command | Agents Used |
+| 커맨드 | 사용되는 에이전트 |
 |---------|-------------|
 | `/rpi:research` | requirement-parser, product-manager, Explore, senior-software-engineer, technical-cto-advisor, documentation-analyst-writer |
 | `/rpi:plan` | senior-software-engineer, product-manager, ux-designer, documentation-analyst-writer |

@@ -1,30 +1,30 @@
 ---
 name: time-svg-creator
-description: Creates an SVG time card showing the current time for Dubai. Writes the SVG to agent-teams/output/dubai-time.svg and updates agent-teams/output/output.md.
+description: 두바이의 현재 시간을 보여주는 SVG 시간 카드를 생성합니다. SVG를 agent-teams/output/dubai-time.svg에 작성하고 agent-teams/output/output.md를 업데이트합니다.
 allowed-tools: Write, Read
 ---
 
-# Time SVG Creator Skill
+# 시간 SVG 크리에이터 스킬
 
-Creates a visual SVG time card for Dubai, UAE and writes the output files.
+두바이, UAE를 위한 시각적 SVG 시간 카드를 생성하고 출력 파일을 작성합니다.
 
-## Task
+## 작업
 
-You will receive three fields from the calling context: `time`, `timezone`, and `formatted`. Create an SVG time card and write both the SVG and a markdown summary.
+호출 컨텍스트에서 세 개의 필드를 받습니다: `time`, `timezone`, `formatted`. SVG 시간 카드를 생성하고 SVG와 마크다운 요약을 모두 작성합니다.
 
-## Instructions
+## 지시사항
 
-1. **Create SVG** — Use the SVG template from [reference.md](reference.md), replacing placeholders with actual values
-2. **Write SVG file** — Write to `agent-teams/output/dubai-time.svg`
-3. **Write summary** — Write to `agent-teams/output/output.md` using the markdown template from [reference.md](reference.md)
+1. **SVG 생성** — [reference.md](reference.md)의 SVG 템플릿을 사용하여 플레이스홀더를 실제 값으로 교체
+2. **SVG 파일 작성** — `agent-teams/output/dubai-time.svg`에 작성
+3. **요약 작성** — [reference.md](reference.md)의 마크다운 템플릿을 사용하여 `agent-teams/output/output.md`에 작성
 
-## Rules
+## 규칙
 
-- Use the EXACT time values provided — NEVER re-fetch or recalculate
-- The SVG must be self-contained and valid
-- Both output files go in the `agent-teams/output/` directory
+- 제공된 정확한 시간 값 사용 — 절대 재가져오기 또는 재계산하지 않음
+- SVG가 자체 포함되고 유효해야 함
+- 두 출력 파일 모두 `agent-teams/output/` 디렉토리에 저장
 
-## Additional resources
+## 추가 리소스
 
-- For SVG template, output template, and design specs, see [reference.md](reference.md)
-- For example input/output pairs, see [examples.md](examples.md)
+- SVG 템플릿, 출력 템플릿, 디자인 명세는 [reference.md](reference.md) 참조
+- 예시 입력/출력 쌍은 [examples.md](examples.md) 참조

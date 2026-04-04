@@ -1,72 +1,74 @@
-# Claude Advanced Tool Use Patterns
+# Claude 고급 도구 사용 패턴
 
-API-level features (now GA) that reduce token consumption, latency, and improve tool accuracy. Released with Opus/Sonnet 4.6.
+토큰 소비, 지연 시간을 줄이고 도구 정확도를 향상시키는 API 수준 기능 (현재 GA). Opus/Sonnet 4.6과 함께 출시.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
-## Table of Contents
+## 목차
 
-1. [Overview](#overview)
-2. [Programmatic Tool Calling (PTC)](#programmatic-tool-calling-ptc)
-3. [Dynamic Filtering for Web Search/Fetch](#dynamic-filtering-for-web-searchfetch)
-4. [Tool Search Tool](#tool-search-tool)
-5. [Tool Use Examples](#tool-use-examples)
-6. [Claude Code Relevance](#claude-code-relevance)
+1. [개요](#overview)
+2. [프로그래밍 방식 도구 호출 (PTC)](#programmatic-tool-calling-ptc)
+3. [웹 검색/가져오기에 대한 동적 필터링](#dynamic-filtering-for-web-searchfetch)
+4. [도구 검색 도구](#tool-search-tool)
+5. [도구 사용 예시](#tool-use-examples)
+6. [Claude Code 관련성](#claude-code-relevance)
 
 ---
 
-## Overview
+<a id="overview"></a>
+## 개요
 
-| Feature | Problem Solved | Token Savings | Availability |
+| 기능 | 해결하는 문제 | 토큰 절감 | 가용성 |
 |---------|---------------|---------------|--------------|
-| Programmatic Tool Calling | Multi-step agent loops burn tokens on round trips | ~37% reduction | API, Foundry (GA) |
-| Dynamic Filtering | Web search/fetch results bloat context with irrelevant content | ~24% fewer input tokens | API, Foundry (GA) |
-| Tool Search Tool | Too many tool definitions bloat context | ~85% reduction | API, Foundry (GA) |
-| Tool Use Examples | Schema alone can't express usage patterns | 72% → 90% accuracy | API, Foundry (GA) |
+| 프로그래밍 방식 도구 호출 | 다단계 에이전트 루프가 라운드 트립에서 토큰을 소모 | ~37% 감소 | API, Foundry (GA) |
+| 동적 필터링 | 웹 검색/가져오기 결과가 관련 없는 콘텐츠로 컨텍스트 팽창 | ~24% 입력 토큰 감소 | API, Foundry (GA) |
+| 도구 검색 도구 | 너무 많은 도구 정의가 컨텍스트 팽창 | ~85% 감소 | API, Foundry (GA) |
+| 도구 사용 예시 | 스키마만으로는 사용 패턴 표현 불가 | 72% → 90% 정확도 | API, Foundry (GA) |
 
-All features are **generally available** as of February 18, 2026.
+모든 기능은 2026년 2월 18일부터 **일반 공개**됩니다.
 
-**Strategic layering** — start with your biggest bottleneck:
-- Context bloat from tool definitions → Tool Search Tool
-- Large intermediate results → Programmatic Tool Calling
-- Web search noise → Dynamic Filtering
-- Parameter errors → Tool Use Examples
+**전략적 레이어링** — 가장 큰 병목 지점부터 시작하세요:
+- 도구 정의로 인한 컨텍스트 팽창 → 도구 검색 도구
+- 대용량 중간 결과 → 프로그래밍 방식 도구 호출
+- 웹 검색 노이즈 → 동적 필터링
+- 매개변수 오류 → 도구 사용 예시
 
 ---
 
-## Programmatic Tool Calling (PTC)
+<a id="programmatic-tool-calling-ptc"></a>
+## 프로그래밍 방식 도구 호출 (PTC)
 
-<img src="assets/programmatic-tool-calling-diagram.svg" alt="PTC Diagram — Traditional vs Programmatic Tool Calling" width="100%" />
+<img src="assets/programmatic-tool-calling-diagram.svg" alt="PTC 다이어그램 — 전통적 vs 프로그래밍 방식 도구 호출" width="100%" />
 
-### The Paradigm Shift
+### 패러다임 전환
 
-**Before (Traditional Tool Calling):**
+**이전 (전통적 도구 호출):**
 ```
-User prompt → Claude → Tool call 1 → Response 1 → Claude → Tool call 2 → Response 2 → Claude → Tool call 3 → Response 3 → Claude → Final answer
+사용자 프롬프트 → Claude → 도구 호출 1 → 응답 1 → Claude → 도구 호출 2 → 응답 2 → Claude → 도구 호출 3 → 응답 3 → Claude → 최종 답변
 ```
-Each tool call requires a full model round trip. 3 tools = 3 inference passes.
+각 도구 호출은 전체 모델 라운드 트립이 필요합니다. 3개 도구 = 3번의 추론 패스.
 
-**After (Programmatic Tool Calling):**
+**이후 (프로그래밍 방식 도구 호출):**
 ```
-User prompt → Claude → writes Python script → Script calls Tool 1, Tool 2, Tool 3 internally → stdout → Claude → Final answer
+사용자 프롬프트 → Claude → Python 스크립트 작성 → 스크립트가 내부적으로 도구 1, 2, 3 호출 → stdout → Claude → 최종 답변
 ```
-Claude writes code that orchestrates all tools. Only the final `stdout` enters the context window. 3 tools = 1 inference pass.
+Claude가 모든 도구를 오케스트레이션하는 코드를 작성합니다. 최종 `stdout`만 컨텍스트 윈도우에 들어갑니다. 3개 도구 = 1번의 추론 패스.
 
-### How It Works
+### 작동 방식
 
-1. You define tools with `allowed_callers: ["code_execution_20250825"]`
-2. Claude writes Python that calls those tools as async functions inside a sandbox
-3. When a tool function is called, the sandbox pauses and the API returns a `tool_use` block
-4. You provide the tool result — it goes to the **running code**, not Claude's context
-5. Code resumes, processes results, calls more tools if needed
-6. Only `stdout` from the final execution reaches Claude
+1. `allowed_callers: ["code_execution_20250825"]`로 도구 정의
+2. Claude가 샌드박스 내에서 비동기 함수로 해당 도구를 호출하는 Python 작성
+3. 도구 함수가 호출되면 샌드박스가 일시 중지되고 API가 `tool_use` 블록 반환
+4. 도구 결과 제공 — Claude의 컨텍스트가 아닌 **실행 중인 코드**로 전달
+5. 코드가 재개되어 결과를 처리하고 필요하면 더 많은 도구 호출
+6. 최종 실행의 `stdout`만 Claude에 도달
 
-### Key Configuration
+### 주요 구성
 
 ```json
 {
@@ -91,31 +93,31 @@ Claude writes code that orchestrates all tools. Only the final `stdout` enters t
 }
 ```
 
-### The `allowed_callers` Field
+### `allowed_callers` 필드
 
-| Value | Behavior |
+| 값 | 동작 |
 |-------|----------|
-| `["direct"]` | Traditional tool calling only (default if omitted) |
-| `["code_execution_20250825"]` | Only callable from Python sandbox |
-| `["direct", "code_execution_20250825"]` | Both modes available |
+| `["direct"]` | 전통적 도구 호출만 (생략 시 기본값) |
+| `["code_execution_20250825"]` | Python 샌드박스에서만 호출 가능 |
+| `["direct", "code_execution_20250825"]` | 두 모드 모두 사용 가능 |
 
-**Recommendation:** Choose one mode per tool, not both. This gives Claude clearer guidance.
+**권장 사항:** 도구당 하나의 모드를 선택하세요, 둘 다 아닙니다. 이것이 Claude에게 더 명확한 지침을 제공합니다.
 
-### The `caller` Field in Responses
+### 응답의 `caller` 필드
 
-Every tool use block includes a `caller` field so you know how it was invoked:
+모든 도구 사용 블록에는 어떻게 호출되었는지 알 수 있는 `caller` 필드가 포함됩니다:
 
 ```json
-// Direct (traditional)
+// 직접 (전통적)
 { "caller": { "type": "direct" } }
 
-// Programmatic (from code execution)
+// 프로그래밍 방식 (코드 실행에서)
 { "caller": { "type": "code_execution_20250825", "tool_id": "srvtoolu_abc123" } }
 ```
 
-### Advanced Patterns
+### 고급 패턴
 
-**Batch processing** — process N items in 1 inference pass:
+**일괄 처리** — N개 항목을 1번의 추론 패스로 처리:
 ```python
 regions = ["West", "East", "Central", "North", "South"]
 results = {}
@@ -127,7 +129,7 @@ top = max(results.items(), key=lambda x: x[1])
 print(f"Top region: {top[0]} with ${top[1]:,}")
 ```
 
-**Early termination** — stop as soon as success criteria are met:
+**조기 종료** — 성공 기준이 충족되면 즉시 중지:
 ```python
 endpoints = ["us-east", "eu-west", "apac"]
 for endpoint in endpoints:
@@ -137,7 +139,7 @@ for endpoint in endpoints:
         break
 ```
 
-**Conditional tool selection:**
+**조건부 도구 선택:**
 ```python
 file_info = await get_file_info(path)
 if file_info["size"] < 10000:
@@ -147,7 +149,7 @@ else:
 print(content)
 ```
 
-**Data filtering** — reduce what Claude sees:
+**데이터 필터링** — Claude가 보는 것을 줄이기:
 ```python
 logs = await fetch_logs(server_id)
 errors = [log for log in logs if "ERROR" in log]
@@ -156,71 +158,72 @@ for error in errors[-10:]:
     print(error)
 ```
 
-### Model Compatibility
+### 모델 호환성
 
-| Model | Supported |
+| 모델 | 지원 여부 |
 |-------|-----------|
-| Claude Opus 4.6 | Yes |
-| Claude Sonnet 4.6 | Yes |
-| Claude Sonnet 4.5 | Yes |
-| Claude Opus 4.5 | Yes |
+| Claude Opus 4.6 | 예 |
+| Claude Sonnet 4.6 | 예 |
+| Claude Sonnet 4.5 | 예 |
+| Claude Opus 4.5 | 예 |
 
-### Constraints
+### 제약 사항
 
-| Constraint | Detail |
+| 제약 | 세부 사항 |
 |-----------|--------|
-| **Not on Bedrock/Vertex** | API and Foundry only |
-| **No MCP tools** | MCP connector tools cannot be called programmatically |
-| **No web search/fetch** | Web tools not supported in PTC |
-| **No structured outputs** | `strict: true` tools incompatible |
-| **No forced tool choice** | `tool_choice` cannot force PTC |
-| **Container lifetime** | ~4.5 minutes before expiry |
-| **ZDR** | Not covered by Zero Data Retention |
-| **Tool results as strings** | Validate external results for code injection risks |
+| **Bedrock/Vertex 미지원** | API와 Foundry만 |
+| **MCP 도구 미지원** | MCP 커넥터 도구는 프로그래밍 방식으로 호출 불가 |
+| **웹 검색/가져오기 미지원** | PTC에서 웹 도구 미지원 |
+| **구조화된 출력 미지원** | `strict: true` 도구 비호환 |
+| **강제 도구 선택 미지원** | `tool_choice`가 PTC를 강제할 수 없음 |
+| **컨테이너 수명** | 만료 전 약 4.5분 |
+| **ZDR** | 제로 데이터 보존 미적용 |
+| **문자열로서의 도구 결과** | 코드 주입 위험을 위해 외부 결과 검증 필요 |
 
-### When to Use PTC
+### PTC 사용 시기
 
-| Good Use Cases | Less Ideal |
+| 좋은 사용 사례 | 덜 이상적인 경우 |
 |----------------|------------|
-| Processing large datasets needing aggregates | Single tool calls with simple responses |
-| 3+ dependent tool calls in sequence | Tools needing immediate user feedback |
-| Filtering/transforming results before Claude sees them | Very fast operations (overhead > benefit) |
-| Parallel operations across many items | |
-| Conditional logic based on intermediate results | |
+| 집계가 필요한 대규모 데이터셋 처리 | 간단한 응답의 단일 도구 호출 |
+| 순차적인 3개 이상의 종속 도구 호출 | 즉각적인 사용자 피드백이 필요한 도구 |
+| Claude가 보기 전에 결과 필터링/변환 | 매우 빠른 작업 (오버헤드 > 이점) |
+| 많은 항목에 걸친 병렬 작업 | |
+| 중간 결과에 기반한 조건부 로직 | |
 
-### Token Efficiency
+### 토큰 효율성
 
-- Tool results from programmatic calls are **not added to Claude's context** — only final `stdout`
-- Intermediate processing happens in code, not model tokens
-- 10 tools programmatically ≈ 1/10th the tokens of 10 direct calls
+- 프로그래밍 방식 호출의 도구 결과는 **Claude의 컨텍스트에 추가되지 않음** — 최종 `stdout`만
+- 중간 처리는 모델 토큰이 아닌 코드에서 발생
+- 10개 도구를 프로그래밍 방식으로 ≈ 10개 직접 호출의 1/10 토큰
 
 ---
 
-## Dynamic Filtering for Web Search/Fetch
+<a id="dynamic-filtering-for-web-searchfetch"></a>
+## 웹 검색/가져오기에 대한 동적 필터링
 
-### The Problem
+### 문제점
 
-Web search and fetch tools dump full HTML pages into Claude's context window. Most of that content is irrelevant — navigation, ads, boilerplate. Claude then reasons over all of it, wasting tokens and reducing accuracy.
+웹 검색 및 가져오기 도구가 전체 HTML 페이지를 Claude의 컨텍스트 윈도우에 덤프합니다. 대부분의 내용은 관련 없는 — 네비게이션, 광고, 보일러플레이트입니다. 그러면 Claude가 모든 것을 추론하면서 토큰을 낭비하고 정확도가 저하됩니다.
 
-### The Solution
+### 해결책
 
-Claude now **writes and executes Python code to filter web results** before they enter the context window. Instead of reasoning over raw HTML, Claude filters, parses, and extracts only relevant content in a sandbox.
+Claude가 이제 **컨텍스트 윈도우에 들어오기 전에 웹 결과를 필터링하기 위해 Python 코드를 작성하고 실행합니다**. 원시 HTML을 추론하는 대신 Claude가 샌드박스에서 관련 내용만 필터링, 파싱, 추출합니다.
 
-### How It Works
+### 작동 방식
 
-**Before:**
+**이전:**
 ```
-Query → Search results → Fetch full HTML × N pages → All content enters context → Claude reasons over everything
-```
-
-**After:**
-```
-Query → Search results → Claude writes filtering code → Code extracts relevant content only → Filtered results enter context
+쿼리 → 검색 결과 → 전체 HTML 가져오기 × N 페이지 → 모든 내용이 컨텍스트에 진입 → Claude가 모든 것을 추론
 ```
 
-### API Configuration
+**이후:**
+```
+쿼리 → 검색 결과 → Claude가 필터링 코드 작성 → 코드가 관련 내용만 추출 → 필터링된 결과가 컨텍스트에 진입
+```
 
-Uses updated tool type versions with a beta header:
+### API 구성
+
+베타 헤더와 함께 업데이트된 도구 유형 버전 사용:
 
 ```json
 {
@@ -239,49 +242,50 @@ Uses updated tool type versions with a beta header:
 }
 ```
 
-**Header required:** `anthropic-beta: code-execution-web-tools-2026-02-09`
+**필요한 헤더:** `anthropic-beta: code-execution-web-tools-2026-02-09`
 
-**Enabled by default** when using the new tool type versions with Sonnet 4.6 and Opus 4.6.
+Sonnet 4.6 및 Opus 4.6과 함께 새 도구 유형 버전 사용 시 **기본으로 활성화**.
 
-### Benchmark Results
+### 벤치마크 결과
 
-**BrowseComp** (finding specific information on websites):
+**BrowseComp** (웹사이트에서 특정 정보 찾기):
 
-| Model | Without Filtering | With Filtering | Improvement |
+| 모델 | 필터링 없이 | 필터링 사용 | 개선 |
 |-------|-------------------|----------------|-------------|
 | Sonnet 4.6 | 33.3% | **46.6%** | +13.3 pp |
 | Opus 4.6 | 45.3% | **61.6%** | +16.3 pp |
 
-**DeepsearchQA** (multi-step research, F1 score):
+**DeepsearchQA** (다단계 리서치, F1 점수):
 
-| Model | Without Filtering | With Filtering | Improvement |
+| 모델 | 필터링 없이 | 필터링 사용 | 개선 |
 |-------|-------------------|----------------|-------------|
 | Sonnet 4.6 | 52.6% | **59.4%** | +6.8 pp |
 | Opus 4.6 | 69.8% | **77.3%** | +7.5 pp |
 
-**Token efficiency:** Average 24% fewer input tokens. Sonnet 4.6 sees cost reduction; Opus 4.6 may increase slightly due to more complex filtering code.
+**토큰 효율성:** 평균 24% 입력 토큰 감소. Sonnet 4.6은 비용 감소 혜택을 봅니다. Opus 4.6은 더 복잡한 필터링 코드로 인해 약간 증가할 수 있습니다.
 
-### Use Cases
+### 사용 사례
 
-- Sifting through technical documentation
-- Verifying citations across multiple sources
-- Cross-referencing search results
-- Multi-step research queries
-- Finding specific data points buried in large pages
+- 기술 문서 필터링
+- 여러 소스에 걸친 인용 검증
+- 검색 결과 교차 참조
+- 다단계 리서치 쿼리
+- 대용량 페이지에 묻혀 있는 특정 데이터 포인트 찾기
 
 ---
 
-## Tool Search Tool
+<a id="tool-search-tool"></a>
+## 도구 검색 도구
 
-### The Problem
+### 문제점
 
-Loading all tool definitions upfront wastes context. If you have 50 MCP tools at ~1.5K tokens each, that's 75K tokens before the user even asks a question.
+모든 도구 정의를 미리 로드하면 컨텍스트가 낭비됩니다. 50개의 MCP 도구가 각각 ~1.5K 토큰이면 사용자가 질문하기도 전에 75K 토큰이 됩니다.
 
-### The Solution
+### 해결책
 
-Mark infrequently-used tools with `defer_loading: true`. They're excluded from the initial context. Claude discovers them on-demand via a Tool Search Tool.
+가끔 사용되는 도구를 `defer_loading: true`로 표시합니다. 초기 컨텍스트에서 제외됩니다. Claude는 도구 검색 도구를 통해 필요 시 이를 검색합니다.
 
-### Configuration
+### 구성
 
 ```json
 {
@@ -298,44 +302,45 @@ Mark infrequently-used tools with `defer_loading: true`. They're excluded from t
 }
 ```
 
-### Best Practices
+### 모범 사례
 
-- Keep 3-5 most-used tools always loaded, defer the rest
-- Write clear, descriptive tool names and descriptions (search relies on them)
-- Document available capabilities in the system prompt
+- 가장 많이 사용되는 3-5개의 도구는 항상 로드하고 나머지는 지연
+- 명확하고 설명적인 도구 이름과 설명 작성 (검색이 이에 의존)
+- 시스템 프롬프트에 사용 가능한 기능 문서화
 
-### When to Use
+### 사용 시기
 
-- Tool definitions consuming > 10K tokens
-- 10+ tools available
-- Multiple MCP servers
-- Tool selection accuracy issues from too many options
+- 도구 정의가 10K 토큰 초과 소비
+- 10개 이상의 도구 사용 가능
+- 여러 MCP 서버
+- 너무 많은 옵션으로 인한 도구 선택 정확도 문제
 
-### Token Savings
+### 토큰 절감
 
-~85% reduction in tool definition tokens (77K → 8.7K in Anthropic's benchmarks).
+도구 정의 토큰에서 ~85% 감소 (Anthropic 벤치마크에서 77K → 8.7K).
 
-### Claude Code Equivalent
+### Claude Code 동급 기능
 
-Claude Code has **MCP tool search auto mode** (enabled by default since v2.1.7). When MCP tool descriptions exceed 10% of context, they're deferred and discovered via `MCPSearch`. Configure the threshold with `ENABLE_TOOL_SEARCH=auto:N` where N is the context percentage (0-100).
+Claude Code에는 **MCP 도구 검색 자동 모드**가 있습니다 (v2.1.7부터 기본으로 활성화). MCP 도구 설명이 컨텍스트의 10%를 초과하면 지연되고 `MCPSearch`를 통해 검색됩니다. `ENABLE_TOOL_SEARCH=auto:N`으로 임계값을 구성하세요 (N은 컨텍스트 비율 0-100).
 
 ---
 
-## Tool Use Examples
+<a id="tool-use-examples"></a>
+## 도구 사용 예시
 
-### The Problem
+### 문제점
 
-JSON schemas define structure but can't express:
-- When to include optional parameters
-- Which parameter combinations make sense
-- Format conventions (date formats, ID patterns)
-- Nested structure usage
+JSON 스키마는 구조를 정의하지만 다음을 표현할 수 없습니다:
+- 선택적 매개변수를 언제 포함할지
+- 어떤 매개변수 조합이 의미가 있는지
+- 형식 규칙 (날짜 형식, ID 패턴)
+- 중첩 구조 사용
 
-### The Solution
+### 해결책
 
-Add `input_examples` to tool definitions — concrete usage patterns beyond the schema.
+도구 정의에 `input_examples` 추가 — 스키마를 넘어서는 구체적인 사용 패턴.
 
-### Configuration
+### 구성
 
 ```json
 {
@@ -370,51 +375,52 @@ Add `input_examples` to tool definitions — concrete usage patterns beyond the 
 }
 ```
 
-### Best Practices
+### 모범 사례
 
-- Use **realistic data**, not placeholder strings like "example_value"
-- Show **variety**: minimal, partial, and full specifications
-- Keep concise: **1-5 examples per tool**
-- Focus on resolving ambiguity — target behavioral clarity over schema completeness
-- Show parameter correlations (e.g., `priority: "critical"` tends to have `assignee`)
+- "example_value" 같은 자리 표시자 문자열이 아닌 **실제 데이터** 사용
+- **다양성 표시**: 최소, 부분, 전체 사양
+- 간결하게 유지: **도구당 1-5개 예시**
+- 모호함 해소에 집중 — 스키마 완전성보다 동작 명확성 목표
+- 매개변수 상관관계 표시 (예: `priority: "critical"`은 `assignee`를 가지는 경향이 있음)
 
-### Results
+### 결과
 
-72% → 90% accuracy on complex parameter handling in Anthropic's benchmarks.
+Anthropic 벤치마크에서 복잡한 매개변수 처리 시 72% → 90% 정확도.
 
 ---
 
-## Claude Code Relevance
+<a id="claude-code-relevance"></a>
+## Claude Code 관련성
 
-### What applies directly to Claude Code users
+### Claude Code 사용자에게 직접 적용되는 것
 
-| Feature | Claude Code Status | Action |
+| 기능 | Claude Code 상태 | 조치 |
 |---------|-------------------|--------|
-| Tool Search | Built-in since v2.1.7 as MCPSearch auto mode | Tune `ENABLE_TOOL_SEARCH=auto:N` if you have many MCP tools |
-| Dynamic Filtering | Not available in CLI (API-level web tools) | Relevant for Agent SDK users doing web research |
-| PTC | Not available in CLI | Relevant for Agent SDK users building custom agents |
-| Tool Use Examples | Not configurable in CLI | Relevant for custom MCP server authors |
+| 도구 검색 | v2.1.7부터 MCPSearch 자동 모드로 기본 제공 | MCP 도구가 많으면 `ENABLE_TOOL_SEARCH=auto:N` 조정 |
+| 동적 필터링 | CLI에서 사용 불가 (API 수준 웹 도구) | 웹 리서치를 하는 Agent SDK 사용자에게 관련 |
+| PTC | CLI에서 사용 불가 | 사용자 정의 에이전트를 구축하는 Agent SDK 사용자에게 관련 |
+| 도구 사용 예시 | CLI에서 구성 불가 | 사용자 정의 MCP 서버 제작자에게 관련 |
 
-### For Agent SDK developers
+### Agent SDK 개발자를 위해
 
-If you're building agents with `@anthropic-ai/claude-agent-sdk`, PTC is immediately actionable:
+`@anthropic-ai/claude-agent-sdk`로 에이전트를 구축하는 경우 PTC를 즉시 활용할 수 있습니다:
 
-1. Add `code_execution_20250825` to your tools array
-2. Set `allowed_callers` on tools that benefit from batching/filtering
-3. Implement the tool result loop (pause → provide result → resume)
-4. Return structured data (JSON) from tools for easier programmatic parsing
+1. 도구 배열에 `code_execution_20250825` 추가
+2. 일괄 처리/필터링의 이점이 있는 도구에 `allowed_callers` 설정
+3. 도구 결과 루프 구현 (일시 중지 → 결과 제공 → 재개)
+4. 더 쉬운 프로그래밍 방식 파싱을 위해 도구에서 구조화된 데이터 (JSON) 반환
 
-### For MCP server authors
+### MCP 서버 제작자를 위해
 
-If you're building custom MCP servers, Tool Use Examples can improve how Claude uses your tools:
-- Add `input_examples` to tool schemas
-- Document return formats clearly in descriptions (PTC needs to parse them)
+사용자 정의 MCP 서버를 구축하는 경우 도구 사용 예시가 Claude가 도구를 사용하는 방법을 개선할 수 있습니다:
+- 도구 스키마에 `input_examples` 추가
+- 설명에 반환 형식 명확하게 문서화 (PTC가 이를 파싱해야 함)
 
 ---
 
-## Sources
+## 소스
 
-- [Anthropic Engineering: Advanced Tool Use](https://www.anthropic.com/engineering/advanced-tool-use)
-- [Programmatic Tool Calling Documentation](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)
-- [Code Execution Tool Documentation](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool)
-- [Improved Web Search with Dynamic Filtering](https://claude.com/blog/improved-web-search-with-dynamic-filtering)
+- [Anthropic 엔지니어링: 고급 도구 사용](https://www.anthropic.com/engineering/advanced-tool-use)
+- [프로그래밍 방식 도구 호출 문서](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)
+- [코드 실행 도구 문서](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool)
+- [동적 필터링으로 개선된 웹 검색](https://claude.com/blog/improved-web-search-with-dynamic-filtering)

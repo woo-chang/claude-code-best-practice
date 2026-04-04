@@ -1,32 +1,32 @@
-# Orchestration Workflow
+# 오케스트레이션 워크플로우
 
-This document describes the **Command → Agent (with skill) → Skill** orchestration workflow, demonstrated through a weather data fetching and SVG rendering system.
+이 문서는 날씨 데이터 수집 및 SVG 렌더링 시스템을 통해 시연되는 **Command → Agent (with skill) → Skill** 오케스트레이션 워크플로우를 설명합니다.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
-## System Overview
+## 시스템 개요
 
-The weather system demonstrates two distinct skill patterns within a single orchestration workflow:
-- **Agent Skills** (preloaded): `weather-fetcher` is injected into the `weather-agent` at startup as domain knowledge
-- **Skills** (independent): `weather-svg-creator` is invoked directly by the command via the Skill tool
+날씨 시스템은 단일 오케스트레이션 워크플로우 내에서 두 가지 스킬 패턴을 시연합니다:
+- **에이전트 스킬** (사전 로드): `weather-fetcher`가 도메인 지식으로 시작 시 `weather-agent`에 주입됨
+- **스킬** (독립형): `weather-svg-creator`가 Skill 도구를 통해 커맨드에서 직접 호출됨
 
-This showcases the **Command → Agent → Skill** architecture pattern, where:
-- A command orchestrates the workflow and handles user interaction
-- An agent fetches data using its preloaded skill
-- A skill creates the visual output independently
+이는 다음을 포함하는 **Command → Agent → Skill** 아키텍처 패턴을 보여줍니다:
+- 커맨드가 워크플로우를 오케스트레이션하고 사용자 상호작용을 처리
+- 에이전트가 사전 로드된 스킬을 사용하여 데이터를 수집
+- 스킬이 독립적으로 시각적 출력을 생성
 
-## Component Summary
+## 컴포넌트 요약
 
-| Component | Role | Example |
+| 컴포넌트 | 역할 | 예시 |
 |-----------|------|---------|
-| **Command** | Entry point, user interaction | [`/weather-orchestrator`](../.claude/commands/weather-orchestrator.md) |
-| **Agent** | Fetches data with preloaded skill (agent skill) | [`weather-agent`](../.claude/agents/weather-agent.md) with [`weather-fetcher`](../.claude/skills/weather-fetcher/SKILL.md) |
-| **Skill** | Creates output independently (skill) | [`weather-svg-creator`](../.claude/skills/weather-svg-creator/SKILL.md) |
+| **커맨드** | 진입점, 사용자 상호작용 | [`/weather-orchestrator`](../.claude/commands/weather-orchestrator.md) |
+| **에이전트** | 사전 로드된 스킬로 데이터 수집 (에이전트 스킬) | [`weather-agent`](../.claude/agents/weather-agent.md) with [`weather-fetcher`](../.claude/skills/weather-fetcher/SKILL.md) |
+| **스킬** | 독립적으로 출력 생성 (스킬) | [`weather-svg-creator`](../.claude/skills/weather-svg-creator/SKILL.md) |
 
 ## Flow Diagram
 
@@ -76,67 +76,67 @@ This showcases the **Command → Agent → Skill** architecture pattern, where:
                    └────────────┘    └────────────┘
 ```
 
-## Component Details
+## 컴포넌트 상세
 
-### 1. Command
+### 1. 커맨드
 
-#### `/weather-orchestrator` (Command)
-- **Location**: `.claude/commands/weather-orchestrator.md`
-- **Purpose**: Entry point — orchestrates the workflow and handles user interaction
-- **Actions**:
-  1. Asks user for temperature unit preference (Celsius/Fahrenheit)
-  2. Invokes weather-agent via Agent tool
-  3. Invokes weather-svg-creator via Skill tool
-- **Model**: haiku
+#### `/weather-orchestrator` (커맨드)
+- **위치**: `.claude/commands/weather-orchestrator.md`
+- **목적**: 진입점 — 워크플로우를 오케스트레이션하고 사용자 상호작용을 처리
+- **동작**:
+  1. 사용자에게 온도 단위 선호도(섭씨/화씨) 질문
+  2. Agent 도구를 통해 weather-agent 호출
+  3. Skill 도구를 통해 weather-svg-creator 호출
+- **모델**: haiku
 
-### 2. Agent with Preloaded Skill (Agent Skill)
+### 2. 사전 로드된 스킬이 있는 에이전트 (에이전트 스킬)
 
-#### `weather-agent` (Agent)
-- **Location**: `.claude/agents/weather-agent.md`
-- **Purpose**: Fetch weather data using its preloaded skill
-- **Skills**: `weather-fetcher` (preloaded as domain knowledge)
-- **Tools Available**: WebFetch, Read
-- **Model**: sonnet
-- **Color**: green
-- **Memory**: project
+#### `weather-agent` (에이전트)
+- **위치**: `.claude/agents/weather-agent.md`
+- **목적**: 사전 로드된 스킬을 사용하여 날씨 데이터 수집
+- **스킬**: `weather-fetcher` (도메인 지식으로 사전 로드됨)
+- **사용 가능한 도구**: WebFetch, Read
+- **모델**: sonnet
+- **색상**: green
+- **메모리**: project
 
-The agent has `weather-fetcher` preloaded into its context at startup. It follows the skill's instructions to fetch the temperature and returns the value to the command.
+에이전트는 시작 시 컨텍스트에 `weather-fetcher`가 사전 로드됩니다. 스킬의 지시사항에 따라 온도를 가져오고 커맨드에 값을 반환합니다.
 
-### 3. Skill
+### 3. 스킬
 
-#### `weather-svg-creator` (Skill)
-- **Location**: `.claude/skills/weather-svg-creator/SKILL.md`
-- **Purpose**: Create a visual SVG weather card and write output files
-- **Invocation**: Via Skill tool from the command (not preloaded into any agent)
-- **Outputs**:
-  - `orchestration-workflow/weather.svg` — SVG weather card
-  - `orchestration-workflow/output.md` — Weather summary
+#### `weather-svg-creator` (스킬)
+- **위치**: `.claude/skills/weather-svg-creator/SKILL.md`
+- **목적**: 시각적 SVG 날씨 카드 생성 및 출력 파일 저장
+- **호출**: 커맨드에서 Skill 도구를 통해 (어떤 에이전트에도 사전 로드되지 않음)
+- **출력**:
+  - `orchestration-workflow/weather.svg` — SVG 날씨 카드
+  - `orchestration-workflow/output.md` — 날씨 요약
 
-### 4. Preloaded Skill
+### 4. 사전 로드된 스킬
 
-#### `weather-fetcher` (Skill)
-- **Location**: `.claude/skills/weather-fetcher/SKILL.md`
-- **Purpose**: Instructions for fetching real-time temperature data
-- **Data Source**: Open-Meteo API for Dubai, UAE
-- **Output**: Temperature value and unit (Celsius or Fahrenheit)
-- **Note**: This is an agent skill — preloaded into `weather-agent`, not invoked directly
+#### `weather-fetcher` (스킬)
+- **위치**: `.claude/skills/weather-fetcher/SKILL.md`
+- **목적**: 실시간 온도 데이터 수집 지시사항
+- **데이터 소스**: 두바이, UAE의 Open-Meteo API
+- **출력**: 온도 값 및 단위 (섭씨 또는 화씨)
+- **참고**: 이것은 에이전트 스킬 — `weather-agent`에 사전 로드되며 직접 호출되지 않음
 
-## Execution Flow
+## 실행 흐름
 
-1. **User Invocation**: User runs `/weather-orchestrator` command
-2. **User Prompt**: Command asks user for preferred temperature unit (Celsius/Fahrenheit)
-3. **Agent Invocation**: Command invokes `weather-agent` via Agent tool
-4. **Skill Execution** (within agent context):
-   - Agent follows `weather-fetcher` skill instructions to fetch temperature from Open-Meteo
-   - Agent returns the temperature value and unit to the command
-5. **SVG Creation**: Command invokes `weather-svg-creator` via Skill tool
-   - Skill creates SVG weather card at `orchestration-workflow/weather.svg`
-   - Skill writes summary to `orchestration-workflow/output.md`
-6. **Result Display**: Summary shown to user with:
-   - Temperature unit requested
-   - Temperature fetched
-   - SVG card location
-   - Output file location
+1. **사용자 호출**: 사용자가 `/weather-orchestrator` 커맨드 실행
+2. **사용자 프롬프트**: 커맨드가 사용자에게 선호 온도 단위(섭씨/화씨) 질문
+3. **에이전트 호출**: 커맨드가 Agent 도구를 통해 `weather-agent` 호출
+4. **스킬 실행** (에이전트 컨텍스트 내):
+   - 에이전트가 `weather-fetcher` 스킬 지시사항에 따라 Open-Meteo에서 온도 수집
+   - 에이전트가 온도 값과 단위를 커맨드에 반환
+5. **SVG 생성**: 커맨드가 Skill 도구를 통해 `weather-svg-creator` 호출
+   - 스킬이 `orchestration-workflow/weather.svg`에 SVG 날씨 카드 생성
+   - 스킬이 `orchestration-workflow/output.md`에 요약 저장
+6. **결과 표시**: 사용자에게 다음 정보와 함께 요약 표시:
+   - 요청된 온도 단위
+   - 수집된 온도
+   - SVG 카드 위치
+   - 출력 파일 위치
 
 ## Example Execution
 
@@ -159,17 +159,17 @@ Input: /weather-orchestrator
    └─ Summary: orchestration-workflow/output.md
 ```
 
-## Key Design Principles
+## 핵심 설계 원칙
 
-1. **Two Skill Patterns**: Demonstrates both agent skills (preloaded) and skills (invoked directly)
-2. **Command as Orchestrator**: The command handles user interaction and coordinates the workflow
-3. **Agent for Data Fetching**: The agent uses its preloaded skill to fetch data, then returns it
-4. **Skill for Output**: The SVG creator runs independently, receiving data from the command context
-5. **Clean Separation**: Fetch (agent) → Render (skill) — each component has a single responsibility
+1. **두 가지 스킬 패턴**: 에이전트 스킬(사전 로드)과 스킬(직접 호출) 모두 시연
+2. **오케스트레이터로서의 커맨드**: 커맨드가 사용자 상호작용을 처리하고 워크플로우를 조율
+3. **데이터 수집을 위한 에이전트**: 에이전트가 사전 로드된 스킬을 사용하여 데이터를 수집한 후 반환
+4. **출력을 위한 스킬**: SVG 크리에이터가 커맨드 컨텍스트의 데이터를 받아 독립적으로 실행
+5. **명확한 분리**: 수집(에이전트) → 렌더링(스킬) — 각 컴포넌트는 단일 책임을 가짐
 
-## Architecture Patterns
+## 아키텍처 패턴
 
-### Agent Skill (Preloaded)
+### 에이전트 스킬 (사전 로드)
 
 ```yaml
 # In agent definition (.claude/agents/weather-agent.md)
@@ -180,11 +180,11 @@ skills:
 ---
 ```
 
-- **Skills are preloaded**: Full skill content is injected into agent's context at startup
-- **Agent uses skill knowledge**: Agent follows instructions from preloaded skills
-- **No dynamic invocation**: Skills are reference material, not invoked separately
+- **스킬이 사전 로드됨**: 시작 시 전체 스킬 콘텐츠가 에이전트의 컨텍스트에 주입됨
+- **에이전트가 스킬 지식 활용**: 에이전트가 사전 로드된 스킬의 지시사항을 따름
+- **동적 호출 없음**: 스킬은 참조 자료로, 별도로 호출되지 않음
 
-### Skill (Direct Invocation)
+### 스킬 (직접 호출)
 
 ```yaml
 # In skill definition (.claude/skills/weather-svg-creator/SKILL.md)
@@ -194,6 +194,6 @@ description: Creates an SVG weather card...
 ---
 ```
 
-- **Invoked via Skill tool**: Command calls `Skill(skill: "weather-svg-creator")`
-- **Independent execution**: Runs in the command's context, not inside an agent
-- **Receives data from context**: Uses temperature data already available in the conversation
+- **Skill 도구를 통해 호출**: 커맨드가 `Skill(skill: "weather-svg-creator")`를 호출
+- **독립적 실행**: 에이전트 내부가 아닌 커맨드의 컨텍스트에서 실행
+- **컨텍스트에서 데이터 수신**: 대화에서 이미 사용 가능한 온도 데이터를 사용

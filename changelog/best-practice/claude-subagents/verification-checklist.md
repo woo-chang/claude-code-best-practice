@@ -1,22 +1,22 @@
-# Verification Checklist — Subagents Report
+# 검증 체크리스트 — Subagents Report
 
-Rules accumulate over time. Each workflow-changelog run MUST execute ALL rules at the specified depth. When a new type of drift is caught that an existing rule should have caught (but didn't exist or was too shallow), append a new rule here.
+규칙은 시간이 지남에 따라 축적됩니다. 각 workflow-changelog 실행은 지정된 깊이에서 모든 규칙을 실행해야 합니다. 기존 규칙이 잡았어야 하는(그러나 존재하지 않았거나 너무 얕은) 새로운 유형의 드리프트가 발견되면, 여기에 새 규칙을 추가하세요.
 
-## Depth Levels
+## 깊이 수준
 
-| Depth | Meaning | Example |
+| 깊이 | 의미 | 예시 |
 |-------|---------|---------|
-| `exists` | Check if a section/table/file exists | "Does the report have a Memory Scopes table?" |
-| `presence-check` | Check if a specific item is present or absent | "Is the `color` field in the Frontmatter Fields table?" |
-| `content-match` | Compare actual values word-by-word against source | "Does the `model` field description match official docs?" |
-| `field-level` | Verify every individual field is accounted for | "Does each frontmatter field from official docs appear in the table?" |
-| `cross-file` | Same value must match across multiple files | "Does CLAUDE.md agent section match the report's field list?" |
+| `exists` | 섹션/표/파일이 존재하는지 확인 | "보고서에 Memory Scopes 표가 있는가?" |
+| `presence-check` | 특정 항목이 있는지 없는지 확인 | "`color` 필드가 Frontmatter Fields 표에 있는가?" |
+| `content-match` | 소스와 단어 단위로 실제 값 비교 | "`model` 필드 설명이 공식 문서와 일치하는가?" |
+| `field-level` | 모든 개별 필드가 반영되었는지 확인 | "공식 문서의 각 프론트매터 필드가 표에 나타나는가?" |
+| `cross-file` | 동일한 값이 여러 파일에서 일치하는지 확인 | "CLAUDE.md 에이전트 섹션이 보고서의 필드 목록과 일치하는가?" |
 
 ---
 
-## 1. Frontmatter Fields Table
+## 1. 프론트매터 필드 표
 
-Rules that verify the Frontmatter Fields table against official docs.
+공식 문서에 대한 Frontmatter Fields 표를 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -27,9 +27,9 @@ Rules that verify the Frontmatter Fields table against official docs.
 
 ---
 
-## 2. Memory Scopes
+## 2. 메모리 범위
 
-Rules that verify the Memory Scopes table.
+Memory Scopes 표를 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -38,9 +38,9 @@ Rules that verify the Memory Scopes table.
 
 ---
 
-## 3. Examples
+## 3. 예시
 
-Rules that verify example accuracy.
+예시 정확성을 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -49,9 +49,9 @@ Rules that verify example accuracy.
 
 ---
 
-## 4. Scope & Priority
+## 4. 범위 및 우선순위
 
-Rules that verify scope and priority information.
+범위 및 우선순위 정보를 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -60,9 +60,9 @@ Rules that verify scope and priority information.
 
 ---
 
-## 5. Cross-File Consistency
+## 5. 파일 간 일관성
 
-Rules that verify consistency between the report and other repo files.
+보고서와 다른 리포지토리 파일 간의 일관성을 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -70,9 +70,9 @@ Rules that verify consistency between the report and other repo files.
 
 ---
 
-## 6. Process
+## 6. 프로세스
 
-Meta-rules about the workflow verification process itself.
+워크플로우 검증 프로세스 자체에 대한 메타 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -80,9 +80,9 @@ Meta-rules about the workflow verification process itself.
 
 ---
 
-## 7. Agent Tables
+## 7. 에이전트 표
 
-Rules that verify the Official Claude Agents and Agents in This Repository tables.
+Official Claude Agents 표와 이 리포지토리의 에이전트 표를 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|
@@ -92,9 +92,9 @@ Rules that verify the Official Claude Agents and Agents in This Repository table
 
 ---
 
-## 8. Hyperlinks
+## 8. 하이퍼링크
 
-Rules that verify all hyperlinks in the report are valid.
+보고서의 모든 하이퍼링크가 유효한지 검증하는 규칙.
 
 | # | Category | Check | Depth | Compare Against | Added | Origin |
 |---|----------|-------|-------|-----------------|-------|--------|

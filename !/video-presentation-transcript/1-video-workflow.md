@@ -1,100 +1,100 @@
-# Video 1: From Vibe Coding to Agentic Engineering — Workflows with Claude Code
+# 비디오 1: 바이브 코딩에서 에이전틱 엔지니어링으로 — Claude Code로 워크플로우 구축
 
-**Total duration: ~5 minutes**
-
----
-
-## INTRO — The Problem (0:00 – 0:45)
-
-- "If you've just started with Claude Code, chances are you're doing vibe coding — typing prompts, getting results, repeating. That works, but you're only using a fraction of what Claude Code can do."
-- "This repo is a curated collection of best practices that takes you from vibe coding to agentic engineering — where Claude doesn't just respond to you, it runs workflows for you."
-- "In this first video, I'm covering the foundation: **Commands, Agents, and Skills** — and how they chain together into repeatable workflows."
+**총 길이: 약 5분**
 
 ---
 
-## PART 1 — The Ad-Hoc Way (0:45 – 2:00)
+## 인트로 — 문제 (0:00 – 0:45)
 
-**Demo: Vibe coding approach**
-
-- Open a fresh Claude Code terminal
-- Type: *"What is the weather in Dubai? Write it to an output file and create an SVG card for it."*
-- Show the result — it works, but point out:
-  - The SVG design is different every time (random colors, layout, fonts)
-  - You had to sit and watch it work
-  - If you run it again tomorrow, you'll get a completely different looking card
-- **Open a second terminal, run the same prompt again**
-  - Show the SVG side-by-side — they look different
-- "This is the problem with vibe coding. It works once. But it's not repeatable. It's not a workflow you can trust."
+- "Claude Code를 막 시작했다면, 아마 바이브 코딩을 하고 있을 것입니다 — 프롬프트를 입력하고, 결과를 받고, 반복하는 방식. 그것도 작동하지만, Claude Code가 할 수 있는 것의 일부만 활용하는 겁니다."
+- "이 리포지토리는 바이브 코딩에서 에이전틱 엔지니어링으로 이어지는 모범 사례의 큐레이션 모음입니다 — Claude가 단순히 응답하는 것이 아니라, 여러분을 위해 워크플로우를 실행하는 방식입니다."
+- "이 첫 번째 비디오에서는 기초를 다룹니다: **커맨드, 에이전트, 스킬** — 그리고 이것들이 어떻게 반복 가능한 워크플로우로 연결되는지."
 
 ---
 
-## PART 2 — The Workflow Way (2:00 – 3:15)
+## PART 1 — 애드혹 방식 (0:45 – 2:00)
 
-**Demo: `/weather-orchestrator` command**
+**데모: 바이브 코딩 접근법**
 
-- "Now let me show you the same task, but as a workflow."
-- Type: `/weather-orchestrator`
-- Walk through what happens on screen:
-  1. It **asks you** Celsius or Fahrenheit (structured user interaction)
-  2. It **spawns a weather-agent** to fetch the temperature (you see the green agent in the terminal)
-  3. It **invokes a skill** to create the SVG card
-  4. Output: `orchestration-workflow/weather.svg` + `orchestration-workflow/output.md`
-- "Run it again — same SVG layout, same file structure, same clean result. Every time."
-- "You can kick this off and walk away. It runs autonomously."
+- 새 Claude Code 터미널 열기
+- 입력: *"두바이 날씨는? 출력 파일에 저장하고 SVG 카드를 만들어줘."*
+- 결과 보여주기 — 작동하지만 다음을 지적:
+  - SVG 디자인이 매번 다름 (랜덤 색상, 레이아웃, 폰트)
+  - 작업하는 동안 지켜봐야 함
+  - 내일 다시 실행하면 완전히 다른 모양의 카드가 나옴
+- **두 번째 터미널을 열어 동일한 프롬프트 다시 실행**
+  - SVG를 나란히 보여주기 — 다르게 생겼음
+- "이것이 바이브 코딩의 문제입니다. 한 번은 작동합니다. 하지만 반복 가능하지 않습니다. 신뢰할 수 있는 워크플로우가 아닙니다."
 
 ---
 
-## PART 3 — How It Works: Command → Agent → Skill (3:15 – 4:30)
+## PART 2 — 워크플로우 방식 (2:00 – 3:15)
 
-**Explain the three building blocks**
+**데모: `/weather-orchestrator` 커맨드**
 
-### Commands (`.claude/commands/`)
+- "이제 동일한 태스크를 워크플로우로 보여드리겠습니다."
+- 입력: `/weather-orchestrator`
+- 화면에서 일어나는 일 설명:
+  1. **질문**: 섭씨 또는 화씨? (구조화된 사용자 상호작용)
+  2. **weather-agent 생성**: 온도 수집 (터미널에서 녹색 에이전트 확인)
+  3. **스킬 호출**: SVG 카드 생성
+  4. 출력: `orchestration-workflow/weather.svg` + `orchestration-workflow/output.md`
+- "다시 실행해보세요 — 동일한 SVG 레이아웃, 동일한 파일 구조, 동일한 깔끔한 결과. 매번."
+- "시작하고 자리를 떠도 됩니다. 자율적으로 실행됩니다."
 
-- "A command is the entry point — like a script. It's a markdown file that tells Claude *what steps to follow*."
-- "Our `weather-orchestrator` is the conductor. It asks the user a question, calls an agent, then calls a skill."
-- Commands live in `.claude/commands/` and show up as `/slash-commands`
+---
 
-### Agents (`.claude/agents/`)
+## PART 3 — 작동 원리: 커맨드 → 에이전트 → 스킬 (3:15 – 4:30)
 
-- "An agent is a specialized worker. Our `weather-agent` has one job: fetch the temperature."
-- "It has a **preloaded skill** called `weather-fetcher` — that skill is injected into the agent's context at startup, so it knows exactly which API to call and how to parse the response."
-- Agents have their own tools, models, and permissions. They're isolated workers.
+**세 가지 빌딩 블록 설명**
 
-### Skills (`.claude/skills/`)
+### 커맨드 (`.claude/commands/`)
 
-- "A skill is a reusable set of instructions. Think of it as a recipe."
-- "We have two skill patterns here:"
-  - **Agent skill** (preloaded): `weather-fetcher` is baked into the agent — it's domain knowledge
-  - **Invoked skill**: `weather-svg-creator` is called independently via the Skill tool — it creates the SVG card
-- Skills can be background knowledge OR standalone actions
+- "커맨드는 진입점입니다 — 스크립트와 같습니다. Claude에게 *따를 단계를 알려주는* 마크다운 파일입니다."
+- "우리의 `weather-orchestrator`는 지휘자입니다. 사용자에게 질문하고, 에이전트를 호출하고, 스킬을 호출합니다."
+- 커맨드는 `.claude/commands/`에 위치하며 `/slash-command`로 표시됩니다
 
-### Flow Diagram (optionally show on screen)
+### 에이전트 (`.claude/agents/`)
+
+- "에이전트는 특화된 작업자입니다. 우리의 `weather-agent`는 한 가지 일을 합니다: 온도 수집."
+- "**사전 로드된 스킬** `weather-fetcher`가 있습니다 — 그 스킬은 시작 시 에이전트의 컨텍스트에 주입되어, 어떤 API를 호출하고 응답을 어떻게 파싱할지 정확히 압니다."
+- 에이전트는 자체 도구, 모델, 권한을 가집니다. 격리된 작업자입니다.
+
+### 스킬 (`.claude/skills/`)
+
+- "스킬은 재사용 가능한 지시사항의 집합입니다. 레시피라고 생각하세요."
+- "여기에는 두 가지 스킬 패턴이 있습니다:"
+  - **에이전트 스킬** (사전 로드): `weather-fetcher`는 에이전트에 내장됨 — 도메인 지식
+  - **호출된 스킬**: `weather-svg-creator`는 Skill 도구를 통해 독립적으로 호출됨 — SVG 카드 생성
+- 스킬은 배경 지식이 될 수도 있고 독립 실행 행동이 될 수도 있습니다
+
+### 흐름 다이어그램 (선택적으로 화면에 표시)
 
 ```
-/weather-orchestrator (Command)
+/weather-orchestrator (커맨드)
     → AskUser: C° or F°?
-    → weather-agent (Agent + weather-fetcher skill)
-    → weather-svg-creator (Skill)
-    → Output: weather.svg + output.md
+    → weather-agent (에이전트 + weather-fetcher 스킬)
+    → weather-svg-creator (스킬)
+    → 출력: weather.svg + output.md
 ```
 
 ---
 
-## PART 4 — Why This Matters / Wrap-up (4:30 – 5:00)
+## PART 4 — 왜 중요한가 / 마무리 (4:30 – 5:00)
 
-- "The difference between vibe coding and agentic engineering is **structure**."
-  - Vibe coding: you type, you hope, you get something.
-  - Agentic engineering: you define a workflow once, and it runs the same way every time.
-- "Commands, Agents, and Skills are the three building blocks. Once you understand these, you can build any workflow."
-- "This repo has more patterns — hooks, multi-agent teams, CLAUDE.md configuration — we'll cover those in upcoming videos."
-- "Link to the repo is in the description. Star it, clone it, and start building your own workflows."
+- "바이브 코딩과 에이전틱 엔지니어링의 차이는 **구조**입니다."
+  - 바이브 코딩: 입력하고, 기대하고, 뭔가를 얻습니다.
+  - 에이전틱 엔지니어링: 워크플로우를 한 번 정의하면, 매번 동일하게 실행됩니다.
+- "커맨드, 에이전트, 스킬이 세 가지 빌딩 블록입니다. 이것들을 이해하면, 어떤 워크플로우든 구축할 수 있습니다."
+- "이 리포지토리에는 더 많은 패턴이 있습니다 — 훅, 멀티 에이전트 팀, CLAUDE.md 구성 — 다음 비디오에서 다룰 것입니다."
+- "리포지토리 링크는 설명에 있습니다. 스타를 달고, 클론하고, 자신만의 워크플로우를 구축하세요."
 
 ---
 
-## Quick Reference
+## 빠른 참조
 
-| Concept | Location | Purpose |
+| 개념 | 위치 | 목적 |
 |---------|----------|---------|
-| Command | `.claude/commands/` | Entry point, orchestration, `/slash-command` |
-| Agent | `.claude/agents/` | Specialized worker with own tools & model |
-| Skill | `.claude/skills/` | Reusable instructions (preloaded or invoked) |
+| 커맨드 | `.claude/commands/` | 진입점, 오케스트레이션, `/slash-command` |
+| 에이전트 | `.claude/agents/` | 자체 도구 및 모델이 있는 특화 작업자 |
+| 스킬 | `.claude/skills/` | 재사용 가능한 지시사항 (사전 로드 또는 호출) |

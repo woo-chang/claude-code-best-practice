@@ -1,57 +1,57 @@
 ---
-description: Track Claude Code commands report changes and find what needs updating
+description: Claude Code 커맨드 보고서 변경사항을 추적하고 업데이트가 필요한 항목을 찾습니다
 argument-hint: [number of versions to check, default 10]
 ---
 
-# Workflow Changelog — Commands Report
+# 워크플로우 체인지로그 — 커맨드 보고서
 
-You are a coordinator for the claude-code-best-practice project. Your job is to launch a research agent, wait for its results, and present a report about drift in the **Commands Reference** report (`best-practice/claude-commands.md`).
+당신은 claude-code-best-practice 프로젝트의 코디네이터입니다. 리서치 에이전트를 실행하고, 결과를 기다리고, **커맨드 참조** 보고서 (`best-practice/claude-commands.md`)의 드리프트에 대한 보고서를 제시하는 것이 당신의 임무입니다.
 
-This workflow checks for exactly **two types of drift**:
-1. **Frontmatter fields** — any field added or removed in the official docs
-2. **Official commands** — any built-in slash command added or removed
+이 워크플로우는 정확히 **두 가지 유형의 드리프트**를 확인합니다:
+1. **프론트매터 필드** — 공식 문서에서 추가 또는 제거된 필드
+2. **공식 커맨드** — 추가 또는 제거된 내장 슬래시 커맨드
 
-**Versions to check:** `$ARGUMENTS` (default: 10 if empty or not a number)
+**확인할 버전:** `$ARGUMENTS` (비어 있거나 숫자가 아닌 경우 기본값: 10)
 
-This is a **read-then-report** workflow. Launch the agent, merge findings, and produce a report. Only take action if the user approves.
-
----
-
-## Phase 1: Launch Research Agent
-
-Spawn the `workflow-claude-commands-agent` with this prompt:
-
-> Research the claude-code-best-practice project for commands report drift. Check the last $ARGUMENTS versions (default: 10).
->
-> Fetch these 2 external sources:
-> 1. Slash Commands Reference: https://code.claude.com/docs/en/slash-commands
-> 2. Changelog: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
->
-> Then read the local report (`best-practice/claude-commands.md`).
->
-> Check for exactly two things:
-> 1. **Frontmatter fields**: Compare the official docs' supported command frontmatter fields against the report's Frontmatter Fields table. Flag any fields that were added or removed.
-> 2. **Official commands**: Compare the official docs' built-in slash commands list against the report's official commands table. Flag any commands that were added or removed. Also check if any command's tag or description has changed.
+이것은 **읽기 후 보고** 워크플로우입니다. 에이전트를 실행하고, 결과를 합쳐서 보고서를 작성하세요. 사용자가 승인한 경우에만 조치를 취하세요.
 
 ---
 
-## Phase 2: Read Previous Changelog Entries
+## 1단계: 리서치 에이전트 실행
 
-**While the agent is running**, read `changelog/best-practice/claude-commands/changelog.md` to get the last 25 entries. Parse the priority actions to identify:
-- **Recurring items** — issues that appeared before and are still unresolved
-- **New items** — issues appearing for the first time
-- **Resolved items** — previously flagged issues now fixed
+`workflow-claude-commands-agent`를 다음 프롬프트로 실행하세요:
+
+> 커맨드 보고서 드리프트에 대해 claude-code-best-practice 프로젝트를 조사하세요. 마지막 $ARGUMENTS 버전 (기본값: 10)을 확인하세요.
+>
+> 다음 2개의 외부 소스를 가져오세요:
+> 1. 슬래시 커맨드 참조: https://code.claude.com/docs/en/slash-commands
+> 2. 체인지로그: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
+>
+> 그런 다음 로컬 보고서 (`best-practice/claude-commands.md`)를 읽으세요.
+>
+> 정확히 두 가지를 확인하세요:
+> 1. **프론트매터 필드**: 공식 문서의 지원되는 커맨드 프론트매터 필드를 보고서의 프론트매터 필드 테이블과 비교하세요. 추가 또는 제거된 필드를 표시하세요.
+> 2. **공식 커맨드**: 공식 문서의 내장 슬래시 커맨드 목록을 보고서의 공식 커맨드 테이블과 비교하세요. 추가 또는 제거된 커맨드를 표시하세요. 커맨드의 태그나 설명이 변경되었는지도 확인하세요.
 
 ---
 
-## Phase 3: Generate Report
+## 2단계: 이전 체인지로그 항목 읽기
 
-**Wait for the agent to complete.** Produce a report with these sections:
+**에이전트가 실행되는 동안**, `changelog/best-practice/claude-commands/changelog.md`를 읽어 마지막 25개 항목을 가져오세요. 우선순위 조치를 파싱하여 다음을 파악하세요:
+- **반복 항목** — 이전에 나타났고 여전히 미해결인 문제
+- **새 항목** — 처음 나타나는 문제
+- **해결된 항목** — 이전에 표시된 문제가 이제 수정된 것
 
-1. **Frontmatter Field Changes** — Fields added or removed in official docs vs our report
-2. **Official Command Changes** — Built-in slash commands added or removed vs our table
+---
 
-End with a prioritized **Action Items** summary table. Each item must include a `Status` column showing `NEW`, `RECURRING (first seen: <date>)`, or `RESOLVED`:
+## 3단계: 보고서 생성
+
+**에이전트가 완료될 때까지 기다리세요.** 다음 섹션으로 보고서를 작성하세요:
+
+1. **프론트매터 필드 변경사항** — 공식 문서 대비 보고서에서 추가 또는 제거된 필드
+2. **공식 커맨드 변경사항** — 테이블 대비 추가 또는 제거된 내장 슬래시 커맨드
+
+우선순위 **실행 항목** 요약 테이블로 마무리하세요. 각 항목에는 `NEW`, `RECURRING (first seen: <date>)`, 또는 `RESOLVED`를 표시하는 `Status` 열이 포함되어야 합니다:
 
 ```
 Priority Actions:
@@ -63,15 +63,15 @@ Priority Actions:
 5  | Changed Tag       | Update <command> tag from X to Y      | NEW
 ```
 
-Also include a **Resolved Since Last Run** section listing items from previous runs that are no longer issues.
+이전 실행에서 더 이상 문제가 아닌 항목을 나열하는 **마지막 실행 이후 해결됨** 섹션도 포함하세요.
 
 ---
 
-## Phase 3.5: Append Summary to Changelog
+## 3.5단계: 체인지로그에 요약 추가
 
-**This phase is MANDATORY — always execute it before presenting the report to the user.**
+**이 단계는 필수입니다 — 사용자에게 보고서를 제시하기 전에 항상 실행하세요.**
 
-Read the existing `changelog/best-practice/claude-commands/changelog.md` file, then **append** (do NOT overwrite) a new entry at the end. The entry format must be exactly:
+기존 `changelog/best-practice/claude-commands/changelog.md` 파일을 읽은 다음 끝에 새 항목을 **추가** (덮어쓰지 마세요) 하세요. 항목 형식은 정확히 다음과 같아야 합니다:
 
 ```markdown
 ---
@@ -84,57 +84,57 @@ Read the existing `changelog/best-practice/claude-commands/changelog.md` file, t
 | ... | ... | ... | ... | ... |
 ```
 
-**Status format — MUST use one of these three formats:**
-- `COMPLETE (reason)` — action was taken and resolved successfully
-- `INVALID (reason)` — finding was incorrect, not applicable, or intentional
-- `ON HOLD (reason)` — action deferred, waiting on external dependency or user decision
+**상태 형식 — 다음 세 가지 형식 중 하나를 반드시 사용하세요:**
+- `COMPLETE (reason)` — 조치가 취해지고 성공적으로 해결된 경우
+- `INVALID (reason)` — 결과가 잘못되었거나, 적용되지 않거나, 의도적인 경우
+- `ON HOLD (reason)` — 조치 연기, 외부 의존성 또는 사용자 결정 대기 중
 
-The `(reason)` is mandatory and must briefly explain what was done or why.
+`(reason)`은 필수이며 수행된 작업 또는 이유를 간략하게 설명해야 합니다.
 
-**Rules for appending:**
-- Always append — never overwrite or replace previous entries
-- The date and time is when the command is executed in Pakistan Standard Time (PKT, UTC+5); get it by running `TZ=Asia/Karachi date "+%Y-%m-%d %I:%M %p PKT"`. The version comes from agent findings
-- If `changelog/best-practice/claude-commands/changelog.md` doesn't exist or is empty, create it with the Status Legend table (see top of file) then the first entry
-- Each entry is separated by `---`
-- **Only include items with HIGH, MEDIUM, or LOW priority** — omit NONE priority items
-
----
-
-## Phase 3.6: Update Last Updated Badge
-
-**This phase is MANDATORY — always execute it immediately after Phase 3.5, before presenting the report.**
-
-Update the "Last Updated" badge at the top of `best-practice/claude-commands.md`. Run `TZ=Asia/Karachi date "+%b %d, %Y %-I:%M %p PKT"` to get the time, URL-encode it (spaces to `%20`, commas to `%2C`), and replace the date portion in the badge. Also update the Claude Code version in the badge if it has changed.
-
-**Do NOT log badge updates as action items in the changelog or report.** Badge syncing is a routine part of every run, not a finding.
+**추가 규칙:**
+- 항상 추가하세요 — 이전 항목을 덮어쓰거나 교체하지 마세요
+- 날짜와 시간은 커맨드가 파키스탄 표준시 (PKT, UTC+5)로 실행될 때이며, `TZ=Asia/Karachi date "+%Y-%m-%d %I:%M %p PKT"`를 실행하여 가져오세요. 버전은 에이전트 결과에서 가져옵니다
+- `changelog/best-practice/claude-commands/changelog.md`가 존재하지 않거나 비어 있으면 상태 범례 테이블을 포함하여 생성한 후 첫 번째 항목을 추가하세요
+- 각 항목은 `---`로 구분됩니다
+- **높음, 중간, 낮음 우선순위 항목만 포함** — 없음 우선순위 항목은 생략하세요
 
 ---
 
-## Phase 4: Offer to Take Action
+## 3.6단계: 마지막 업데이트 배지 업데이트
 
-After presenting the report (and confirming both changelog and badge were updated), ask the user:
+**이 단계는 필수입니다 — 3.5단계 직후, 보고서를 제시하기 전에 항상 실행하세요.**
 
-1. **Execute all actions** — Apply all changes
-2. **Execute specific actions** — User picks which numbers to execute
-3. **Just save the report** — No changes
+`best-practice/claude-commands.md` 상단의 "Last Updated" 배지를 업데이트하세요. `TZ=Asia/Karachi date "+%b %d, %Y %-I:%M %p PKT"`를 실행하여 시간을 가져오고, URL 인코딩 (공백을 `%20`, 쉼표를 `%2C`)하여 배지의 날짜 부분을 교체하세요. Claude Code 버전이 변경된 경우 배지의 버전도 업데이트하세요.
 
-When executing:
-- **New fields**: Add to the Frontmatter Fields table with correct type, required status, and description from the official docs
-- **Removed fields**: Confirm with user before removing
-- **New commands**: Add to the official commands table with correct #, command, tag, and description. Insert in the correct tag group (table is sorted by tag)
-- **Removed commands**: Confirm with user before removing
-- **Changed tags**: Update the command's tag and re-sort if needed
-- After any additions or removals, update the count in the `## Frontmatter Fields (N)` and `## ![Official](...) **(N)**` headings
+**배지 업데이트를 체인지로그나 보고서의 실행 항목으로 기록하지 마세요.** 배지 동기화는 매 실행의 일상적인 부분이지 결과가 아닙니다.
 
 ---
 
-## Critical Rules
+## 4단계: 조치 제안
 
-1. **Never guess** versions or dates — use data from the agent
-2. **Cross-reference field counts** — report field count must match official docs
-3. **Cross-reference command counts** — report command count must match official docs
-4. **Don't auto-execute** — always present the report first
-5. **ALWAYS append to changelog** — Phase 3.5 is mandatory. Never skip it. Never overwrite previous entries.
-6. **ALWAYS update the Last Updated badge** — Phase 3.6 is mandatory. Never skip it.
-7. **Compare with previous runs** — read the last 25 entries from the changelog and mark each action item as NEW, RECURRING, or RESOLVED.
-8. **Maintain tag sort order** — the official commands table is sorted by tag (alphabetical), then by command name within each tag group. Preserve this ordering when adding or removing commands.
+보고서를 제시한 후 (체인지로그와 배지가 모두 업데이트되었음을 확인한 후), 사용자에게 묻습니다:
+
+1. **모든 조치 실행** — 모든 변경사항 적용
+2. **특정 조치 실행** — 사용자가 실행할 번호 선택
+3. **보고서만 저장** — 변경사항 없음
+
+실행 시:
+- **새 필드**: 공식 문서의 올바른 유형, 필수 여부, 설명을 포함하여 프론트매터 필드 테이블에 추가하세요
+- **제거된 필드**: 제거 전 사용자 확인
+- **새 커맨드**: 올바른 #, 커맨드, 태그, 설명을 포함하여 공식 커맨드 테이블에 추가하세요. 올바른 태그 그룹에 삽입하세요 (테이블은 태그별로 정렬됨)
+- **제거된 커맨드**: 제거 전 사용자 확인
+- **변경된 태그**: 커맨드의 태그를 업데이트하고 필요시 재정렬하세요
+- 추가나 제거 후 `## Frontmatter Fields (N)` 및 `## ![Official](...) **(N)**` 제목의 수를 업데이트하세요
+
+---
+
+## 핵심 규칙
+
+1. **버전이나 날짜를 추측하지 마세요** — 에이전트 데이터 사용
+2. **필드 수 교차 참조** — 보고서 필드 수는 공식 문서와 일치해야 합니다
+3. **커맨드 수 교차 참조** — 보고서 커맨드 수는 공식 문서와 일치해야 합니다
+4. **자동 실행하지 마세요** — 항상 먼저 보고서를 제시하세요
+5. **항상 체인지로그에 추가하세요** — 3.5단계는 필수입니다. 절대 건너뛰지 마세요. 이전 항목을 절대 덮어쓰지 마세요.
+6. **항상 마지막 업데이트 배지를 업데이트하세요** — 3.6단계는 필수입니다. 절대 건너뛰지 마세요.
+7. **이전 실행과 비교하세요** — 체인지로그의 마지막 25개 항목을 읽고 각 실행 항목을 NEW, RECURRING, 또는 RESOLVED로 표시하세요.
+8. **태그 정렬 순서 유지** — 공식 커맨드 테이블은 태그별 (알파벳순)로 정렬되고, 각 태그 그룹 내에서는 커맨드 이름순으로 정렬됩니다. 커맨드를 추가하거나 제거할 때 이 순서를 유지하세요.

@@ -1,12 +1,12 @@
-# Development Workflows Changelog
+# Development Workflows 체인지로그
 
-**Status Legend:**
+**상태 범례:**
 
-| Status | Meaning |
+| 상태 | 의미 |
 |--------|---------|
-| `COMPLETE (reason)` | Action was taken and resolved successfully |
-| `INVALID (reason)` | Finding was incorrect, not applicable, or intentional |
-| `ON HOLD (reason)` | Action deferred, waiting on external dependency or user decision |
+| `COMPLETE (reason)` | 조치가 취해지고 성공적으로 해결됨 |
+| `INVALID (reason)` | 발견 사항이 잘못되었거나, 적용되지 않거나, 의도적인 것임 |
+| `ON HOLD (reason)` | 조치 보류, 외부 의존성 또는 사용자 결정 대기 중 |
 
 ---
 

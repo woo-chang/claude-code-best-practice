@@ -1,18 +1,18 @@
-# macOS Setup
+# macOS 설치
 
-[Back to Day 0](README.md)
+[Day 0으로 돌아가기](README.md)
 
 ---
 
-**Terminal**
-- Open Terminal (press `Cmd + Space`, type "Terminal", hit Enter)
+**터미널**
+- 터미널을 엽니다 (`Cmd + Space` 누르고 "Terminal" 입력 후 Enter)
 
 **Homebrew**
-- Check if Homebrew is already installed:
+- Homebrew가 이미 설치되어 있는지 확인:
   ```bash
   brew --version
   ```
-- If you get "command not found", install Homebrew first:
+- "command not found"가 표시되면 Homebrew를 먼저 설치하세요:
   ```bash
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   ```
@@ -22,11 +22,11 @@
   brew install --cask claude-code
   ```
 
-**Verify**
+**설치 확인**
 - ```bash
   claude --version
   ```
 
 ---
 
-Now head back to [README.md](README.md) for authentication setup.
+이제 [README.md](README.md)로 돌아가서 인증 설정을 진행하세요.

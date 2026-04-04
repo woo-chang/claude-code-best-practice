@@ -1,26 +1,26 @@
-# Everything We Got Wrong About Research-Plan-Implement — MLOps Community
+# Research-Plan-Implement에 대해 우리가 잘못 알고 있었던 모든 것 — MLOps Community
 
-Transcript of the talk by Dexter Horthy ([@daborhey](https://x.com/daborhey)), co-founder of HumanLayer, at MLOps Community, published March 24, 2026.
+HumanLayer 공동창시자 Dexter Horthy ([@daborhey](https://x.com/daborhey))가 2026년 3월 24일에 MLOps Community에서 발표한 강연 트랜스크립트.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Video Details
+## 영상 정보
 
-- **Speaker:** Dexter Horthy (Co-founder, HumanLayer)
-- **Host:** Demetrios (MLOps Community)
-- **Published:** March 24, 2026
-- **YouTube:** [Watch on YouTube](https://youtu.be/YwZR6tc7qYg)
+- **발표자:** Dexter Horthy (HumanLayer 공동창시자)
+- **호스트:** Demetrios (MLOps Community)
+- **공개일:** 2026년 3월 24일
+- **YouTube:** [YouTube에서 시청하기](https://youtu.be/YwZR6tc7qYg)
 
 ---
 
-## Transcript
+## 트랜스크립트
 
 [`0:04`](https://youtu.be/YwZR6tc7qYg?t=4) All right. Before I bring up Dex, I gotta say I met James. And James Yeah. Can you stand up real fast? James told me this morning that he is going — We can't see the QR code. You got to hit it up. He's going to be having dinner tonight and everybody's invited. So, if you want to go, just scan that QR code real fast and go hang out with James. That's awesome. And that's what we're going for here. That is great.
 

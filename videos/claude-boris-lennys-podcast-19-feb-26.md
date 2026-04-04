@@ -1,26 +1,26 @@
-# Head of Claude Code: What Happens After Coding Is Solved — Lenny's Podcast
+# Claude Code 책임자: 코딩이 해결된 이후에 무슨 일이 일어나는가 — Lenny's Podcast
 
-Transcript of the interview with Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on Lenny's Podcast, published February 19, 2026.
+Claude Code 창시자 Boris Cherny ([@bcherny](https://x.com/bcherny))가 2026년 2월 19일에 Lenny's Podcast에 출연한 인터뷰 트랜스크립트.
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← Claude Code 모범 사례로 돌아가기</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Video Details
+## 영상 정보
 
-- **Guest:** Boris Cherny (Creator of Claude Code)
-- **Host:** Lenny Rachitsky (Lenny's Podcast)
-- **Published:** February 19, 2026
-- **YouTube:** [Watch on YouTube](https://youtu.be/We7BZVKbCVw)
+- **게스트:** Boris Cherny (Claude Code 창시자)
+- **호스트:** Lenny Rachitsky (Lenny's Podcast)
+- **공개일:** 2026년 2월 19일
+- **YouTube:** [YouTube에서 시청하기](https://youtu.be/We7BZVKbCVw)
 
 ---
 
-## Transcript
+## 트랜스크립트
 
 [`0:02`](https://youtu.be/We7BZVKbCVw?t=2) 100% of my code is written by quad code. I have not edited a single line by hand since November. Every day I ship 10, 20, 30 p requests. So at the moment I have like five [music] agents running while we're recording this.
 
@@ -296,7 +296,7 @@ Transcript of the interview with Boris Cherny ([@bcherny](https://x.com/bcherny)
 
 ---
 
-## Sources
+## 소스
 
 - [Head of Claude Code: What Happens After Coding Is Solved — Lenny's Podcast — YouTube](https://youtu.be/We7BZVKbCVw)
 - [Lenny's Podcast](https://www.lennyspodcast.com/)

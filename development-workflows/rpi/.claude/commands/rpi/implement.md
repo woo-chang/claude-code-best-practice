@@ -1,614 +1,614 @@
 ---
-description: Execute phased implementation with validation gates
+description: 검증 게이트를 포함한 단계별 구현 실행
 argument-hint: "<feature-slug> [--phase N] [--validate-only]"
 ---
 
-## User Input
+## 사용자 입력
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** parse the user input to extract the feature slug (the folder name in `rpi/`).
+사용자 입력을 파싱하여 피처 슬러그 (`rpi/`의 폴더 이름)를 추출해야 **합니다**.
 
-## Purpose
+## 목적
 
-This command executes phased implementation of features based on planning documentation. It orchestrates specialized agents, enforces validation gates, and ensures constitutional compliance throughout implementation.
+이 커맨드는 계획 문서를 기반으로 피처의 단계별 구현을 실행합니다. 전문 에이전트를 오케스트레이션하고, 검증 게이트를 시행하며, 구현 전반에 걸쳐 헌법적 준수를 보장합니다.
 
-**Prerequisites**:
-- Feature folder exists at `rpi/{feature-slug}/`
-- Planning completed (`rpi/{feature-slug}/plan/PLAN.md` exists)
+**사전 요구사항**:
+- `rpi/{feature-slug}/`에 피처 폴더가 존재
+- 계획 완료 (`rpi/{feature-slug}/plan/PLAN.md` 존재)
 
-**Output Location**: `rpi/{feature-slug}/implement/`
+**출력 위치**: `rpi/{feature-slug}/implement/`
 
-**This is Step 4 of the RPI Workflow** (final step - actual implementation).
+**이것은 RPI 워크플로우의 4단계**입니다 (최종 단계 - 실제 구현).
 
-## Flags
+## 플래그
 
-- `--phase N`: Execute specific phase number (1-8), if omitted starts from phase 1
-- `--validate-only`: Only validate current phase, don't implement
-- `--skip-validation`: Skip validation gate and proceed (use with caution)
+- `--phase N`: 특정 단계 번호 실행 (1-8), 생략 시 1단계부터 시작
+- `--validate-only`: 현재 단계만 검증, 구현하지 않음
+- `--skip-validation`: 검증 게이트를 건너뛰고 진행 (주의해서 사용)
 
-## Available Agents
+## 사용 가능한 에이전트
 
-All agents use **Opus model** for maximum quality.
+모든 에이전트는 최고 품질을 위해 **Opus 모델**을 사용합니다.
 
-### Implementation Agent
+### 구현 에이전트
 
-| Agent | Type | When to Use |
+| 에이전트 | 유형 | 사용 시기 |
 |-------|------|-------------|
-| `senior-software-engineer` | Custom | All implementation tasks |
+| `senior-software-engineer` | 커스텀 | 모든 구현 작업 |
 
-### Support Agents
+### 지원 에이전트
 
-| Agent | Type | Purpose |
+| 에이전트 | 유형 | 목적 |
 |-------|------|---------|
-| `Explore` | Built-in | Pre-implementation code exploration |
-| `code-reviewer` | Custom | Code review and quality validation |
-| `constitutional-validator` | Custom | Validate against project constitution |
-| `documentation-analyst-writer` | Built-in | Documentation generation |
+| `Explore` | 내장 | 구현 전 코드 탐색 |
+| `code-reviewer` | 커스텀 | 코드 검토 및 품질 검증 |
+| `constitutional-validator` | 커스텀 | 프로젝트 헌법에 따른 검증 |
+| `documentation-analyst-writer` | 내장 | 문서 생성 |
 
-### Agent Routing
+### 에이전트 라우팅
 
-All implementation tasks are handled by the `senior-software-engineer` agent.
-
----
-
-## Phase 0: Load Context and Rules
-
-**Prerequisites**: Feature slug parsed from user input
-
-**Process**:
-
-### 0.1 Load Project Constitution
-
-1. Check for a constitution or principles document in the repository
-2. If exists, extract:
-   - Technical constraints (type safety, testing, component isolation)
-   - Business principles (quality standards, workflow)
-   - Architectural boundaries
-3. Store constraints for enforcement during implementation
-
-### 0.2 Load Domain-Specific Guidelines
-
-Based on files to be modified, load relevant project guidelines:
-- Check for component-specific README files
-- Check for coding style guides
-- Check for testing requirements documentation
-
-### 0.3 Analyze Implementation Scope
-
-1. Read `rpi/{feature-slug}/plan/PLAN.md`
-2. Identify all files to be modified
-3. Map files to implementation agent
-
-**Outputs**:
-- Constitutional context summary
-- Domain rules loaded
-- File-to-agent mapping
-- Phase execution plan
-
-**Validation**:
-- [ ] Constitution loaded (if exists)
-- [ ] Domain rules loaded for affected files
-- [ ] All files mapped to agents
-- [ ] Execution plan understood
+모든 구현 작업은 `senior-software-engineer` 에이전트가 처리합니다.
 
 ---
 
-## Phased Implementation Workflow
+## 0단계: 컨텍스트 및 규칙 로드
 
-### Phase Implementation Loop
+**사전 요구사항**: 사용자 입력에서 피처 슬러그 파싱됨
 
-For each phase in PLAN.md:
+**프로세스**:
+
+### 0.1 프로젝트 헌법 로드
+
+1. 리포지토리에서 헌법 또는 원칙 문서 확인
+2. 존재하는 경우 추출:
+   - 기술적 제약 (타입 안전성, 테스트, 컴포넌트 격리)
+   - 비즈니스 원칙 (품질 표준, 워크플로우)
+   - 아키텍처 경계
+3. 구현 중 시행을 위한 제약사항 저장
+
+### 0.2 도메인별 가이드라인 로드
+
+수정할 파일을 기반으로 관련 프로젝트 가이드라인 로드:
+- 컴포넌트별 README 파일 확인
+- 코딩 스타일 가이드 확인
+- 테스트 요구사항 문서 확인
+
+### 0.3 구현 범위 분석
+
+1. `rpi/{feature-slug}/plan/PLAN.md` 읽기
+2. 수정할 모든 파일 파악
+3. 파일을 구현 에이전트에 매핑
+
+**출력물**:
+- 헌법 컨텍스트 요약
+- 도메인 규칙 로드됨
+- 파일-에이전트 매핑
+- 단계 실행 계획
+
+**검증**:
+- [ ] 헌법 로드됨 (존재하는 경우)
+- [ ] 영향 받는 파일에 대한 도메인 규칙 로드됨
+- [ ] 모든 파일이 에이전트에 매핑됨
+- [ ] 실행 계획 이해됨
+
+---
+
+## 단계별 구현 워크플로우
+
+### 단계 구현 루프
+
+PLAN.md의 각 단계에 대해:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ Phase N: [Phase Name]                                            │
+│ N단계: [단계명]                                                   │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  1. Code Discovery (Explore Agent)                              │
-│     └─→ Understand existing code before changing it             │
+│  1. 코드 탐색 (Explore 에이전트)                                  │
+│     └─→ 변경 전 기존 코드 이해                                    │
 │                                                                  │
-│  2. Implementation (senior-software-engineer)                   │
-│     └─→ Implement phase deliverables                            │
+│  2. 구현 (senior-software-engineer)                              │
+│     └─→ 단계 산출물 구현                                         │
 │                                                                  │
-│  3. Self-Validation                                             │
-│     └─→ Engineer validates against phase checklist              │
+│  3. 자체 검증                                                     │
+│     └─→ 엔지니어가 단계 체크리스트에 따라 검증                     │
 │                                                                  │
-│  4. Code Review (code-reviewer Agent)                           │
-│     └─→ Security, correctness, maintainability                  │
+│  4. 코드 검토 (code-reviewer 에이전트)                            │
+│     └─→ 보안, 정확성, 유지보수성                                  │
 │                                                                  │
-│  5. User Validation Gate                                        │
-│     └─→ STOP and request user approval                          │
-│         ├─→ PASS: Proceed to next phase                         │
-│         ├─→ CONDITIONAL PASS: Note issues, proceed              │
-│         └─→ FAIL: Fix issues, re-validate                       │
+│  5. 사용자 검증 게이트                                            │
+│     └─→ 중지하고 사용자 승인 요청                                 │
+│         ├─→ 통과: 다음 단계로 진행                                │
+│         ├─→ 조건부 통과: 문제 기록, 진행                          │
+│         └─→ 실패: 문제 수정, 재검증                               │
 │                                                                  │
-│  6. Documentation Update                                        │
-│     └─→ Update phase status in PLAN.md                          │
+│  6. 문서 업데이트                                                 │
+│     └─→ PLAN.md의 단계 상태 업데이트                             │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Step 1: Code Discovery (Per Phase)
+## 1단계: 코드 탐색 (단계별)
 
-**Agent**: Explore (Built-in, via Task tool)
+**에이전트**: Explore (내장, Task 도구를 통해)
 
-**Purpose**: Ground implementation in code reality before making changes.
+**목적**: 변경하기 전에 코드 현실에 기반하여 구현.
 
-**Process**:
-1. Launch Explore agent via Task tool with `subagent_type="Explore"`
-2. Request analysis of files affected by current phase
-3. Understand existing patterns, integration points, constraints
+**프로세스**:
+1. `subagent_type="Explore"`로 Task 도구를 통해 Explore 에이전트 실행
+2. 현재 단계에서 영향 받는 파일 분석 요청
+3. 기존 패턴, 통합 지점, 제약사항 이해
 
-**Explore Agent Prompt**:
+**Explore 에이전트 프롬프트**:
 ```
-Analyze the codebase to prepare for implementing Phase N of [feature-name].
+[기능명]의 N단계 구현 준비를 위해 코드베이스를 분석하세요.
 
-Files to be modified in this phase:
-[List files from PLAN.md]
+이 단계에서 수정할 파일:
+[PLAN.md의 파일 목록]
 
-Investigate and document:
+다음을 조사하고 문서화하세요:
 
-1. **Current Implementation**
-   - How do these files currently work?
-   - What patterns are used?
-   - What functions/classes will be affected?
+1. **현재 구현**
+   - 이 파일들이 현재 어떻게 작동하는가?
+   - 어떤 패턴이 사용되는가?
+   - 어떤 함수/클래스가 영향을 받는가?
 
-2. **Integration Points**
-   - What other files import or use these modules?
-   - What APIs or interfaces will change?
-   - What tests cover this code?
+2. **통합 지점**
+   - 어떤 다른 파일이 이 모듈을 가져오거나 사용하는가?
+   - 어떤 API 또는 인터페이스가 변경되는가?
+   - 이 코드를 커버하는 테스트는 무엇인가?
 
-3. **Dependencies**
-   - What libraries are used?
-   - What internal utilities are available?
-   - What constraints exist from current code?
+3. **의존성**
+   - 어떤 라이브러리가 사용되는가?
+   - 어떤 내부 유틸리티가 사용 가능한가?
+   - 현재 코드에서 어떤 제약이 존재하는가?
 
-4. **Patterns to Follow**
-   - What coding style is used in these files?
-   - What naming conventions are followed?
-   - What error handling patterns exist?
+4. **따라야 할 패턴**
+   - 이 파일들에서 어떤 코딩 스타일이 사용되는가?
+   - 어떤 명명 규칙이 따르는가?
+   - 어떤 오류 처리 패턴이 존재하는가?
 
-5. **Risks and Considerations**
-   - What could break if we change this?
-   - What edge cases exist?
-   - What backward compatibility concerns?
+5. **리스크 및 고려사항**
+   - 이것을 변경하면 무엇이 깨질 수 있는가?
+   - 어떤 엣지 케이스가 존재하는가?
+   - 어떤 하위 호환성 우려사항이 있는가?
 
-Provide a discovery summary to inform implementation.
+구현을 안내하기 위한 탐색 요약을 제공하세요.
 ```
 
-**Output**: Discovery summary for implementation agent
+**출력물**: 구현 에이전트를 위한 탐색 요약
 
 ---
 
-## Step 2: Implementation (Per Phase)
+## 2단계: 구현 (단계별)
 
-**Agent**: senior-software-engineer
+**에이전트**: senior-software-engineer
 
-**Process**:
-1. Use senior-software-engineer agent
-2. Provide discovery context from Step 1
-3. Implement all deliverables for the phase
-4. Follow constitutional constraints and project rules
+**프로세스**:
+1. senior-software-engineer 에이전트 사용
+2. 1단계의 탐색 컨텍스트 제공
+3. 단계의 모든 산출물 구현
+4. 헌법 제약 및 프로젝트 규칙 준수
 
-**Implementation Agent Prompt Template**:
+**구현 에이전트 프롬프트 템플릿**:
 ```
-Acting as the [agent-name] agent, implement Phase N deliverables for [feature-name].
+[에이전트명] 에이전트로서, [기능명]의 N단계 산출물을 구현하세요.
 
-## Context
-- Constitutional Constraints: [from Phase 0]
-- Domain Rules: [from Phase 0]
-- Discovery Summary: [from Step 1]
+## 컨텍스트
+- 헌법 제약: [0단계에서]
+- 도메인 규칙: [0단계에서]
+- 탐색 요약: [1단계에서]
 
-## Phase N Deliverables
-[List from PLAN.md]
+## N단계 산출물
+[PLAN.md에서 목록]
 
-## Files to Modify
-[List files with specific changes from PLAN.md]
+## 수정할 파일
+[PLAN.md에서 특정 변경사항과 함께 파일 목록]
 
-## Implementation Requirements
-1. Follow existing code patterns identified in discovery
-2. Honor constitutional constraints (type safety, testing, etc.)
-3. Follow project-specific rules (if applicable)
-4. Write tests for new functionality
-5. Include appropriate logging
-6. Handle errors gracefully
+## 구현 요구사항
+1. 탐색에서 파악된 기존 코드 패턴 따르기
+2. 헌법 제약 준수 (타입 안전성, 테스트 등)
+3. 프로젝트별 규칙 따르기 (해당되는 경우)
+4. 새로운 기능에 대한 테스트 작성
+5. 적절한 로깅 포함
+6. 오류를 우아하게 처리
 
-## Quality Checklist
-- [ ] Code follows existing patterns
-- [ ] Type annotations present where applicable
-- [ ] Tests written and passing
-- [ ] No breaking changes to existing functionality
-- [ ] Logging added for observability
-- [ ] Error handling comprehensive
+## 품질 체크리스트
+- [ ] 코드가 기존 패턴을 따름
+- [ ] 해당되는 경우 타입 어노테이션 존재
+- [ ] 테스트 작성 및 통과
+- [ ] 기존 기능에 대한 중단 변경 없음
+- [ ] 관찰 가능성을 위한 로깅 추가됨
+- [ ] 오류 처리 포괄적
 
-Implement all deliverables and report what was done.
+모든 산출물을 구현하고 수행한 내용을 보고하세요.
 ```
 
 ---
 
-## Step 3: Self-Validation
+## 3단계: 자체 검증
 
-**Agent**: senior-software-engineer (same as Step 2)
+**에이전트**: senior-software-engineer (2단계와 동일)
 
-**Process**:
-1. Agent validates implementation against phase checklist
-2. Run linting (use project's configured linter)
-3. Run tests relevant to changes
-4. Verify build succeeds
+**프로세스**:
+1. 에이전트가 단계 체크리스트에 따라 구현 검증
+2. 린팅 실행 (프로젝트의 구성된 린터 사용)
+3. 변경사항과 관련된 테스트 실행
+4. 빌드 성공 확인
 
-**Validation Commands** (adjust to your project):
+**검증 커맨드** (프로젝트에 맞게 조정):
 
 ```bash
-# Run linter
+# 린터 실행
 [your-linter-command]
 
-# Run tests
+# 테스트 실행
 [your-test-command]
 
-# Build/compile
+# 빌드/컴파일
 [your-build-command]
 ```
 
-**Self-Validation Checklist**:
-- [ ] All deliverables implemented
-- [ ] Linting passes
-- [ ] Tests pass
-- [ ] Build succeeds
-- [ ] No regressions in existing tests
-- [ ] Constitutional constraints honored
-- [ ] Domain rules followed
+**자체 검증 체크리스트**:
+- [ ] 모든 산출물 구현됨
+- [ ] 린팅 통과
+- [ ] 테스트 통과
+- [ ] 빌드 성공
+- [ ] 기존 테스트에서 회귀 없음
+- [ ] 헌법 제약 준수됨
+- [ ] 도메인 규칙 따름
 
 ---
 
-## Step 4: Code Review
+## 4단계: 코드 검토
 
-**Agent**: code-reviewer (Custom, auto-invoked)
+**에이전트**: code-reviewer (커스텀, 자동 호출)
 
-**Process**:
-1. Invoke code-reviewer agent to review changes
-2. Focus on correctness, security, maintainability
-3. Address blockers before proceeding
+**프로세스**:
+1. 변경사항을 검토하기 위해 code-reviewer 에이전트 호출
+2. 정확성, 보안, 유지보수성에 집중
+3. 진행 전 차단 요소 해결
 
-**Code Review Agent Prompt**:
+**코드 검토 에이전트 프롬프트**:
 ```
-Acting as the code-reviewer agent, review the Phase N implementation for [feature-name].
+code-reviewer 에이전트로서, [기능명]의 N단계 구현을 검토하세요.
 
-## Files Changed
-[List modified files]
+## 변경된 파일
+[수정된 파일 목록]
 
-## Changes Made
-[Summary of implementation]
+## 수행된 변경사항
+[구현 요약]
 
-## Review Focus
-- Correctness & tests
-- Security & dependency hygiene
-- Architectural boundaries
-- Clarity over cleverness
+## 검토 초점
+- 정확성 및 테스트
+- 보안 및 의존성 위생
+- 아키텍처 경계
+- 영리함보다 명확성
 
-## Constitutional Constraints
-[From Phase 0]
+## 헌법 제약
+[0단계에서]
 
-Provide review using standard output format.
+표준 출력 형식을 사용하여 검토를 제공하세요.
 ```
 
-**Review Verdicts**:
-- **APPROVED**: Proceed to user validation
-- **APPROVED WITH SUGGESTIONS**: Note suggestions, proceed
-- **NEEDS REVISION**: Fix issues, re-review
+**검토 결과**:
+- **승인됨**: 사용자 검증으로 진행
+- **제안과 함께 승인됨**: 제안 기록, 진행
+- **수정 필요**: 문제 수정, 재검토
 
 ---
 
-## Step 5: User Validation Gate
+## 5단계: 사용자 검증 게이트
 
-**CRITICAL**: This step REQUIRES user interaction. DO NOT proceed automatically.
+**중요**: 이 단계는 사용자 상호작용이 **필요**합니다. 자동으로 진행하지 마세요.
 
-**Process**:
-1. Present phase deliverables checklist
-2. Show what was implemented (files changed, features added)
-3. Present validation criteria from PLAN.md
-4. Show code review results
-5. **STOP and wait for user decision**
+**프로세스**:
+1. 단계 산출물 체크리스트 제시
+2. 구현된 내용 표시 (변경된 파일, 추가된 기능)
+3. PLAN.md의 검증 기준 제시
+4. 코드 검토 결과 표시
+5. **중지하고 사용자 결정 대기**
 
-**Validation Request Format**:
+**검증 요청 형식**:
 ```
-## Phase N Validation Request
+## N단계 검증 요청
 
-### Deliverables Completed
-- [x] [Deliverable 1] - [implementation summary]
-- [x] [Deliverable 2] - [implementation summary]
+### 완료된 산출물
+- [x] [산출물 1] - [구현 요약]
+- [x] [산출물 2] - [구현 요약]
 - ...
 
-### Files Changed
-| File | Change Type | Lines |
+### 변경된 파일
+| 파일 | 변경 유형 | 줄 수 |
 |------|-------------|-------|
-| [file] | [add/modify] | [±N] |
+| [파일] | [추가/수정] | [±N] |
 
-### Tests
-- [x] Unit tests: PASS
-- [x] Integration tests: PASS
-- [x] Build: SUCCESS
+### 테스트
+- [x] 단위 테스트: 통과
+- [x] 통합 테스트: 통과
+- [x] 빌드: 성공
 
-### Code Review
-- Verdict: [APPROVED / APPROVED WITH SUGGESTIONS]
-- Issues: [None / List]
+### 코드 검토
+- 결과: [승인됨 / 제안과 함께 승인됨]
+- 문제: [없음 / 목록]
 
-### Validation Criteria (from PLAN.md)
-- [ ] [Criterion 1]
-- [ ] [Criterion 2]
+### 검증 기준 (PLAN.md에서)
+- [ ] [기준 1]
+- [ ] [기준 2]
 - ...
 
 ---
 
-**Please validate Phase N:**
-- **PASS**: Phase complete, proceed to Phase N+1
-- **CONDITIONAL PASS**: Note issues below, proceed with caution
-- **FAIL**: Specify issues to fix before proceeding
+**N단계를 검증해 주세요:**
+- **통과**: 단계 완료, N+1단계로 진행
+- **조건부 통과**: 아래에 문제 기록, 주의하여 진행
+- **실패**: 진행 전 수정할 문제 명시
 ```
 
-**User Decisions**:
-- **PASS**: Proceed to next phase
-- **CONDITIONAL PASS**: Document issues, proceed to next phase
-- **FAIL**: Fix issues, re-run Steps 2-5
+**사용자 결정**:
+- **통과**: 다음 단계로 진행
+- **조건부 통과**: 문제 기록, 다음 단계로 진행
+- **실패**: 문제 수정, 2-5단계 재실행
 
 ---
 
-## Step 6: Documentation Update
+## 6단계: 문서 업데이트
 
-**Process**:
-1. Update `rpi/{feature-slug}/plan/PLAN.md` with phase status
-2. Update `rpi/{feature-slug}/implement/IMPLEMENT.md` with validation results
-3. Append each phase's validation to IMPLEMENT.md
+**프로세스**:
+1. 단계 상태로 `rpi/{feature-slug}/plan/PLAN.md` 업데이트
+2. 검증 결과로 `rpi/{feature-slug}/implement/IMPLEMENT.md` 업데이트
+3. IMPLEMENT.md에 각 단계의 검증 추가
 
-### Phase Status Tracking
+### 단계 상태 추적
 
-Update checkboxes in PLAN.md:
+PLAN.md의 체크박스 업데이트:
 ```markdown
-- [ ] Phase N: Not Started
-- [~] Phase N: In Progress
-- [x] Phase N: Validated (PASS)
-- [!] Phase N: Conditional Pass (with notes)
-- [-] Phase N: Failed Validation (needs rework)
+- [ ] N단계: 시작되지 않음
+- [~] N단계: 진행 중
+- [x] N단계: 검증됨 (통과)
+- [!] N단계: 조건부 통과 (비고 포함)
+- [-] N단계: 검증 실패 (재작업 필요)
 ```
 
-### IMPLEMENT.md Template
+### IMPLEMENT.md 템플릿
 
 ```markdown
-# Implementation Record
+# 구현 기록
 
-**Feature**: [feature-slug]
-**Started**: [Date]
-**Status**: [IN_PROGRESS / COMPLETED]
-
----
-
-## Phase 1: [Phase Name]
-
-**Date**: [Date]
-**Verdict**: [PASS / CONDITIONAL PASS / FAIL]
-
-### Deliverables
-- [x] [Deliverable 1]
-- [x] [Deliverable 2]
-
-### Files Changed
-[List with line counts]
-
-### Test Results
-[Test output summary]
-
-### Code Review
-[Review verdict and notes]
-
-### Notes
-[Any additional notes]
+**피처**: [feature-slug]
+**시작**: [날짜]
+**상태**: [진행_중 / 완료]
 
 ---
 
-## Phase 2: [Phase Name]
-[Same structure as Phase 1...]
+## 1단계: [단계명]
+
+**날짜**: [날짜]
+**결과**: [통과 / 조건부 통과 / 실패]
+
+### 산출물
+- [x] [산출물 1]
+- [x] [산출물 2]
+
+### 변경된 파일
+[줄 수와 함께 목록]
+
+### 테스트 결과
+[테스트 출력 요약]
+
+### 코드 검토
+[검토 결과 및 비고]
+
+### 비고
+[추가 비고]
 
 ---
 
-## Summary
+## 2단계: [단계명]
+[1단계와 동일한 구조...]
 
-**Phases Completed**: [N] of [N]
-**Final Status**: [COMPLETED / IN_PROGRESS]
+---
+
+## 요약
+
+**완료된 단계**: [N] / [N]
+**최종 상태**: [완료 / 진행_중]
 ```
 
 ---
 
-## Error Handling
+## 오류 처리
 
-### Implementation Failures
+### 구현 실패
 
-**If implementation fails**:
-1. Document the specific failure
-2. Analyze root cause
-3. Try alternative approach (max 2 attempts)
-4. If still failing, STOP and ask user for guidance
-5. Do NOT proceed to next phase with broken implementation
+**구현이 실패하는 경우**:
+1. 특정 실패 기록
+2. 근본 원인 분석
+3. 대안 접근방식 시도 (최대 2회)
+4. 여전히 실패하는 경우, 중지하고 사용자에게 안내 요청
+5. 깨진 구현으로 다음 단계로 진행하지 않음
 
-**Message**: "Implementation failed: [error]. Attempted [N] approaches. User guidance needed."
+**메시지**: "구현 실패: [오류]. [N]가지 접근방식 시도됨. 사용자 안내가 필요합니다."
 
-### Test Failures
+### 테스트 실패
 
-**If tests fail**:
-1. Analyze failure cause (code bug vs test bug)
-2. Fix the issue
-3. Re-run tests
-4. If persistent, document and ask user
-5. Do NOT mark phase complete with failing tests
+**테스트가 실패하는 경우**:
+1. 실패 원인 분석 (코드 버그 vs 테스트 버그)
+2. 문제 수정
+3. 테스트 재실행
+4. 지속되는 경우, 문서화하고 사용자에게 문의
+5. 테스트가 실패한 상태로 단계 완료 표시하지 않음
 
-**Message**: "Tests failing: [failures]. Fix attempted but unsuccessful. User review needed."
+**메시지**: "테스트 실패: [실패]. 수정 시도했지만 실패. 사용자 검토가 필요합니다."
 
-### Build Failures
+### 빌드 실패
 
-**If build fails**:
-1. Check for type errors
-2. Check for missing imports
-3. Check for syntax errors
-4. Fix and rebuild
-5. If persistent, escalate to user
+**빌드가 실패하는 경우**:
+1. 타입 오류 확인
+2. 누락된 임포트 확인
+3. 구문 오류 확인
+4. 수정 및 재빌드
+5. 지속되는 경우, 사용자에게 에스컬레이션
 
-**Message**: "Build failing: [error]. Unable to resolve automatically."
+**메시지**: "빌드 실패: [오류]. 자동으로 해결할 수 없습니다."
 
-### Agent Failures
+### 에이전트 실패
 
-**If agent fails or times out**:
-1. Retry once with same inputs
-2. If still failing, proceed without that agent's contribution
-3. Document gap in validation request
+**에이전트가 실패하거나 타임아웃되는 경우**:
+1. 동일한 입력으로 한 번 재시도
+2. 여전히 실패하는 경우, 해당 에이전트의 기여 없이 진행
+3. 검증 요청에서 공백 기록
 
-**Message**: "Agent [name] failed. Proceeding without contribution."
+**메시지**: "에이전트 [이름] 실패. 기여 없이 진행합니다."
 
 ---
 
-## Completion Report
+## 완료 보고서
 
-On successful completion of all phases:
+모든 단계 성공적으로 완료 시:
 
 ```markdown
-## Implementation Complete
+## 구현 완료
 
-### Feature Summary
-- **Feature**: [feature-name]
-- **Phases Completed**: [N] of [N]
+### 피처 요약
+- **피처**: [feature-name]
+- **완료된 단계**: [N] / [N]
 
-### Phases Executed
-| Phase | Status | Notes |
+### 실행된 단계
+| 단계 | 상태 | 비고 |
 |-------|--------|-------|
-| Phase 1 | PASS | [summary] |
-| Phase 2 | PASS | [summary] |
+| 1단계 | 통과 | [요약] |
+| 2단계 | 통과 | [요약] |
 | ... | ... | ... |
 
-### Files Modified
-| File | Change Type | Lines |
+### 수정된 파일
+| 파일 | 변경 유형 | 줄 수 |
 |------|-------------|-------|
-| [file] | [type] | [±N] |
+| [파일] | [유형] | [±N] |
 
-### Tests Added
-- [test files]
+### 추가된 테스트
+- [테스트 파일들]
 
-### Code Review Summary
-- Blockers Fixed: [N]
-- Suggestions Addressed: [N]
+### 코드 검토 요약
+- 수정된 차단 요소: [N]
+- 반영된 제안: [N]
 
-### Constitutional Compliance
-- [ ] Type safety maintained
-- [ ] Tests written
-- [ ] Component isolation respected
-- [ ] No breaking changes
+### 헌법 준수
+- [ ] 타입 안전성 유지됨
+- [ ] 테스트 작성됨
+- [ ] 컴포넌트 격리 준수됨
+- [ ] 중단 변경 없음
 
-### Artifacts Created
-- `rpi/{feature-slug}/plan/PLAN.md` (updated with phase status)
-- `rpi/{feature-slug}/implement/IMPLEMENT.md` (all phase validations)
+### 생성된 아티팩트
+- `rpi/{feature-slug}/plan/PLAN.md` (단계 상태로 업데이트됨)
+- `rpi/{feature-slug}/implement/IMPLEMENT.md` (모든 단계 검증)
 
-### Next Steps
-1. Create PR with changes
-2. Request final human review
-3. Deploy to staging
-4. Verify in staging environment
-5. Deploy to production
+### 다음 단계
+1. 변경사항으로 PR 생성
+2. 최종 사람 검토 요청
+3. 스테이징에 배포
+4. 스테이징 환경에서 확인
+5. 프로덕션에 배포
 
-### PR Notes
+### PR 비고
 
-**Title**: [{feature-slug}] [Brief description]
+**제목**: [{feature-slug}] [간략한 설명]
 
-**Summary**:
-[What was implemented]
+**요약**:
+[구현된 내용]
 
-**Changes**:
-- [List key changes]
+**변경사항**:
+- [주요 변경사항 목록]
 
-**Testing**:
-- [How tested]
+**테스트**:
+- [테스트 방법]
 
-**Rollout**:
-- [Deployment steps]
+**롤아웃**:
+- [배포 단계]
 
-**Rollback**:
-- [Rollback procedure if issues]
+**롤백**:
+- [문제 발생 시 롤백 절차]
 ```
 
 ---
 
-## Quality Gates
+## 품질 게이트
 
-### Per-Phase Quality Gate
+### 단계별 품질 게이트
 
-Before marking any phase complete:
+단계 완료 표시 전:
 
-- [ ] All deliverables implemented
-- [ ] Linting passes
-- [ ] Tests pass
-- [ ] Build succeeds
-- [ ] Code review passed
-- [ ] User validation received
-- [ ] Documentation updated
+- [ ] 모든 산출물 구현됨
+- [ ] 린팅 통과
+- [ ] 테스트 통과
+- [ ] 빌드 성공
+- [ ] 코드 검토 통과
+- [ ] 사용자 검증 받음
+- [ ] 문서 업데이트됨
 
-### Final Quality Gate
+### 최종 품질 게이트
 
-Before marking implementation complete:
+구현 완료 표시 전:
 
-- [ ] All phases validated
-- [ ] No failing tests
-- [ ] Build succeeds in full
-- [ ] Constitutional compliance verified
-- [ ] Domain rules followed
-- [ ] PR notes generated
-
----
-
-## Notes
-
-### When to Use This Command
-
-- After `/rpi:plan` generates PLAN.md
-- When phased implementation with validation gates is needed
-- For features requiring structured implementation
-
-### When NOT to Use This Command
-
-- Bug fixes (too heavy, just fix directly)
-- Very simple changes (<30 minutes work)
-- Exploratory prototyping
-- Documentation-only changes
-
-### Best Practices
-
-1. **Review PLAN.md first**: Understand what you're implementing
-2. **Trust code discovery**: Let Explore agent inform implementation
-3. **Follow existing patterns**: Let code discovery inform implementation
-4. **Don't skip validation**: Gates exist to catch issues early
-5. **Document as you go**: Update status after each phase
-6. **Ask when stuck**: Better to ask than to proceed incorrectly
-
-### Part of RPI Workflow
-
-Step 4 of 4 (Describe → Research → Plan → **Implement**)
+- [ ] 모든 단계 검증됨
+- [ ] 실패한 테스트 없음
+- [ ] 전체 빌드 성공
+- [ ] 헌법 준수 확인됨
+- [ ] 도메인 규칙 따름
+- [ ] PR 비고 생성됨
 
 ---
 
-## Command Examples
+## 비고
 
-### Execute all phases
+### 이 커맨드를 사용해야 할 때
+
+- `/rpi:plan`이 PLAN.md를 생성한 후
+- 검증 게이트가 있는 단계별 구현이 필요한 경우
+- 구조화된 구현이 필요한 피처의 경우
+
+### 이 커맨드를 사용하지 말아야 할 때
+
+- 버그 수정 (너무 무거움, 직접 수정하세요)
+- 매우 간단한 변경사항 (30분 미만 작업)
+- 탐색적 프로토타이핑
+- 문서만 변경하는 경우
+
+### 모범 사례
+
+1. **PLAN.md 먼저 검토**: 구현할 내용 이해
+2. **코드 탐색 신뢰**: Explore 에이전트가 구현을 안내하도록 함
+3. **기존 패턴 따르기**: 코드 탐색이 구현을 안내하도록 함
+4. **검증 건너뛰지 않기**: 게이트는 조기에 문제를 잡기 위해 존재함
+5. **진행하면서 문서화**: 각 단계 후 상태 업데이트
+6. **막히면 질문하기**: 잘못된 방향으로 진행하는 것보다 질문하는 것이 나음
+
+### RPI 워크플로우의 일부
+
+4단계 중 4단계 (설명 → 연구 → 계획 → **구현**)
+
+---
+
+## 커맨드 예시
+
+### 모든 단계 실행
 
 ```bash
 /rpi:implement "my-feature"
 ```
 
-### Execute specific phase
+### 특정 단계 실행
 
 ```bash
 /rpi:implement "my-feature" --phase 3
 ```
 
-### Validate only (no implementation)
+### 검증만 (구현 없음)
 
 ```bash
 /rpi:implement "my-feature" --phase 2 --validate-only
@@ -616,19 +616,19 @@ Step 4 of 4 (Describe → Research → Plan → **Implement**)
 
 ---
 
-## Post-Completion Action
+## 완료 후 작업
 
-**IMPORTANT**: After completing implementation (all phases or significant progress), ALWAYS prompt the user to compact the conversation:
+**중요**: 구현 완료 (모든 단계 또는 상당한 진행) 후, 항상 사용자에게 대화를 컴팩트하도록 프롬프트하세요:
 
-> **Context Management**: This implementation workflow consumed significant context. To preserve progress and free up space, please run:
+> **컨텍스트 관리**: 이 구현 워크플로우는 상당한 컨텍스트를 사용했습니다. 진행 상황을 보존하고 공간을 확보하려면 다음을 실행하세요:
 >
 > ```
 > /compact
 > ```
 >
-> This will summarize the conversation and preserve implementation status while reducing token usage for future work.
+> 이렇게 하면 대화를 요약하고 향후 작업을 위해 토큰 사용을 줄이면서 구현 상태를 보존합니다.
 
-**When to prompt for compact**:
-- After all phases are complete
-- After completing each major phase (if multi-session implementation)
-- If context is running low during implementation
+**컴팩트 프롬프트 시기**:
+- 모든 단계 완료 후
+- 각 주요 단계 완료 후 (다중 세션 구현인 경우)
+- 구현 중 컨텍스트가 부족한 경우
